@@ -9,4 +9,40 @@
 
 
 {% block content %}
+<div id="map"></div>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        const map = L.map('map').setView([52.3676, 4.9041], 8);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        async function fetchTreinen() {
+            const response = await fetch('/meliag/api/pos');
+            const data = await response.json();
+
+            if (data.payload && data.payload.treinen) {
+                data.payload.treinen.forEach(trein => {
+                    const lat = trein.lat;
+                    const lon = trein.lng;
+                    const type = trein.type;
+
+                    L.marker([lat, lon]).addTo(map)
+                        .bindPopup(`
+                            <b>Type:</b> ${type}<br>
+                            <b>Rit ID:</b> ${trein.ritId}<br>
+                            <b>Snelheid:</b> ${trein.snelheid.toFixed(1)} km/u<br>
+                            <b>Richting:</b> ${trein.richting.toFixed(2)}°
+                        `);
+                });
+            } else {
+                console.error("Geen treinlocaties beschikbaar");
+            }
+        }
+
+        fetchTreinen();
+
+    </script>
 {% endblock %}

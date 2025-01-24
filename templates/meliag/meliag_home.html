@@ -1,0 +1,15 @@
+{% extends "meliag/base.html" %}
+
+{% block title %}Home{% endblock %}
+{% set active_page = "home" %}
+
+{% block headers %}
+<link rel="stylesheet" href="{{ url_for('static', filename='meliag/home.css') }}">
+{% endblock %}
+
+
+{% block content %}
+Welkom!
+<br>
+Ik heb nog niet zo veel hier te zeggen...
+{% endblock %}

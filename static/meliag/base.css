@@ -1,0 +1,104 @@
+@import url("https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap");
+
+
+:root {
+    --zwart: #0f212e;
+    --witblauw: #d1e3f0;
+    --wit: #eaf2ef;
+    --grijs: #6b6d76;
+    --dblauw: #28587b;
+    --lblauw: #0f95b0;
+    --geel: #ffa630;
+    --rood: #e65039;
+    --groen: #06c749
+}
+
+
+body {
+    margin: 0;
+    height: 100vh;
+    font-family: "Lexend", "Montserrat", "Inter", "Roboto", sans-serif;
+}
+
+#header {
+    padding: 15px;
+    background: var(--zwart);
+    height: fit-content;
+    position: sticky;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    animation: smallur 500ms normal forwards ease-in-out;
+    animation-delay: 1s;
+    color: white;
+}
+
+#title {
+    font-size: 2em;
+    font-variant: small-caps;
+    user-select: none;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+
+#menu {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: stretch;
+    gap: 15px;
+}
+
+.menu-item {
+    border: 3px solid transparent;
+    border-bottom: 3px solid white;
+    padding: 15px;
+    transition: all 200ms ease;
+    border-radius: 10%;
+    text-decoration: none;
+    color: white;
+}
+
+.menu-item:hover, .menu-item.active {
+    border-top: 3px solid white;
+    border-bottom: 3px solid transparent;
+}
+
+.menu-item.active:hover {
+    border-top: 3px solid transparent;
+    border-bottom: 3px solid transparent;
+    border-left: 3px solid white;
+    border-right: 3px solid white;
+}
+
+#content {
+    padding: 15px;
+}
+
+
+#footer {
+    padding: 15px;
+    background: var(--zwart);
+    height: fit-content;
+    position: sticky;
+    top: 0;
+    left: 0;
+    animation: smallur 500ms normal forwards ease-in-out;
+    animation-delay: 1s;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+#footer p {
+    margin: 0;
+}
+#footer a {
+    color: var(--witblauw);
+
+}

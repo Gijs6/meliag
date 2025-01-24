@@ -18,6 +18,9 @@ body {
     margin: 0;
     height: 100vh;
     font-family: "Lexend", "Montserrat", "Inter", "Roboto", sans-serif;
+    display: flex;
+    flex-direction: column;
+
 }
 
 #header {
@@ -78,6 +81,7 @@ body {
 
 #content {
     padding: 15px;
+    flex-grow: 1;
 }
 
 
@@ -98,7 +102,7 @@ body {
 #footer p {
     margin: 0;
 }
+
 #footer a {
     color: var(--witblauw);
-
 }

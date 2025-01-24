@@ -1,0 +1,36 @@
+{% extends "meliag/base.html" %}
+
+{% block title %}Colofon{% endblock %}
+{% set active_page = "colofon" %}
+
+{% block headers %}
+<style>
+#content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+#content a {
+    color: var(--dblauw);
+}
+p {
+    margin: 0;
+}
+</style>
+{% endblock %}
+
+
+{% block content %}
+<p>
+    Alle <strong>originele</strong> inhoud op alle pagina's van deze website, inclusief maar niet beperkt tot tekst, afbeeldingen, video's en andere media, evenals de <strong>originele</strong> code die is gebruikt om de website te maken en te ontwerpen, is <strong>volledig vrijgegeven in het publieke domein</strong>. Deze vrijgave is in overeenstemming met de <a href="https://unlicense.org/" target="_blank">Unlicense</a> en <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank">CC0</a>. Dit betekent dat je vrij bent om alle originele inhoud en code van de website te gebruiken, aan te passen, te verspreiden en verder te ontwikkelen zonder enige beperkingen.
+</p>
+<p>
+    Houd er echter rekening mee dat externe bronnen die op de website worden gebruikt, zoals lettertypes, frameworks, pictogrammen en andere assets van derden, <strong>onder hun eigen licenties kunnen vallen</strong>. Deze externe bronnen zijn niet vrijgegeven in het publieke domein en moeten worden gebruikt in overeenstemming met de voorwaarden van hun respectieve licenties. Het is jouw verantwoordelijkheid om ervoor te zorgen dat jij voldoet aan de licentievoorwaarden van deze externe bronnen.
+</p>
+<p>
+    Gemaakt met <a href="https://github.com/pallets/flask" target="_blank">Flask</a> en <a href="https://github.com/pallets/jinja" target="_blank">Jinja</a>, gehost door <a href="https://eu.pythonanywhere.com/" target="_blank">PythonAnywhere</a> op servers in Frankfurt (Duitsland).
+</p>
+<p>
+    Bekijk de <a href="https://github.com/Gijs6/site" target="_blank">broncode op GitHub</a>
+</p>
+{% endblock %}

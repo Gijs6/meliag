@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang=en>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>404 Not Found</title>
+        <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='error.ico') }}">
+        <style>
+            :root {
+                color-scheme: light dark;
+            }
+            
+            body {
+                justify-items: center;
+                padding: clamp(25px, 2.5%, 50px);
+                margin: 0;
+                font-family: monospace;
+            }
+            
+            .container {
+                max-width: clamp(750px, 50%, 1500px);
+            }
+            
+            h1, p {
+                margin: 0;
+            }
+
+            p {
+                font-size: 1.25em;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1><big>404</big></h1>
+            <br>
+            <h1>That page doesn't exist!</h1>
+            <p>The URL you requested doesn't exist.</p>
+            <br>
+            <h1>Die pagina bestaat niet!</h1>
+            <p>De URL die je hebt verzocht bestaat niet.</p>
+            <br>
+            <br>
+            <br>
+            <small>{{ e }}</small>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang=en>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>500 Internal Server Error</title>
+        <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='error.ico') }}">
+        <style>
+            :root {
+                color-scheme: light dark;
+            }
+            body {
+                justify-items: center;
+                padding: clamp(25px, 2.5%, 50px);
+                margin: 0;
+                font-family: monospace;
+            }
+            .container {
+                max-width: clamp(750px, 50%, 1500px);
+            }
+            h1, p {
+                margin: 0;
+            }
+
+            p {
+                font-size: 1.25em;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Oops! Something went wrong</h1>
+            <p>We’re sorry, but it seems there’s an issue on our end.</p>
+            <p>Please give it another try in a little while.</p>
+            <p>If the problem keeps appearing, please reach out to the website owner for help.</p>
+            <br>
+            <h1>Oeps! Er is iets misgegaan</h1>
+            <p>Onze excuses, er lijkt een probleem te zijn aan onze kant.</p>
+            <p>Probeer het over een tijdje nog eens.</p>
+            <p>Als het probleem blijft bestaan, neem dan contact op met de eigenaar van deze website.</p>
+            <br>
+            <br>
+            <br>
+            <small>{{ e }}</small>
+        </div>
+    </body>
+</html>

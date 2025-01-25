@@ -29,10 +29,10 @@
                 const response = await fetch('/meliag/api/pos');
                 const data = await response.json();
 
-                if (data.payload && data.payload.treinen) {
+                if (data) {
                     const seenTrainIds = new Set();
 
-                    data.payload.treinen.forEach(trein => {
+                    data.forEach(trein => {
                         const { lat, lng, type, ritId, snelheid, richting } = trein;
                         seenTrainIds.add(ritId);
 

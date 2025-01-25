@@ -33,34 +33,43 @@
                     const seenTrainIds = new Set();
 
                     data.forEach(trein => {
-                        const { lat, lng, type, ritId, snelheid, richting } = trein;
-                        seenTrainIds.add(ritId);
+                        const { ritNum, lat, lon, snelheid, treinSoort, materieel, station, spoor, materieelNums, afbeeldingen } = trein;
+                        seenTrainIds.add(ritNum);
 
-                        if (markers.has(ritId)) {
-                            const marker = markers.get(ritId);
-                            marker.setLatLng([lat, lng]);
+                        if (markers.has(ritNum)) {
+                            const marker = markers.get(ritNum);
+                            marker.setLatLng([lat, lon]);
 
                             marker.getPopup()
                                 .setContent(`
-                                    <b>Ritnummer:</b> ${ritId}<br>
+                                    <b>Ritnummer:</b> ${ritNum}<br>
                                     <b>Snelheid:</b> ${snelheid.toFixed(1)} km/h<br>
+                                    <b>Treinsoort:</b> ${treinSoort}<br>
+                                    <b>Materieel:</b> ${materieel}<br>
+                                    <b>Station:</b> ${station}<br>
+                                    <b>Spoor:</b> ${spoor}<br>
+                                    <b>Materieelnummers:</b> ${materieelNums.join(', ')}
                                 `);
                         } else {
-                            // Marker bestaat nog niet; voeg een nieuwe toe
-                            const marker = L.marker([lat, lng])
+                            const marker = L.marker([lat, lon])
                                 .addTo(map)
                                 .bindPopup(`
-                                    <b>Ritnummer:</b> ${ritId}<br>
+                                    <b>Ritnummer:</b> ${ritNum}<br>
                                     <b>Snelheid:</b> ${snelheid.toFixed(1)} km/h<br>
+                                    <b>Treinsoort:</b> ${treinSoort}<br>
+                                    <b>Materieel:</b> ${materieel}<br>
+                                    <b>Station:</b> ${station}<br>
+                                    <b>Spoor:</b> ${spoor}<br>
+                                    <b>Materieelnummers:</b> ${materieelNums.join(', ')}
                                 `);
-                            markers.set(ritId, marker);
+                            markers.set(ritNum, marker);
                         }
                     });
 
-                    markers.forEach((marker, ritId) => {
-                        if (!seenTrainIds.has(ritId)) {
+                    markers.forEach((marker, ritNum) => {
+                        if (!seenTrainIds.has(ritNum)) {
                             map.removeLayer(marker);
-                            markers.delete(ritId);
+                            markers.delete(ritNum);
                         }
                     });
                 } else {

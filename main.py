@@ -25,26 +25,23 @@ def meliag_colofon():
 
 
 
-
 @app.route("/meliag/api/pos")
 def api_pos():
-    with open("map.pkl", "rb") as file:
+    with open("kaart.pkl", "rb") as file:
         data = pickle.load(file)
 
     last_updated = data.get("last_updated", 0)
     current_time = time.time()
 
     if current_time - last_updated > 120:
-        threading.Thread(target=api_update_pos).start()
+        threading.Thread(target=pos_data_bijwerken).start()
 
     return jsonify(data.get("data",[]))
 
 
 
 
-
-
-def api_update_pos():
+def pos_data_bijwerken():
     url = "https://gateway.apiportal.ns.nl/virtual-train-api/vehicle?lat=0&lng=0"
     headers = {
         "Cache-Control": "no-cache",
@@ -95,9 +92,8 @@ def api_update_pos():
     }
 
 
-    with open("map.pkl", "wb") as file:
+    with open("kaart.pkl", "wb") as file:
             pickle.dump(datastuff, file)
-
 
 
 

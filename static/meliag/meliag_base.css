@@ -97,8 +97,9 @@ body {
     animation-delay: 1s;
     color: white;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 10px;
+    justify-content: space-between;
 }
 #footer p {
     margin: 0;

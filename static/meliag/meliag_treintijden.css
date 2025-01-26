@@ -27,8 +27,9 @@
 .toprij {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
-    gap: 5px;
+    justify-content: flex-start;
+    gap: 15px;
+    align-items: center;
 }
 
 .vannaar-label {
@@ -44,4 +45,10 @@
 .stationvn.onbelangrijk {
     font-weight: 300;
     font-size: 1.1em;
+}
+
+
+.toprijrechts {
+    flex-grow: 1;
+    text-align: end;
 }

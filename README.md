@@ -11,12 +11,15 @@ Data from the [NS API](https://apiportal.ns.nl/) and (maybe in the future from [
 ### Stuff/features to add / stuff to fix
 
 - [ ] Images on the map
-- [ ] Map data (only the data for each _ritnummer_ ophalen every 5 minutes or so and that data saving seperatly and combining the coordinate data so that is doesn't take ages)
-- [ ] Filters on the map (_materieel_)
+- [ ] Filters on the map (_materieel_ and other stuff)
 - [ ] More info in popup (map)
 - [ ] Station info in popup (current station & stations en route?)
+- [ ] Fixing _ritnummer_-data for the map (combining with _treintijden?_)
+- [ ] Adding some better styles to the _treintijden_
+- [ ] Adding images and more info to the _treintijden_
+- [ ] Fix and combine the _ritnummer_-data for the _treintijden_ and the map
 
 ### Pages to add
 
-- [ ] Departing / arriving times (per station) + images/drawings (of the trains (so that the _materieel_ clear is))
-- [ ] _Spoorkaart_ with _SpoorKaart API_ (+ disruptions?)
+- [x] Departing / arriving times (per station) + images/drawings (of the trains (so that the _materieel_ clear is))
+- [ ] _Spoorkaart_ (the rail lines) with _SpoorKaart API_ (+ disruptions?)

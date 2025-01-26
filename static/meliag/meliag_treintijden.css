@@ -1,20 +1,14 @@
-#main-container {
-    background: var(--grijs);
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 2px;
-    max-width: 90%;
-    flex-grow: 1;
-}
-
 
 .itemrij {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     background: white;
-    padding: 10px;
+    padding: 15px;
     flex-grow: 1;
+    border-bottom: solid 1px var(--dblauw);
+    align-items: center;
+    justify-content: flex-start;
+    gap: 2%;
 }
 
 #content {
@@ -22,15 +16,9 @@
     align-items: stretch;
     align-content: center;
     justify-content: center;
+    flex-direction: column;
 }
 
-.toprij {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    gap: 15px;
-    align-items: center;
-}
 
 .vannaar-label {
     font-weight: 300;
@@ -48,7 +36,81 @@
 }
 
 
-.toprijrechts {
+
+.vertragingsinfo {
+    color: var(--rood);
+    font-weight: 700;
+}
+
+
+.treinCat {
+    font-weight: 600;
+}
+
+.spoor {
+    font-size: 1.15em;
+    font-weight: 500;
+}
+
+.itemrij.vervallen {
+    color: var(--rood);!;!i;!;
+    font-style: italic;
+}
+
+.via-container {
+    font-size: 0.9em;
+    font-weight: 300;
+}
+
+.spoor.verandering {
+    color: var(--rood);
+    font-weight: 700;
+}
+
+.links {
+    min-width: 5%;
+}
+
+.rechts {
     flex-grow: 1;
     text-align: end;
+}
+
+.middenrij {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 15px;
+}
+
+
+.treinen {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.treinmetinfo {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.bericht {
+    font-weight: 700;
+}
+
+.bericht.INFO {
+    color: var(--dblauw);
+}
+
+.bericht.WARNING {
+    color: var(--rood);
+}
+
+.vannaar-label.vervallen {
+    color: var(--rood);
 }

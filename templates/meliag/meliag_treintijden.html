@@ -5,73 +5,113 @@
 
 {% block headers %}
 <link rel="stylesheet" href="{{ url_for('static', filename='meliag/meliag_treintijden.css') }}">
+<script src="https://kit.fontawesome.com/4a94c21782.js" crossorigin="anonymous"></script>
 {% endblock %}
 
 
 
 
 {% block content %}
-<div id="main-container">
     {% for item in data %}
-    <div class="itemrij">
-        <div class="toprij">
-            <div class="toprijlinks">
+    <div class="itemrij {% if item.vervallen %}vervallen{% endif %}">
+        <div class="links">
                 {% if item.vertragingAankomst and not item.vertragingVertrek %}
-                    {{ item.echteAankomstTijd }} (ipv {{ item.geplandeAankomstTijd }}, {{ vertragingAankomst }} min vertraging)<br>{{ item.echteVertrekTijd }}
+                    {{ item.echteAankomstTijd }} (<span class="vertragingsinfo">+{{ item.vertragingAankomst }}</span>)<br>{{ item.echteVertrekTijd }}
                 {% elif item.vertragingVertrek and not item.vertragingAankomst %}
-                    {{ item.echteAankomstTijd }}<br>{{ item.echteVertrekTijd }} (ipv {{ item.geplandeVertrekTijd }}, {{ vertragingVertrek }} min vertraging)
+                    {{ item.echteAankomstTijd }}<br>{{ item.echteVertrekTijd }} (<span class="vertragingsinfo">+{{ item.vertragingVertrek }}</span>)
                 {% else %}
                     {{ item.echteAankomstTijd }}<br>{{ item.echteVertrekTijd }}
                 {% endif %}
             </div>
+
+        <div class="middenrij">
             <div class="toprijmidden">
                 <div class="treinCat">
-                    {{ item.groteCat }}
+                    {{ item.groteCat }} {{ item.ritnummer }}
                 </div>
                 <div class="van-naar-container">
                     {% if item.stationVan and not item.stationNaar %}
                         <!-- Dit station is eindpunt -->
-                        <span class="vannaar-label">VAN</span> <span class="stationvn van">{{ item.stationVan }}</span> → <span class="vannaar-label">NAAR</span> <span class="stationvn naar onbelangrijk">dit station</span>
+                        <span class="vannaar-label {% if item.vervallen %}vervallen{% endif %}">VAN</span> <span class="stationvn van">{{ item.stationVan }}</span> → <span class="vannaar-label {% if item.vervallen %}vervallen{% endif %}">NAAR</span> <span class="stationvn naar onbelangrijk">dit station</span>
 
                     {% elif not item.stationVan and item.stationNaar %}
                         <!-- Dit station is beginpunt -->
-                        <span class="vannaar-label">VAN</span> <span class="stationvn van onbelangrijk">dit station</span> → <span class="vannaar-label">NAAR</span> <span class="stationvn naar">{{ item.stationNaar }}</span>
+                        <span class="vannaar-label {% if item.vervallen %}vervallen{% endif %}">VAN</span> <span class="stationvn van onbelangrijk">dit station</span> → <span class="vannaar-label {% if item.vervallen %}vervallen{% endif %}">NAAR</span> <span class="stationvn naar">{{ item.stationNaar }}</span>
 
                     {% elif item.stationVan and item.stationNaar %}
                         <!-- Dit station is tussenstation -->
-                        <span class="vannaar-label">VAN</span> <span class="stationvn van">{{ item.stationVan }}</span> → <span class="vannaar-label">NAAR</span> <span class="stationvn naar">{{ item.stationNaar }}</span>
+                        <span class="vannaar-label {% if item.vervallen %}vervallen{% endif %}">VAN</span> <span class="stationvn van">{{ item.stationVan }}</span> → <span class="vannaar-label {% if item.vervallen %}vervallen{% endif %}">NAAR</span> <span class="stationvn naar">{{ item.stationNaar }}</span>
 
                     {% else %}
                         GEEN STATIONS?
                     {% endif %}
                 </div>
                 <div class="via-container">
-                    Via {{ item.stationsOpDeRoute | join(', ') }}
+                    {% if item.stationsOpDeRoute %}
+                        Via {{ item.stationsOpDeRoute | join(', ') }}
+                    {% endif %}
                 </div>
             </div>
-            <div class="toprijrechts">
-                {% if not item.echtAankomstSpoor %}
-                    <span class="spoor normaal">Spoor {{ item.echtVertrekSpoor }}</span>
 
-                {% elif not item.echtVertrekSpoor %}
-                    <span class="spoor normaal">Aankomst: spoor {{ item.echtAankomstSpoor }}</span>
+            <div class="treinen">
+                {% for trein in item.matlijst %}
+                    <div class="treinmetinfo">
+                        <img src="{{ trein.afb_url }}" alt="Afbeelding van een {{ trein.mat }}" height="30">
+                        <span class="treininfotekst">{{ trein.mat }} {{ trein.matnum }}
+                        {% for faciliteit in trein.faciliteiten_iconen %}
+                            <i class="{{ faciliteit }}"></i>
+                        {% endfor %}
+                        </span>
+                    </div>
+                {% endfor %}
+            </div>
 
-                {% elif item.geplandAankomstSpoor == item.echtAankomstSpoor == item.geplandVertrekSpoor == item.echtVertrekSpoor %}
-                    <span class="spoor normaal">Spoor {{ item.echtVertrekSpoor }}</span>
+            <div class="berichten">
+                {% for bericht in item.berichten %}
+                    <div class="bericht {{ bericht.style }}">
+                        {{ bericht.message }}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
 
-                {% elif item.geplandAankomstSpoor == item.echtAankomstSpoor and item.geplandVertrekSpoor == item.echtVertrekSpoor %}
-                    <span class="spoor raar beetje">Aankomst: spoor {{ item.echtAankomstSpoor }}<br>Vertrek: spoor {{ item.echtVertrekSpoor }}</span>
 
-                {% elif (item.geplandAankomstSpoor != item.echtAankomstSpoor or item.geplandVertrekSpoor != item.echtVertrekSpoor) and item.echtAankomstSpoor == item.echtVertrekSpoor and item.geplandAankomstSpoor == item.geplandVertrekSpoor %}
-                    <!-- Spoorverandering, maar aankomst en vertrek wel hetzelfde -->
+        <div class="rechts">
+            {% if not item.echtVertrekSpoor %} <!-- Als er geen vertrekspoor is -->
+                {% if item.geplandAankomstSpoor != item.echtAankomstSpoor %}
+                    <span class="spoor verandering">Spoor {{ item.echtAankomstSpoor }} ipv {{ item.geplandAankomstSpoor }}</span>
+
+                {% else %}
+                    <span class="spoor normaal">Spoor {{ item.echtAankomstSpoor }}</span>
+
+                {% endif %}
+
+
+            {% elif not item.echtAankomstSpoor %} <!-- Als er geen aankomstspoor is -->
+
+                {% if item.geplandVertrekSpoor != item.echtVertrekSpoor %}
                     <span class="spoor verandering">Spoor {{ item.echtVertrekSpoor }} ipv {{ item.geplandVertrekSpoor }}</span>
 
                 {% else %}
-                    <span class="spoor raar heel">Aankomst: spoor {{ item.echtAankomstSpoor }} ipv {{ item.geplandAankomstSpoor }}<br>Vertrek: spoor {{ item.echtVertrekSpoor }} ipv {{ item.geplandVertrekSpoor }}</span>
+                    <span class="spoor normaal">Spoor {{ item.echtVertrekSpoor }}</span>
+
                 {% endif %}
-            </div>
+
+            {% else %} <!-- Als er zowel vertreksporen als aankomstsporen zijn -->
+
+
+                {% if item.geplandVertrekSpoor != item.echtVertrekSpoor %}
+                    <span class="spoor verandering">Spoor {{ item.echtVertrekSpoor }} ipv {{ item.geplandVertrekSpoor }}</span>
+
+                {% else %}
+                    <span class="spoor normaal">Spoor {{ item.echtVertrekSpoor }}</span>
+
+                {% endif %}
+
+
+
+            {% endif %}
         </div>
     </div>
     {% endfor %}
-</div>
 {% endblock %}

@@ -139,8 +139,10 @@ def api_ritnums():
 
 
 
+
 @app.route("/meliag/treintijden/<station>")
 def meliag_treintijden(station):
+
     url = f"https://gateway.apiportal.ns.nl/reisinformatie-api/api/v2/arrivals?station={station}"
 
     headers = {
@@ -173,8 +175,8 @@ def meliag_treintijden(station):
 
 
 
-    aankomstDataDict = {item["product"]["number"]: item for item in aankomstData["payload"]["arrivals"]}
-    vertrekDataDict = {item["product"]["number"]: item for item in vertrekData["payload"]["departures"]}
+    aankomstDataDict = {item.get("product", {})["number"]: item for item in aankomstData["payload"]["arrivals"]}
+    vertrekDataDict = {item.get("product", {})["number"]: item for item in vertrekData["payload"]["departures"]}
 
     alleRitnums = set(aankomstDataDict.keys()).union(vertrekDataDict.keys())
 
@@ -197,8 +199,75 @@ def meliag_treintijden(station):
 
 
 
+
+
+
+
+
         aankomstDataItem = aankomstDataDict.get(ritnummer, {})
         vertrekDataItem = vertrekDataDict.get(ritnummer, {})
+
+
+
+
+        geplande_aankomst = aankomstDataItem.get("plannedDateTime")
+        echte_aankomst = aankomstDataItem.get("actualDateTime")
+        geplande_vertrek = vertrekDataItem.get("plannedDateTime")
+        echte_vertrek = vertrekDataItem.get("actualDateTime")
+
+        geplande_aankomst_tijd = datetime.strptime(geplande_aankomst, "%Y-%m-%dT%H:%M:%S%z").strftime("%H:%M") if geplande_aankomst else "-"
+        echte_aankomst_tijd = datetime.strptime(echte_aankomst, "%Y-%m-%dT%H:%M:%S%z").strftime("%H:%M") if echte_aankomst else "-"
+        geplande_vertrek_tijd = datetime.strptime(geplande_vertrek, "%Y-%m-%dT%H:%M:%S%z").strftime("%H:%M") if geplande_vertrek else "-"
+        echte_vertrek_tijd = datetime.strptime(echte_vertrek, "%Y-%m-%dT%H:%M:%S%z").strftime("%H:%M") if echte_vertrek else "-"
+
+
+
+        try:
+            if echte_aankomst and geplande_aankomst:
+                vertraging_aankomst = round((datetime.strptime(echte_aankomst, "%Y-%m-%dT%H:%M:%S%z") - datetime.strptime(geplande_aankomst, "%Y-%m-%dT%H:%M:%S%z")).total_seconds() / 60)
+            else:
+                vertraging_aankomst = None
+        except Exception as e:
+            vertraging_aankomst = None
+
+
+        try:
+            if echte_vertrek and geplande_vertrek:
+                vertraging_vertrek = round((datetime.strptime(echte_vertrek, "%Y-%m-%dT%H:%M:%S%z") - datetime.strptime(geplande_vertrek, "%Y-%m-%dT%H:%M:%S%z")).total_seconds() / 60)
+            else:
+                vertraging_vertrek = None
+        except Exception as e:
+            vertraging_vertrek = None
+
+
+        materieellijst = []
+
+        faciliteiten_iconen_dict = {
+            "WIFI": "fa-solid fa-wifi",
+            "TOILET": "fa-solid fa-toilet-paper",
+            "STILTE": "fa-solid fa-ear-deaf",
+            "STROOM": "fa-solid fa-plug",
+            "FIETS": "fa-solid fa-bicycle",
+            "TOEGANKELIJK": "fa-solid fa-wheelchair"
+        }
+
+
+
+        for item in treindata.get("materieeldelen", []):
+            faciliteiten_iconen = []
+            for faciliteit in item.get("faciliteiten", []):
+                faciliteiten_iconen.append(faciliteiten_iconen_dict.get(faciliteit.upper(),""))
+            faciliteiten_iconen = sorted(faciliteiten_iconen)
+            materieellijst.append({
+                "matnum": item.get("materieelnummer", ""),
+                "afb_url": item.get("afbeelding", ""),
+                "mat": item.get("type", "onbekende trein"),
+                "faciliteiten": item.get("faciliteiten", []),
+                "faciliteiten_iconen": faciliteiten_iconen
+            })
+
+
+
 
         volledigeData.append({
             "ritnummer": ritnummer,
@@ -206,36 +275,17 @@ def meliag_treintijden(station):
             "stationNaar": vertrekDataItem.get("direction", ""),
 
 
+            "geplandeAankomstTijd": geplande_aankomst_tijd,
+            "echteAankomstTijd": echte_aankomst_tijd,
+            "geplandeVertrekTijd": geplande_vertrek_tijd,
+            "echteVertrekTijd": echte_vertrek_tijd,
+            "vertragingAankomst": vertraging_aankomst,
+            "vertragingVertrek": vertraging_vertrek,
 
-            "geplandeAankomstTijd": (
-                datetime.strptime(aankomstDataItem["plannedDateTime"], "%Y-%m-%dT%H:%M:%S%z").strftime("%H:%M")
-                if aankomstDataItem.get("plannedDateTime") else ""
-            ),
-            "echteAankomstTijd": (
-                datetime.strptime(aankomstDataItem["actualDateTime"], "%Y-%m-%dT%H:%M:%S%z").strftime("%H:%M")
-                if aankomstDataItem.get("actualDateTime") else ""
-            ),
-            "geplandeVertrekTijd": (
-                datetime.strptime(vertrekDataItem["plannedDateTime"], "%Y-%m-%dT%H:%M:%S%z").strftime("%H:%M")
-                if vertrekDataItem.get("plannedDateTime") else ""
-            ),
-            "echteVertrekTijd": (
-                datetime.strptime(vertrekDataItem["actualDateTime"], "%Y-%m-%dT%H:%M:%S%z").strftime("%H:%M")
-                if vertrekDataItem.get("actualDateTime") else ""
-            ),
 
-            "vertragingAankomst": (
-                ((datetime.strptime(aankomstDataItem["actualDateTime"], "%Y-%m-%dT%H:%M:%S%z") -
-                  datetime.strptime(aankomstDataItem["plannedDateTime"], "%Y-%m-%dT%H:%M:%S%z")).total_seconds() / 60
-                 ) if aankomstDataItem.get("actualDateTime") and aankomstDataItem.get("plannedDateTime") else ""
-            ),
 
-            "vertragingVertrek": (
-                ((datetime.strptime(vertrekDataItem["actualDateTime"], "%Y-%m-%dT%H:%M:%S%z") -
-                  datetime.strptime(vertrekDataItem["plannedDateTime"], "%Y-%m-%dT%H:%M:%S%z")).total_seconds() / 60
-                 ) if vertrekDataItem.get("actualDateTime") and vertrekDataItem.get("plannedDateTime") else ""
-            ),
 
+            "sort": vertrekDataItem.get("actualDateTime", aankomstDataItem.get("actualDateTime", "")),
 
 
             "geplandAankomstSpoor": aankomstDataItem.get("plannedTrack", ""),
@@ -243,24 +293,37 @@ def meliag_treintijden(station):
             "geplandVertrekSpoor": vertrekDataItem.get("plannedTrack", ""),
             "echtVertrekSpoor": vertrekDataItem.get("actualTrack", ""),
 
-            "afkoCat": vertrekDataItem.get("product", {}).get("categoryCode", ""),
-            "kleineCat": vertrekDataItem.get("product", {}).get("longCategoryName", ""),
-            "groteCat": vertrekDataItem.get("product", {}).get("shortCategoryName", ""),
-            "operator": vertrekDataItem.get("product", {}).get("operatorName", ""),
+
+            "afkoCat": vertrekDataItem.get("product", {}).get("categoryCode", aankomstDataItem.get("product", {}).get("categoryCode", "")),
+            "kleineCat": vertrekDataItem.get("product", {}).get("longCategoryName", aankomstDataItem.get("product", {}).get("longCategoryName", "")),
+            "groteCat": vertrekDataItem.get("product", {}).get("shortCategoryName", aankomstDataItem.get("product", {}).get("shortCategoryName", "")),
+            "operator": vertrekDataItem.get("product", {}).get("operatorName", aankomstDataItem.get("product", {}).get("operatorName", "")),
+
 
             "stationsOpDeRoute": [station["mediumName"] for station in vertrekDataItem.get("routeStations", [])],
 
             "aankomstStatus": aankomstDataItem.get("arrivalStatus", ""),
             "vertrekStatus": vertrekDataItem.get("departureStatus", ""),
 
-            "cancelled": vertrekDataItem.get("cancelled", False),
+            "vervallen": vertrekDataItem.get("cancelled", False),
+            "berichten": vertrekDataItem.get("messages", []),
+
+
 
             "materieel": treindata.get("type", "N/A"),
             "station": treindata.get("station", "N/A"),
             "spoor": treindata.get("spoor", "N/A"),
             "materieelNums": [deel.get("materieelnummer", "N/A") for deel in treindata.get("materieeldelen", [])],
-            "afbeeldingen": [deel.get("afbeelding", "N/A") for deel in treindata.get("materieeldelen", [])]
+            "afbeeldingen": [deel.get("afbeelding", "N/A") for deel in treindata.get("materieeldelen", [])],
+
+            "matlijst": materieellijst,
+
+
+
         })
+
+
+    volledigeData = sorted(volledigeData, key=lambda x: datetime.strptime(x["sort"], "%Y-%m-%dT%H:%M:%S%z"))
 
 
     return render_template("meliag/meliag_treintijden.html", data=volledigeData)

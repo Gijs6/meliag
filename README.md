@@ -10,13 +10,13 @@ Data from the [NS API](https://apiportal.ns.nl/) and (maybe in the future from [
 
 ### Stuff/features to add / stuff to fix
 
-- [] Images on the map
-- [] Map data (only the data for each _ritnummer_ ophalen every 5 minutes or so and that data saving seperatly and combining the coordinate data so that is doesn't take ages)
-- [] Filters on the map (materieel)
-- [] More info in popup (map)
-- [] Station info in popup
+- [ ] Images on the map
+- [ ] Map data (only the data for each _ritnummer_ ophalen every 5 minutes or so and that data saving seperatly and combining the coordinate data so that is doesn't take ages)
+- [ ] Filters on the map (materieel)
+- [ ] More info in popup (map)
+- [ ] Station info in popup
 
 ### Pages to add
 
-- [] Departing / arriving times (per station) + images
-- [] _Spoorkaart_ with _SpoorKaart API_ (+ disruptions?)
+- [ ] Departing / arriving times (per station) + images/drawings (of the trains (so that the _materieel_ clear is))
+- [ ] _Spoorkaart_ with _SpoorKaart API_ (+ disruptions?)

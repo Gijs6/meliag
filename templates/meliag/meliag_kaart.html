@@ -26,42 +26,45 @@
 
         async function fetchTreinen() {
             try {
-                const response = await fetch('/meliag/api/pos');
-                const data = await response.json();
+                const [posResponse, ritnummerResponse] = await Promise.all([
+                    fetch('/meliag/api/pos'),
+                    fetch('/meliag/api/ritnummers')
+                ]);
 
-                if (data) {
+                const posData = await posResponse.json();
+                const ritnummerData = await ritnummerResponse.json();
+
+                if (posData) {
                     const seenTrainIds = new Set();
 
-                    data.forEach(trein => {
-                        const { ritNum, lat, lon, snelheid, treinSoort, materieel, station, spoor, materieelNums, afbeeldingen } = trein;
+                    posData.forEach(trein => {
+                        const { ritNum, lat, lon, snelheid, treinSoort } = trein;
                         seenTrainIds.add(ritNum);
+
+                        const details = ritnummerData[ritNum] || {};
+                        const { materieel, vervoerder, station, spoor, afbeeldingen = [] } = details;
+
+                        const imageHtml = afbeeldingen.map(url => `<img src="${url}" alt="${materieel}" style="width:100px;">`).join('');
+
+                        const popupContent = `
+                            <b>Ritnummer:</b> ${ritNum}<br>
+                            <b>Snelheid:</b> ${snelheid.toFixed(1)} km/h<br>
+                            <b>Treinsoort:</b> ${treinSoort}<br>
+                            <b>Materieel:</b> ${materieel || 'Onbekend'}<br>
+                            <b>Vervoerder:</b> ${vervoerder || 'Onbekend'}<br>
+                            <b>Station:</b> ${station || 'Onbekend'}<br>
+                            <b>Spoor:</b> ${spoor || 'Onbekend'}<br>
+                            ${imageHtml}
+                        `;
 
                         if (markers.has(ritNum)) {
                             const marker = markers.get(ritNum);
                             marker.setLatLng([lat, lon]);
-
-                            marker.getPopup()
-                                .setContent(`
-                                    <b>Ritnummer:</b> ${ritNum}<br>
-                                    <b>Snelheid:</b> ${snelheid.toFixed(1)} km/h<br>
-                                    <b>Treinsoort:</b> ${treinSoort}<br>
-                                    <b>Materieel:</b> ${materieel}<br>
-                                    <b>Station:</b> ${station}<br>
-                                    <b>Spoor:</b> ${spoor}<br>
-                                    <b>Materieelnummers:</b> ${materieelNums.join(', ')}
-                                `);
+                            marker.getPopup().setContent(popupContent);
                         } else {
                             const marker = L.marker([lat, lon])
                                 .addTo(map)
-                                .bindPopup(`
-                                    <b>Ritnummer:</b> ${ritNum}<br>
-                                    <b>Snelheid:</b> ${snelheid.toFixed(1)} km/h<br>
-                                    <b>Treinsoort:</b> ${treinSoort}<br>
-                                    <b>Materieel:</b> ${materieel}<br>
-                                    <b>Station:</b> ${station}<br>
-                                    <b>Spoor:</b> ${spoor}<br>
-                                    <b>Materieelnummers:</b> ${materieelNums.join(', ')}
-                                `);
+                                .bindPopup(popupContent);
                             markers.set(ritNum, marker);
                         }
                     });
@@ -76,12 +79,13 @@
                     console.error("Geen treinlocaties beschikbaar");
                 }
             } catch (error) {
-                console.error("Fout bij ophalen van treinlocaties:", error);
+                console.error("Fout bij ophalen van treinlocaties of details:", error);
             }
         }
 
         fetchTreinen();
-
         setInterval(fetchTreinen, 30000);
     </script>
+
+
 {% endblock %}

@@ -1,4 +1,5 @@
 from flask import Flask, render_template, jsonify
+from datetime import datetime
 import pickle
 import time
 import threading
@@ -204,29 +205,55 @@ def meliag_treintijden(station):
             "stationVan": aankomstDataItem.get("origin", ""),
             "stationNaar": vertrekDataItem.get("direction", ""),
 
-            "geplandeAankomstTijd": aankomstDataItem.get("plannedDateTime", ""),
-            "echteAankomstTijd": aankomstDataItem.get("actualDateTime", ""),
-            "geplandeVertrekTijd": vertrekDataItem.get("plannedDateTime", ""),
-            "echteVertrekTijd":vertrekDataItem.get("actualDateTime", ""),
+
+
+            "geplandeAankomstTijd": (
+                datetime.strptime(aankomstDataItem["plannedDateTime"], "%Y-%m-%dT%H:%M:%S%z").strftime("%H:%M")
+                if aankomstDataItem.get("plannedDateTime") else ""
+            ),
+            "echteAankomstTijd": (
+                datetime.strptime(aankomstDataItem["actualDateTime"], "%Y-%m-%dT%H:%M:%S%z").strftime("%H:%M")
+                if aankomstDataItem.get("actualDateTime") else ""
+            ),
+            "geplandeVertrekTijd": (
+                datetime.strptime(vertrekDataItem["plannedDateTime"], "%Y-%m-%dT%H:%M:%S%z").strftime("%H:%M")
+                if vertrekDataItem.get("plannedDateTime") else ""
+            ),
+            "echteVertrekTijd": (
+                datetime.strptime(vertrekDataItem["actualDateTime"], "%Y-%m-%dT%H:%M:%S%z").strftime("%H:%M")
+                if vertrekDataItem.get("actualDateTime") else ""
+            ),
+
+            "vertragingAankomst": (
+                ((datetime.strptime(aankomstDataItem["actualDateTime"], "%Y-%m-%dT%H:%M:%S%z") -
+                  datetime.strptime(aankomstDataItem["plannedDateTime"], "%Y-%m-%dT%H:%M:%S%z")).total_seconds() / 60
+                 ) if aankomstDataItem.get("actualDateTime") and aankomstDataItem.get("plannedDateTime") else ""
+            ),
+
+            "vertragingVertrek": (
+                ((datetime.strptime(vertrekDataItem["actualDateTime"], "%Y-%m-%dT%H:%M:%S%z") -
+                  datetime.strptime(vertrekDataItem["plannedDateTime"], "%Y-%m-%dT%H:%M:%S%z")).total_seconds() / 60
+                 ) if vertrekDataItem.get("actualDateTime") and vertrekDataItem.get("plannedDateTime") else ""
+            ),
+
+
 
             "geplandAankomstSpoor": aankomstDataItem.get("plannedTrack", ""),
             "echtAankomstSpoor": aankomstDataItem.get("actualTrack", ""),
             "geplandVertrekSpoor": vertrekDataItem.get("plannedTrack", ""),
             "echtVertrekSpoor": vertrekDataItem.get("actualTrack", ""),
 
-
             "afkoCat": vertrekDataItem.get("product", {}).get("categoryCode", ""),
             "kleineCat": vertrekDataItem.get("product", {}).get("longCategoryName", ""),
             "groteCat": vertrekDataItem.get("product", {}).get("shortCategoryName", ""),
             "operator": vertrekDataItem.get("product", {}).get("operatorName", ""),
-
 
             "stationsOpDeRoute": [station["mediumName"] for station in vertrekDataItem.get("routeStations", [])],
 
             "aankomstStatus": aankomstDataItem.get("arrivalStatus", ""),
             "vertrekStatus": vertrekDataItem.get("departureStatus", ""),
 
-            "cancelled":vertrekDataItem.get("cancelled", False),
+            "cancelled": vertrekDataItem.get("cancelled", False),
 
             "materieel": treindata.get("type", "N/A"),
             "station": treindata.get("station", "N/A"),

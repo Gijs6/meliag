@@ -12,9 +12,9 @@ Data from the [NS API](https://apiportal.ns.nl/) and (maybe in the future from [
 
 - [ ] Images on the map
 - [ ] Map data (only the data for each _ritnummer_ ophalen every 5 minutes or so and that data saving seperatly and combining the coordinate data so that is doesn't take ages)
-- [ ] Filters on the map (materieel)
+- [ ] Filters on the map (_materieel_)
 - [ ] More info in popup (map)
-- [ ] Station info in popup
+- [ ] Station info in popup (current station & stations en route?)
 
 ### Pages to add
 

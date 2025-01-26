@@ -1,0 +1,68 @@
+{% extends "meliag/meliag_base.html" %}
+
+{% block title %}Treintijden{% endblock %}
+{% set active_page = "treintijden" %}
+
+{% block headers %}
+<link rel="stylesheet" href="{{ url_for('static', filename='meliag/meliag_treintijden.css') }}">
+{% endblock %}
+
+
+
+
+{% block content %}
+<div id="main-container">
+    {% for item in data %}
+    <div class="itemrij">
+        <div class="toprij">
+            <div class="toprijlinks">
+                <div class="treinCat">
+                    {{ item.groteCat }}
+                </div>
+                <div class="van-naar-container">
+                    {% if item.stationVan and not item.stationNaar %}
+                    <!-- Dit station is eindpunt -->
+                    <span class="vannaar-label">VAN</span> <span class="stationvn van">{{ item.stationVan }}</span> → <span class="vannaar-label">NAAR</span> <span class="stationvn naar onbelangrijk">dit station</span>
+
+                    {% elif not item.stationVan and item.stationNaar %}
+                    <!-- Dit station is beginpunt -->
+                    <span class="vannaar-label">VAN</span> <span class="stationvn van onbelangrijk">dit station</span> → <span class="vannaar-label">NAAR</span> <span class="stationvn naar">{{ item.stationNaar }}</span>
+
+                    {% elif item.stationVan and item.stationNaar %}
+                    <!-- Dit station is tussenstation -->
+                    <span class="vannaar-label">VAN</span> <span class="stationvn van">{{ item.stationVan }}</span> → <span class="vannaar-label">NAAR</span> <span class="stationvn naar">{{ item.stationNaar }}</span>
+
+                    {% else %}
+                    GEEN STATIONS?
+                    {% endif %}
+                </div>
+                <div class="via-container">
+                    Via {{ item.stationsOpDeRoute | join(', ') }}
+                </div>
+            </div>
+            <div class="toprijrechs">
+                {% if not item.echtAankomstSpoor %}
+                    <span class="spoor normaal">Spoor {{ item.echtVertrekSpoor }}</span>
+
+                {% elif not item.echtVertrekSpoor %}
+                    <span class="spoor normaal">Aankomst: spoor {{ item.echtAankomstSpoor }}</span>
+
+                {% elif item.geplandAankomstSpoor == item.echtAankomstSpoor == item.geplandVertrekSpoor == item.echtVertrekSpoor %}
+                    <span class="spoor normaal">Spoor {{ item.echtVertrekSpoor }}</span>
+
+                {% elif item.geplandAankomstSpoor == item.echtAankomstSpoor and item.geplandVertrekSpoor == item.echtVertrekSpoor %}
+                    <span class="spoor raar beetje">Aankomst: spoor {{ item.echtAankomstSpoor }}<br>Vertrek: spoor {{ item.echtVertrekSpoor }}</span>
+
+                {% elif (item.geplandAankomstSpoor != item.echtAankomstSpoor or item.geplandVertrekSpoor != item.echtVertrekSpoor) and item.echtAankomstSpoor == item.echtVertrekSpoor and item.geplandAankomstSpoor == item.geplandVertrekSpoor %}
+                    <!-- Spoorverandering, maar aankomst en vertrek wel hetzelfde -->
+                    <span class="spoor verandering">Spoor {{ item.echtVertrekSpoor }} ipv {{ item.geplandVertrekSpoor }}</span>
+
+                {% else %}
+                    <span class="spoor raar heel">Aankomst: spoor {{ item.echtAankomstSpoor }} ipv {{ item.geplandAankomstSpoor }}<br>Vertrek: spoor {{ item.echtVertrekSpoor }} ipv {{ item.geplandVertrekSpoor }}</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

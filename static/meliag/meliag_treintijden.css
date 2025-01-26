@@ -1,0 +1,47 @@
+#main-container {
+    background: var(--grijs);
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 2px;
+    max-width: 90%;
+    flex-grow: 1;
+}
+
+
+.itemrij {
+    display: flex;
+    flex-direction: column;
+    background: white;
+    padding: 10px;
+    flex-grow: 1;
+}
+
+#content {
+    display: flex;
+    align-items: stretch;
+    align-content: center;
+    justify-content: center;
+}
+
+.toprij {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 5px;
+}
+
+.vannaar-label {
+    font-weight: 300;
+    color: var(--grijs);
+}
+
+.stationvn {
+    font-weight: 600;
+    font-size: 1.2em;
+}
+
+.stationvn.onbelangrijk {
+    font-weight: 300;
+    font-size: 1.1em;
+}

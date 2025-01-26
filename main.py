@@ -136,6 +136,121 @@ def api_ritnums():
 
 
 
+
+
+@app.route("/meliag/treintijden/<station>")
+def meliag_treintijden(station):
+    url = f"https://gateway.apiportal.ns.nl/reisinformatie-api/api/v2/arrivals?station={station}"
+
+    headers = {
+        "Cache-Control": "no-cache",
+        "Ocp-Apim-Subscription-Key": api_key
+    }
+    response = requests.get(url, headers=headers)
+    if response.status_code != 200:
+        return 500
+
+    aankomstData = response.json()
+
+
+
+
+
+    url = f"https://gateway.apiportal.ns.nl/reisinformatie-api/api/v2/departures?station={station}"
+
+    headers = {
+        "Cache-Control": "no-cache",
+        "Ocp-Apim-Subscription-Key": api_key
+    }
+    response = requests.get(url, headers=headers)
+    if response.status_code != 200:
+        return 500
+
+    vertrekData = response.json()
+
+
+
+
+
+    aankomstDataDict = {item["product"]["number"]: item for item in aankomstData["payload"]["arrivals"]}
+    vertrekDataDict = {item["product"]["number"]: item for item in vertrekData["payload"]["departures"]}
+
+    alleRitnums = set(aankomstDataDict.keys()).union(vertrekDataDict.keys())
+
+    volledigeData = []
+
+    for ritnummer in alleRitnums:
+        url = f"https://gateway.apiportal.ns.nl/virtual-train-api/v1/trein/{ritnummer}?features=drukte"
+
+        headers = {
+            "Cache-Control": "no-cache",
+            "Ocp-Apim-Subscription-Key": api_key
+        }
+
+        response = requests.get(url, headers=headers)
+
+        if response.status_code != 200:
+            return 500
+
+        treindata = response.json()
+
+
+
+        aankomstDataItem = aankomstDataDict.get(ritnummer, {})
+        vertrekDataItem = vertrekDataDict.get(ritnummer, {})
+
+        volledigeData.append({
+            "ritnummer": ritnummer,
+            "stationVan": aankomstDataItem.get("origin", ""),
+            "stationNaar": vertrekDataItem.get("direction", ""),
+
+            "geplandeAankomstTijd": aankomstDataItem.get("plannedDateTime", ""),
+            "echteAankomstTijd": aankomstDataItem.get("actualDateTime", ""),
+            "geplandeVertrekTijd": vertrekDataItem.get("plannedDateTime", ""),
+            "echteVertrekTijd":vertrekDataItem.get("actualDateTime", ""),
+
+            "geplandAankomstSpoor": aankomstDataItem.get("plannedTrack", ""),
+            "echtAankomstSpoor": aankomstDataItem.get("actualTrack", ""),
+            "geplandVertrekSpoor": vertrekDataItem.get("plannedTrack", ""),
+            "echtVertrekSpoor": vertrekDataItem.get("actualTrack", ""),
+
+
+            "afkoCat": vertrekDataItem.get("product", {}).get("categoryCode", ""),
+            "kleineCat": vertrekDataItem.get("product", {}).get("longCategoryName", ""),
+            "groteCat": vertrekDataItem.get("product", {}).get("shortCategoryName", ""),
+            "operator": vertrekDataItem.get("product", {}).get("operatorName", ""),
+
+
+            "stationsOpDeRoute": [station["mediumName"] for station in vertrekDataItem.get("routeStations", [])],
+
+            "aankomstStatus": aankomstDataItem.get("arrivalStatus", ""),
+            "vertrekStatus": vertrekDataItem.get("departureStatus", ""),
+
+            "cancelled":vertrekDataItem.get("cancelled", False),
+
+            "materieel": treindata.get("type", "N/A"),
+            "station": treindata.get("station", "N/A"),
+            "spoor": treindata.get("spoor", "N/A"),
+            "materieelNums": [deel.get("materieelnummer", "N/A") for deel in treindata.get("materieeldelen", [])],
+            "afbeeldingen": [deel.get("afbeelding", "N/A") for deel in treindata.get("materieeldelen", [])]
+        })
+
+
+    return render_template("meliag/meliag_treintijden.html", data=volledigeData)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @app.errorhandler(404)
 def not_found(e):
     return render_template("404.html", e=e), 404

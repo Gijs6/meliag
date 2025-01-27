@@ -34,8 +34,6 @@ body {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    animation: smallur 500ms normal forwards ease-in-out;
-    animation-delay: 1s;
     color: white;
     z-index: 100;
 }
@@ -93,8 +91,6 @@ body {
     position: sticky;
     top: 0;
     left: 0;
-    animation: smallur 500ms normal forwards ease-in-out;
-    animation-delay: 1s;
     color: white;
     display: flex;
     flex-direction: row;

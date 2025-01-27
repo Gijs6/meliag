@@ -13,14 +13,21 @@ Data from the [NS API](https://apiportal.ns.nl/) and (maybe in the future from [
 - [ ] Filters on the map (_materieel_ and other stuff)
 - [ ] More info in popup (map)
 - [ ] Station info in popup (current station & stations en route?)
+
+
 - [ ] Fix and combine the _ritnummer_-data for the _treintijden_ and the map!!!
+
+
 - [x] Adding some better styles to the _treintijden_
 - [x] Adding images and more info to the _treintijden_
 - [ ] Bug with the alt text of the train image with international trains
 - [ ] Cleaning up delays and other time information
 - [ ] Add a menu for the diffrent stations for the _treintijden_ and add a redirect (or menu from the menu bar)!
-- [ ] Responsive design for menu, homepage and footer
 - [ ] Responsive design for the _treintijden_
+
+
+- [ ] Responsive design for menu, homepage and footer
+
 ### Pages to add
 
 - [x] Departing / arriving times (per station) + images/drawings (of the trains (so that the _materieel_ clear is))

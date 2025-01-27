@@ -54,7 +54,7 @@ body {
     flex-direction: row;
     justify-content: center;
     align-items: stretch;
-    gap: 15px;
+    gap: clamp(5px, 1vw, 15px);
     flex-wrap: wrap;
 }
 
@@ -111,7 +111,7 @@ body {
     z-index: 100;
     transition: 400ms all ease;
     font-weight: 700;
-    padding: 20px;
+    padding: clamp(10px, 2vw, 20px);
 }
 
 .menu-item:hover > .menuitemslide, .menu-item.active > .menuitemslide {

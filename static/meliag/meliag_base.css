@@ -20,7 +20,6 @@ body {
     font-family: "Lexend", "Montserrat", "Inter", "Roboto", sans-serif;
     display: flex;
     flex-direction: column;
-
 }
 
 #header {
@@ -34,8 +33,10 @@ body {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    color: white;
+    animation-delay: 1s;
+    color: var(--wit);
     z-index: 100;
+    gap: 20px;
 }
 
 #title {
@@ -54,28 +55,17 @@ body {
     justify-content: center;
     align-items: stretch;
     gap: 15px;
+    flex-wrap: wrap;
 }
 
 .menu-item {
-    border: 3px solid transparent;
-    border-bottom: 3px solid white;
-    padding: 15px;
-    transition: all 200ms ease;
-    border-radius: 10%;
+    transition: all 100ms ease;
     text-decoration: none;
-    color: white;
-}
-
-.menu-item:hover, .menu-item.active {
-    border-top: 3px solid white;
-    border-bottom: 3px solid transparent;
-}
-
-.menu-item.active:hover {
-    border-top: 3px solid transparent;
-    border-bottom: 3px solid transparent;
-    border-left: 3px solid white;
-    border-right: 3px solid white;
+    color: var(--wit);
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
 }
 
 #content {
@@ -91,7 +81,8 @@ body {
     position: sticky;
     top: 0;
     left: 0;
-    color: white;
+    animation-delay: 1s;
+    color: var(--wit);
     display: flex;
     flex-direction: row;
     gap: 10px;
@@ -103,4 +94,31 @@ body {
 
 #footer a {
     color: var(--witblauw);
+}
+
+.menuitemslide {
+    height: 100%;
+    width: 0%;
+    background: var(--zwart);
+    transition: 300ms all cubic-bezier(0.65, 0.05, 0.36, 1);
+    z-index: 50;
+    position: absolute;
+    border-radius: 0.5em;
+}
+
+.menuitemtext {
+    position: relative;
+    z-index: 100;
+    transition: 400ms all ease;
+    font-weight: 700;
+    padding: 20px;
+}
+
+.menu-item:hover > .menuitemslide, .menu-item.active > .menuitemslide {
+    background: var(--witblauw);
+    width: 100%;
+}
+
+.menu-item:hover > .menuitemtext, .menu-item.active > .menuitemtext {
+    color: var(--dblauw);
 }

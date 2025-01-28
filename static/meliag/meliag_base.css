@@ -64,8 +64,8 @@ body {
     color: var(--wit);
     position: relative;
     display: flex;
-    align-items: flex-end;
-    justify-content: flex-start;
+    align-items: flex-start;
+    justify-content: center;
 }
 
 #content {
@@ -88,6 +88,7 @@ body {
     gap: 10px;
     justify-content: space-between;
 }
+
 #footer p {
     margin: 0;
 }
@@ -97,8 +98,8 @@ body {
 }
 
 .menuitemslide {
-    height: 100%;
-    width: 0%;
+    height: 0%;
+    width: 100%;
     background: var(--zwart);
     transition: 300ms all cubic-bezier(0.65, 0.05, 0.36, 1);
     z-index: 50;
@@ -116,7 +117,7 @@ body {
 
 .menu-item:hover > .menuitemslide, .menu-item.active > .menuitemslide {
     background: var(--witblauw);
-    width: 100%;
+    height: 100%;
 }
 
 .menu-item:hover > .menuitemtext, .menu-item.active > .menuitemtext {

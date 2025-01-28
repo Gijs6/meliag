@@ -32,15 +32,15 @@
                 <div class="van-naar-container">
                     {% if item.stationVan and not item.stationNaar %}
                         <!-- Dit station is eindpunt -->
-                        <span class="vannaar-label {% if item.vervallen %}vervallen{% endif %}">VAN</span> <span class="stationvn van">{{ item.stationVan }}</span> → <span class="vannaar-label {% if item.vervallen %}vervallen{% endif %}">NAAR</span> <span class="stationvn naar onbelangrijk">dit station</span>
+                        <span class="vannaar-label {% if item.vervallen %}vervallen{% endif %}">VAN</span> <span class="stationvn van">{{ item.stationVan }}</span> <img src="{{ url_for('static', filename='meliag/Eindstation.svg') }}" height="10"> <span class="vannaar-label {% if item.vervallen %}vervallen{% endif %}">NAAR</span> <span class="stationvn naar onbelangrijk">dit station</span>
 
                     {% elif not item.stationVan and item.stationNaar %}
                         <!-- Dit station is beginpunt -->
-                        <span class="vannaar-label {% if item.vervallen %}vervallen{% endif %}">VAN</span> <span class="stationvn van onbelangrijk">dit station</span> → <span class="vannaar-label {% if item.vervallen %}vervallen{% endif %}">NAAR</span> <span class="stationvn naar">{{ item.stationNaar }}</span>
+                        <span class="vannaar-label {% if item.vervallen %}vervallen{% endif %}">VAN</span> <span class="stationvn van onbelangrijk">dit station</span> <img src="{{ url_for('static', filename='meliag/Beginstation.svg') }}" height="10"> <span class="vannaar-label {% if item.vervallen %}vervallen{% endif %}">NAAR</span> <span class="stationvn naar">{{ item.stationNaar }}</span>
 
                     {% elif item.stationVan and item.stationNaar %}
                         <!-- Dit station is tussenstation -->
-                        <span class="vannaar-label {% if item.vervallen %}vervallen{% endif %}">VAN</span> <span class="stationvn van">{{ item.stationVan }}</span> → <span class="vannaar-label {% if item.vervallen %}vervallen{% endif %}">NAAR</span> <span class="stationvn naar">{{ item.stationNaar }}</span>
+                        <span class="vannaar-label {% if item.vervallen %}vervallen{% endif %}">VAN</span> <span class="stationvn van">{{ item.stationVan }}</span> <img src="{{ url_for('static', filename='meliag/Tussenstation.svg') }}" height="10"> <span class="vannaar-label {% if item.vervallen %}vervallen{% endif %}">NAAR</span> <span class="stationvn naar">{{ item.stationNaar }}</span>
 
                     {% else %}
                         GEEN STATIONS?

@@ -23,7 +23,7 @@ Data from the [NS API](https://apiportal.ns.nl/) and (maybe in the future from [
 - [ ] Bug with the alt text of the train image with international trains
 - [ ] Cleaning up delays and other time information
 - [x] A menu for the _treintijden_ in the menu bar
-- [ ] Add the 15 biggest stations in the submenu
+- [ ] Add the 15 biggest stations in the submenu and give it a nice exit animation (with JS?)
 - [ ] Add a redirect/search page for the _treintijden_!
 - [ ] Responsive design for the _treintijden_
 

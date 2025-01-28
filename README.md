@@ -1,4 +1,4 @@
-# <div style="display:flex;flex-direction:row;justify-content:center;align-items:center;gap:1em;"><span style="font-variant: small-caps;">[Meliag](https://www.gijs6.nl/meliag)</span> <img src="https://www.gijs6.nl/static/meliag/Loogootje.svg" width=50></div>
+# <span style="font-variant: small-caps;">[Meliag](https://www.gijs6.nl/meliag)</span> <img src="https://www.gijs6.nl/static/meliag/Loogootje.svg" width=50>
 From Latin _**meli**us **ag**men_ meaning _better train_ (I hope :D)
 
 Just a website I am building to display all kinds of data about trains in a 'better' way.

@@ -7,6 +7,7 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='meliag/meliag_base.css') }}">
         <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='meliag/fav.ico') }}">
         <script src="https://kit.fontawesome.com/4a94c21782.js" crossorigin="anonymous"></script> <!-- FontAwesome -->
+        <meta name="robots" content="noindex">
         {% block headers %}{% endblock %}
     </head>
     <body>
@@ -16,10 +17,56 @@
                 <img src="{{ url_for('static', filename='meliag/Loogootje.svg') }}" height="40">
             </div>
             <div id="menu">
-                <a class="menu-item {% if active_page == 'home' %}active{% endif %}" href="/meliag"><span class="menuitemtext">Home</span><div class="menuitemslide"></div></a>
-                <a class="menu-item {% if active_page == 'kaart' %}active{% endif %}" href="/meliag/kaart"><span class="menuitemtext">Kaart</span><div class="menuitemslide"></div></a>
-                <a class="menu-item {% if active_page == 'treintijden' %}active{% endif %}" href="/meliag/treintijden/ut"><span class="menuitemtext">Treintijden</span><div class="menuitemslide"></div></a>
-                <a class="menu-item {% if active_page == 'colofon' %}active{% endif %}" href="/meliag/colofon"><span class="menuitemtext">Colofon</span><div class="menuitemslide"></div></a>
+
+
+                <div class="menuitemcontainer">
+                    <a class="menu-item {% if active_page == 'home' %}active{% endif %}" href="/meliag">
+                        <span class="menuitemtext">Home</span>
+                        <div class="menuitemslide"></div>
+                    </a>
+                </div>
+
+                <div class="menuitemcontainer">
+                    <a class="menu-item {% if active_page == 'kaart' %}active{% endif %}" href="/meliag/kaart">
+                        <span class="menuitemtext">Kaart</span>
+                        <div class="menuitemslide"></div>
+                    </a>
+                </div>
+
+                <div class="menuitemcontainer">
+                    <a class="menu-item {% if active_page == 'treintijden' %}active{% endif %}" href="/meliag/treintijden/ut">
+                        <span class="menuitemtext">Treintijden</span>
+                        <div class="menuitemslide"></div>
+                    </a>
+
+
+                    <div class="onzichtbarehoverzooi">
+                        <div class="submenucontainer">
+                            <span class="submenuheadertekst">
+                                Kies een station
+                            </span>
+                            <a href="/meliag/treintijden/sdm" class="submenuitem">
+                                Schiedam Centrum
+                            </a>
+                            <a href="/meliag/treintijden/gvc" class="submenuitem">
+                                Den Haag Centraal
+                            </a>
+                            <!-- NOG UITBREIDEN MET EEN LIJST, MAX 15 ??? -->
+                        </div>
+                    </div>
+
+
+
+                </div>
+
+                <div class="menuitemcontainer">
+                    <a class="menu-item {% if active_page == 'colofon' %}active{% endif %}" href="/meliag/colofon">
+                        <span class="menuitemtext">Colofon</span>
+                        <div class="menuitemslide"></div>
+                    </a>
+                </div>
+
+
             </div>
         </div>
 

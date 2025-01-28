@@ -22,7 +22,9 @@ Data from the [NS API](https://apiportal.ns.nl/) and (maybe in the future from [
 - [x] Adding images and more info to the _treintijden_
 - [ ] Bug with the alt text of the train image with international trains
 - [ ] Cleaning up delays and other time information
-- [ ] Add a menu for the diffrent stations for the _treintijden_ and add a redirect (or menu from the menu bar)!
+- [x] A menu for the _treintijden_ in the menu bar
+- [ ] Add the 15 biggest stations in the submenu
+- [ ] Add a redirect/search page for the _treintijden_!
 - [ ] Responsive design for the _treintijden_
 
 

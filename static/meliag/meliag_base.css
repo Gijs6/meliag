@@ -56,6 +56,7 @@ body {
     align-items: stretch;
     gap: clamp(5px, 1vw, 15px);
     flex-wrap: wrap;
+    position: relative;
 }
 
 .menu-item {
@@ -113,13 +114,109 @@ body {
     transition: 400ms all ease;
     font-weight: 700;
     padding: clamp(10px, 2vw, 20px);
+    position: relative;
 }
 
-.menu-item:hover > .menuitemslide, .menu-item.active > .menuitemslide {
+.menu-item:hover > .menuitemslide, .menu-item.active > .menuitemslide, .menuitemcontainer:has(.onzichtbarehoverzooi:hover) .menu-item .menuitemslide {
     background: var(--witblauw);
     height: 100%;
 }
 
-.menu-item:hover > .menuitemtext, .menu-item.active > .menuitemtext {
+.menu-item:hover > .menuitemtext, .menu-item.active > .menuitemtext, .menuitemcontainer:has(.onzichtbarehoverzooi:hover) .menu-item .menuitemtext {
     color: var(--dblauw);
+}
+
+
+
+
+
+.submenucontainer {
+    margin-top: 15px;
+    background: var(--witblauw);
+    padding: clamp(5px, 1vw, 15px);
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    align-content: center;
+    gap: 0.5em;
+    color: var(--dblauw);
+    border-radius: 0.5em;
+    min-width: 150%;
+}
+
+
+.menuitemcontainer:hover .onzichtbarehoverzooi {
+    display: flex;
+}
+
+.onzichtbarehoverzooi:hover {
+    display: flex;
+}
+
+
+.onzichtbarehoverzooi {
+    position: absolute;
+    top: 100%;
+    display: none;
+    animation: 300ms fadeOMLAAG;
+    opacity: 0;
+    animation-fill-mode: forwards;
+    animation-delay: 0.2s;
+    z-index: 1;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.submenuheadertekst {
+    font-size: 1.2em;
+    font-weight: 800;
+}
+
+.submenuitem {
+    color: var(--dblauw);
+    transition: 200ms all ease;
+
+}
+
+.submenuitem:hover {
+    font-weight: 900;
+    color: var(--lblauw);
+}
+
+
+
+
+@keyframes fadeOMLAAG {
+    0% {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateY(0px);
+        opacity: 1;
+    }
+}
+
+
+
+
+
+.menuitemcontainer {
+    position: relative;
 }

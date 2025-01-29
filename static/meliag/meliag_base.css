@@ -167,6 +167,10 @@ body {
 }
 
 
+.menu-item.active + .onzichtbarehoverzooi {
+    animation-delay: 0s !important;
+}
+
 
 
 
@@ -195,7 +199,7 @@ body {
 
 .submenuitem:hover {
     font-weight: 900;
-    color: var(--lblauw);
+    color: var(--zwart);
 }
 
 

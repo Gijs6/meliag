@@ -23,7 +23,6 @@
                     {{ item.echteAankomstTijd }}<br>{{ item.echteVertrekTijd }}
                 {% endif %}
             </div>
-
         <div class="middenrij">
             <div class="toprijmidden">
                 <div class="treinCat">
@@ -33,15 +32,12 @@
                     {% if item.stationVan and not item.stationNaar %}
                         <!-- Dit station is eindpunt -->
                         <span class="vannaar-label {% if item.vervallen %}vervallen{% endif %}">VAN</span> <span class="stationvn van">{{ item.stationVan }}</span> <img src="{{ url_for('static', filename='meliag/Eindstation.svg') }}" height="10"> <span class="vannaar-label {% if item.vervallen %}vervallen{% endif %}">NAAR</span> <span class="stationvn naar onbelangrijk">dit station</span>
-
                     {% elif not item.stationVan and item.stationNaar %}
                         <!-- Dit station is beginpunt -->
                         <span class="vannaar-label {% if item.vervallen %}vervallen{% endif %}">VAN</span> <span class="stationvn van onbelangrijk">dit station</span> <img src="{{ url_for('static', filename='meliag/Beginstation.svg') }}" height="10"> <span class="vannaar-label {% if item.vervallen %}vervallen{% endif %}">NAAR</span> <span class="stationvn naar">{{ item.stationNaar }}</span>
-
                     {% elif item.stationVan and item.stationNaar %}
                         <!-- Dit station is tussenstation -->
                         <span class="vannaar-label {% if item.vervallen %}vervallen{% endif %}">VAN</span> <span class="stationvn van">{{ item.stationVan }}</span> <img src="{{ url_for('static', filename='meliag/Tussenstation.svg') }}" height="10"> <span class="vannaar-label {% if item.vervallen %}vervallen{% endif %}">NAAR</span> <span class="stationvn naar">{{ item.stationNaar }}</span>
-
                     {% else %}
                         GEEN STATIONS?
                     {% endif %}
@@ -52,11 +48,10 @@
                     {% endif %}
                 </div>
             </div>
-
             <div class="treinen">
                 {% for trein in item.matlijst %}
                     <div class="treinmetinfo">
-                        <img src="{{ trein.afb_url }}" alt="Afbeelding van een {{ trein.mat }}" height="30">
+                        <img src="{{ trein.afb_url }}" alt="Afbeelding van een {{ trein.mat }}" height="35">
                         <span class="treininfotekst">{{ trein.mat }} {{ trein.matnum }}
                         {% for faciliteit in trein.faciliteiten_iconen %}
                             <i class="{{ faciliteit }}"></i>
@@ -65,7 +60,6 @@
                     </div>
                 {% endfor %}
             </div>
-
             <div class="berichten">
                 {% for bericht in item.berichten %}
                     <div class="bericht {{ bericht.style }}">
@@ -74,42 +68,25 @@
                 {% endfor %}
             </div>
         </div>
-
-
         <div class="rechts">
             {% if not item.echtVertrekSpoor %} <!-- Als er geen vertrekspoor is -->
                 {% if item.geplandAankomstSpoor != item.echtAankomstSpoor %}
                     <span class="spoor verandering">Spoor {{ item.echtAankomstSpoor }} ipv {{ item.geplandAankomstSpoor }}</span>
-
                 {% else %}
                     <span class="spoor normaal">Spoor {{ item.echtAankomstSpoor }}</span>
-
                 {% endif %}
-
-
             {% elif not item.echtAankomstSpoor %} <!-- Als er geen aankomstspoor is -->
-
                 {% if item.geplandVertrekSpoor != item.echtVertrekSpoor %}
                     <span class="spoor verandering">Spoor {{ item.echtVertrekSpoor }} ipv {{ item.geplandVertrekSpoor }}</span>
-
                 {% else %}
                     <span class="spoor normaal">Spoor {{ item.echtVertrekSpoor }}</span>
-
                 {% endif %}
-
             {% else %} <!-- Als er zowel vertreksporen als aankomstsporen zijn -->
-
-
                 {% if item.geplandVertrekSpoor != item.echtVertrekSpoor %}
                     <span class="spoor verandering">Spoor {{ item.echtVertrekSpoor }} ipv {{ item.geplandVertrekSpoor }}</span>
-
                 {% else %}
                     <span class="spoor normaal">Spoor {{ item.echtVertrekSpoor }}</span>
-
                 {% endif %}
-
-
-
             {% endif %}
         </div>
     </div>

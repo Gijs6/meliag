@@ -6,3 +6,7 @@ h1 {
 p {
     margin: 0;
 }
+
+#content a {
+    color: var(--dblauw);
+}

@@ -183,7 +183,7 @@ def meliag_treintijden(station):
     volledigeData = []
 
     for ritnummer in alleRitnums:
-        url = f"https://gateway.apiportal.ns.nl/virtual-train-api/v1/trein/{ritnummer}?features=drukte"
+        url = f"https://gateway.apiportal.ns.nl/virtual-train-api/v1/trein/{ritnummer}"
 
         headers = {
             "Cache-Control": "no-cache",
@@ -200,14 +200,8 @@ def meliag_treintijden(station):
 
 
 
-
-
-
-
         aankomstDataItem = aankomstDataDict.get(ritnummer, {})
         vertrekDataItem = vertrekDataDict.get(ritnummer, {})
-
-
 
 
         geplande_aankomst = aankomstDataItem.get("plannedDateTime")
@@ -244,7 +238,7 @@ def meliag_treintijden(station):
 
         faciliteiten_iconen_dict = {
             "WIFI": "fa-solid fa-wifi",
-            "TOILET": "fa-solid fa-toilet-paper",
+            "TOILET": "fa-solid fa-toilet",
             "STILTE": "fa-solid fa-ear-deaf",
             "STROOM": "fa-solid fa-plug",
             "FIETS": "fa-solid fa-bicycle",
@@ -261,7 +255,7 @@ def meliag_treintijden(station):
             materieellijst.append({
                 "matnum": item.get("materieelnummer", ""),
                 "afb_url": item.get("afbeelding", ""),
-                "mat": item.get("type", "onbekende trein"),
+                "mat": item.get("type", ""),
                 "faciliteiten": item.get("faciliteiten", []),
                 "faciliteiten_iconen": faciliteiten_iconen
             })

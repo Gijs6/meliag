@@ -5,10 +5,10 @@
     background: white;
     padding: 15px;
     flex-grow: 1;
-    border-bottom: solid 1px var(--dblauw);
+    border-top: solid 1px var(--grijs);
     align-items: center;
     justify-content: flex-start;
-    gap: 2%;
+    gap: 1%;
 }
 
 #content {
@@ -68,7 +68,8 @@
 }
 
 .links {
-    min-width: 5em;
+    min-width: 5%;
+    text-align: center;
 }
 
 .rechts {
@@ -101,14 +102,17 @@
 
 .bericht {
     font-weight: 700;
+    padding: 5px;
+    color: white;
+    border-radius: 0.5em;
 }
 
 .bericht.INFO {
-    color: var(--dblauw);
+    background: var(--dblauw);
 }
 
 .bericht.WARNING {
-    color: var(--rood);
+    background: var(--rood);
 }
 
 .vannaar-label.vervallen {

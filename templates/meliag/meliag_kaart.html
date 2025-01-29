@@ -44,7 +44,7 @@
                         const details = ritnummerData[ritNum] || {};
                         const { materieel, vervoerder, station, spoor, afbeeldingen = [] } = details;
 
-                        const imageHtml = afbeeldingen.map(url => `<img src="${url}" alt="${materieel}" style="width:100px;">`).join('');
+                        const imageHtml = afbeeldingen.map(url => `<img src="${url}" alt="${materieel}" height="20">`).join('');
 
                         const popupContent = `
                             <b>Ritnummer:</b> ${ritNum}<br>

@@ -71,13 +71,15 @@
                     </div>
                 {% endfor %}
             </div>
-            <div class="berichten">
-                {% for bericht in item.berichten %}
-                    <div class="bericht {{ bericht.style }}">
-                        {{ bericht.message }}
-                    </div>
-                {% endfor %}
-            </div>
+            {% if item.berichten %}
+                <div class="berichten">
+                    {% for bericht in item.berichten %}
+                        <div class="bericht {{ bericht.style }}">
+                            {{ bericht.message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
         </div>
         <div class="rechts">
             {% if not item.echtVertrekSpoor %} <!-- Als er geen vertrekspoor is -->

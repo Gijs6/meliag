@@ -187,7 +187,7 @@ body {
 
 
 
-.submenuheadertekst {
+#submenuheadertekst {
     font-size: 1.2em;
     font-weight: 800;
 }
@@ -223,4 +223,11 @@ body {
 
 .menuitemcontainer {
     position: relative;
+}
+
+
+#extra-overige-stations {
+    margin-top: 1em;
+    font-style: italic;
+    font-weight: 800;
 }

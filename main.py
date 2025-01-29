@@ -4,6 +4,7 @@ import pickle
 import time
 import threading
 import requests
+import json
 
 
 app = Flask(__name__)
@@ -136,6 +137,23 @@ def api_ritnums():
         return jsonify(pickle.load(file))
 
 
+
+
+
+
+@app.route("/meliag/treintijden")
+def meliag_treintijden_zoeken():
+
+    with open("stationslijst.pkl", "rb") as bestand:
+        data = pickle.load(bestand)
+
+    return render_template("meliag/meliag_treintijden_zoeken.html", stationslijst=data)
+
+
+
+
+with open('stations.json', 'r', encoding='utf-8') as file:
+    afkoNaarVolledig = json.load(file)
 
 
 
@@ -311,16 +329,20 @@ def meliag_treintijden(station):
             "afbeeldingen": [deel.get("afbeelding", "N/A") for deel in treindata.get("materieeldelen", [])],
 
             "matlijst": materieellijst,
-
-
-
         })
 
 
     volledigeData = sorted(volledigeData, key=lambda x: datetime.strptime(x["sort"], "%Y-%m-%dT%H:%M:%S%z"))
 
 
-    return render_template("meliag/meliag_treintijden.html", data=volledigeData)
+    stationvolledig = afkoNaarVolledig.get(station, "NIET BESCHIKBAAR")
+
+
+    return render_template("meliag/meliag_treintijden.html", data=volledigeData, volledigestationsnaam=stationvolledig)
+
+
+
+
 
 
 

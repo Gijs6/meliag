@@ -27,14 +27,7 @@
                 </div>
 
                 <div class="menuitemcontainer">
-                    <a class="menu-item {% if active_page == 'kaart' %}active{% endif %}" href="/meliag/kaart">
-                        <span class="menuitemtext">Kaart</span>
-                        <div class="menuitemslide"></div>
-                    </a>
-                </div>
-
-                <div class="menuitemcontainer">
-                    <a class="menu-item {% if active_page == 'treintijden' %}active{% endif %}" href="/meliag/treintijden/ut">
+                    <a class="menu-item {% if active_page in ['treintijden', 'treintijdenzoeken'] %}active{% endif %}" href="/meliag/treintijden">
                         <span class="menuitemtext">Treintijden</span>
                         <div class="menuitemslide"></div>
                     </a>
@@ -45,18 +38,64 @@
                             <span class="submenuheadertekst">
                                 Kies een station
                             </span>
-                            <a href="/meliag/treintijden/sdm" class="submenuitem">
-                                Schiedam Centrum
+                            <a href="/meliag/treintijden/Ut" class="submenuitem">
+                                Utrecht Centraal
                             </a>
-                            <a href="/meliag/treintijden/gvc" class="submenuitem">
+                            <a href="/meliag/treintijden/Asd" class="submenuitem">
+                                Amsterdam Centraal
+                            </a>
+                            <a href="/meliag/treintijden/Rtd" class="submenuitem">
+                                Rotterdam Centraal
+                            </a>
+                            <a href="/meliag/treintijden/Shl" class="submenuitem">
+                                Schiphol Airport
+                            </a>
+                            <a href="/meliag/treintijden/Gvc" class="submenuitem">
                                 Den Haag Centraal
                             </a>
-                            <!-- NOG UITBREIDEN MET EEN LIJST, MAX 15 ??? -->
+                            <a href="/meliag/treintijden/Ledn" class="submenuitem">
+                                Leiden Centraal
+                            </a>
+                            <a href="/meliag/treintijden/Ehv" class="submenuitem">
+                                Eindhoven Centraal
+                            </a>
+                            <a href="/meliag/treintijden/Asdz" class="submenuitem">
+                                Amsterdam Zuid
+                            </a>
+                            <a href="/meliag/treintijden/Ht" class="submenuitem">
+                                s-Hertogenbosch
+                            </a>
+                            <a href="/meliag/treintijden/Ass" class="submenuitem">
+                                Amsterdam Sloterdijk
+                            </a>
+                            <a href="/meliag/treintijden/Amf" class="submenuitem">
+                                Amersfoort Centraal
+                            </a>
+                            <a href="/meliag/treintijden/Zl" class="submenuitem">
+                                Zwolle
+                            </a>
+                            <a href="/meliag/treintijden/Ah" class="submenuitem">
+                                Arnhem Centraal
+                            </a>
+                            <a href="/meliag/treintijden/Nm" class="submenuitem">
+                                Nijmegen
+                            </a>
+                            <a href="/meliag/treintijden/Hlm" class="submenuitem">
+                                Haarlem
+                            </a>
                         </div>
                     </div>
+                </div>
 
 
 
+
+
+                <div class="menuitemcontainer">
+                    <a class="menu-item {% if active_page == 'kaart' %}active{% endif %}" href="/meliag/kaart">
+                        <span class="menuitemtext">Kaart</span>
+                        <div class="menuitemslide"></div>
+                    </a>
                 </div>
 
                 <div class="menuitemcontainer">

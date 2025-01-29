@@ -12,6 +12,9 @@
 
 
 {% block content %}
+    <span id="pageheader">
+        Vertrek- en aankomsttijden voor <span id="stationbenadruk">{{ volledigestationsnaam }}</span>
+    </span>
     {% for item in data %}
     <div class="itemrij {% if item.vervallen %}vervallen{% endif %}">
         <div class="links">
@@ -51,12 +54,20 @@
             <div class="treinen">
                 {% for trein in item.matlijst %}
                     <div class="treinmetinfo">
-                        <img src="{{ trein.afb_url }}" alt="Afbeelding van een {{ trein.mat }}" height="35">
-                        <span class="treininfotekst">{{ trein.mat }} {{ trein.matnum }}
-                        {% for faciliteit in trein.faciliteiten_iconen %}
-                            <i class="{{ faciliteit }}"></i>
-                        {% endfor %}
-                        </span>
+                        {% if trein.afb_url %}
+                            <img src="{{ trein.afb_url }}" alt="Afbeelding van een {{ trein.mat }}" height="35">
+                        {% else %}
+                            <span class="errortext">Geen afbeelding beschikbaar</span>
+                        {% endif %}
+                        {% if trein.mat %}
+                            <span class="treininfotekst">{{ trein.mat }} {{ trein.matnum }}
+                            {% for faciliteit in trein.faciliteiten_iconen %}
+                                <i class="{{ faciliteit }}"></i>
+                            {% endfor %}
+                            </span>
+                        {% else %}
+                            <span class="errortext">Geen materieelinformatie beschikbaar</span>
+                        {% endif %}
                     </div>
                 {% endfor %}
             </div>

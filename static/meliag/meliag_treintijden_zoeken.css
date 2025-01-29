@@ -1,0 +1,56 @@
+#content a {
+    color: var(--dblauw);
+    transition: 300ms all ease-in-out;
+}
+
+#content a:hover {
+    color: var(--lblauw);
+}
+
+input#search {
+    border-radius: 0.5em;
+    padding: 0.5em;
+    font-family: "Lexend", "Montserrat", "Inter", "Roboto", sans-serif;
+    font-size: 1.1em;
+    border-color: var(--zwart);
+}
+
+#content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+td {
+    padding: 0.5em;
+    text-align: center;
+}
+
+th {
+    font-size: 1.25em;
+    padding: 0.5em;
+}
+
+#tabel {
+    border-collapse: collapse;
+}
+
+
+tr {
+    border-bottom: 2px solid var(--witblauw);
+    transition: 300ms all ease-in-out;
+}
+
+tr.header, tr:hover {
+    background-color: #f0f2f3;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 2em;
+    width: 40%;
+}

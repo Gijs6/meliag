@@ -26,7 +26,7 @@
                     </a>
                 </div>
 
-                <div class="menuitemcontainer">
+                <div class="menuitemcontainer met-submenu">
                     <a class="menu-item {% if active_page in ['treintijden', 'treintijdenzoeken'] %}active{% endif %}" href="/meliag/treintijden">
                         <span class="menuitemtext">Treintijden</span>
                         <div class="menuitemslide"></div>
@@ -118,4 +118,43 @@
             <p>Gemaakt door <a href="/" target="_blank">Gijs</a></p>
         </div>
     </body>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const menuItemsLijst = document.querySelectorAll('.menuitemcontainer.met-submenu');
+            const onzichtbarehoverzooien = document.querySelectorAll('.onzichtbarehoverzooi');
+
+            menuItemsLijst.forEach((menuItem, index) => {
+                const onzichtbarehoverzooi = onzichtbarehoverzooien[index];
+
+
+                function hideOnHover() {
+                    if (!menuItem.matches(':hover') && !onzichtbarehoverzooi.matches(':hover')) {
+                        onzichtbarehoverzooi.classList.add("sluiten");
+                        setTimeout(() => {
+                            onzichtbarehoverzooi.style.display = "none";
+                            onzichtbarehoverzooi.classList.remove("sluiten");
+                            showOnHover();
+                        }, 300);
+
+                    }
+                }
+
+                function showOnHover() {
+                    if (menuItem.matches(':hover') || onzichtbarehoverzooi.matches(':hover')) {
+                        setTimeout(() => {
+                            if (menuItem.matches(':hover') || onzichtbarehoverzooi.matches(':hover')) {
+                                onzichtbarehoverzooi.style.display = "block";
+                            }
+                        }, 150);
+                    }
+                }
+
+                menuItem.addEventListener('mouseleave', hideOnHover);
+                onzichtbarehoverzooi.addEventListener('mouseleave', hideOnHover);
+                menuItem.addEventListener('mouseenter', showOnHover);
+                onzichtbarehoverzooi.addEventListener('mouseenter', showOnHover);
+            });
+        });
+    </script>
 </html>

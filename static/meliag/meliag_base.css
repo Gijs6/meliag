@@ -147,15 +147,6 @@ body {
 }
 
 
-.menuitemcontainer:hover .onzichtbarehoverzooi {
-    display: flex;
-}
-
-.onzichtbarehoverzooi:hover {
-    display: flex;
-}
-
-
 .onzichtbarehoverzooi {
     position: absolute;
     top: 100%;
@@ -163,7 +154,6 @@ body {
     animation: 300ms fadeOMLAAG;
     opacity: 0;
     animation-fill-mode: forwards;
-    animation-delay: 0.2s;
     z-index: 1;
 }
 
@@ -174,8 +164,9 @@ body {
 
 
 
-
-
+.onzichtbarehoverzooi.sluiten {
+    animation: 300ms fadeOMHOOG forwards;
+}
 
 
 
@@ -207,13 +198,25 @@ body {
 
 @keyframes fadeOMLAAG {
     0% {
-        transform: translateY(-50px);
+        transform: translateY(-25px);
         opacity: 0;
     }
 
     100% {
         transform: translateY(0px);
         opacity: 1;
+    }
+}
+
+@keyframes fadeOMHOOG {
+    0% {
+        transform: translateY(0px);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(-25px);
+        opacity: 0;
     }
 }
 

@@ -6,9 +6,7 @@ import threading
 import requests
 import json
 
-
 app = Flask(__name__)
-
 
 
 @app.route("/meliag")
@@ -24,9 +22,6 @@ def meliag_kaart():
 @app.route("/meliag/colofon")
 def meliag_colofon():
     return render_template("meliag/meliag_colofon.html")
-
-
-
 
 
 @app.route("/meliag/api/pos")
@@ -46,13 +41,10 @@ def api_pos():
 
     data2 = []
 
-
     with open("ritnummers.pkl", "rb") as file:
         ritnummerData = pickle.load(file)
 
-
     ritnummersDataVernieuwen = []
-
 
     for item in data["payload"]["treinen"]:
         data2.append({
@@ -70,14 +62,10 @@ def api_pos():
         except KeyError:
             ritnummersDataVernieuwen.append(item["treinNummer"])
 
-
     thread = threading.Thread(target=dataVernieuwenVanRitnummers, args=(ritnummersDataVernieuwen,))
     thread.start()
 
-
     return jsonify(data2)
-
-
 
 
 def dataVernieuwenVanRitnummers(ritnummerlijst):
@@ -122,13 +110,10 @@ def dataVernieuwenVanRitnummers(ritnummerlijst):
             })
 
         except Exception as e:
-           print(f"Errort {e}")
+            print(f"Errort {e}")
 
     with open("ritnummers.pkl", "wb") as file:
         pickle.dump(oudeData, file)
-
-
-
 
 
 @app.route("/meliag/api/ritnummers")
@@ -137,30 +122,20 @@ def api_ritnums():
         return jsonify(pickle.load(file))
 
 
-
-
-
-
 @app.route("/meliag/treintijden")
 def meliag_treintijden_zoeken():
-
     with open("stationslijst.pkl", "rb") as bestand:
         data = pickle.load(bestand)
 
     return render_template("meliag/meliag_treintijden_zoeken.html", stationslijst=data)
 
 
-
-
 with open('stations.json', 'r', encoding='utf-8') as file:
     afkoNaarVolledig = json.load(file)
 
 
-
-
 @app.route("/meliag/treintijden/<station>")
 def meliag_treintijden(station):
-
     url = f"https://gateway.apiportal.ns.nl/reisinformatie-api/api/v2/arrivals?station={station}"
 
     headers = {
@@ -172,10 +147,6 @@ def meliag_treintijden(station):
         return 500
 
     aankomstData = response.json()
-
-
-
-
 
     url = f"https://gateway.apiportal.ns.nl/reisinformatie-api/api/v2/departures?station={station}"
 
@@ -189,16 +160,27 @@ def meliag_treintijden(station):
 
     vertrekData = response.json()
 
-
-
-
-
     aankomstDataDict = {item.get("product", {})["number"]: item for item in aankomstData["payload"]["arrivals"]}
     vertrekDataDict = {item.get("product", {})["number"]: item for item in vertrekData["payload"]["departures"]}
 
     alleRitnums = set(aankomstDataDict.keys()).union(vertrekDataDict.keys())
 
     volledigeData = []
+
+    faciliteiten_iconen_dict = {
+        "WIFI": "fa-solid fa-wifi",
+        "TOILET": "fa-solid fa-toilet",
+        "STILTE": "fa-solid fa-ear-deaf",
+        "STROOM": "fa-solid fa-plug",
+        "FIETS": "fa-solid fa-bicycle",
+        "TOEGANKELIJK": "fa-solid fa-wheelchair"
+    }
+
+    matvervang = {
+        "ELOC TR25": "TRAXX",
+        "SW7-25KV_2+7": "ICR",
+        "ELOC VECT": "VECTRON",
+    }
 
     for ritnummer in alleRitnums:
         url = f"https://gateway.apiportal.ns.nl/virtual-train-api/v1/trein/{ritnummer}"
@@ -215,12 +197,8 @@ def meliag_treintijden(station):
 
         treindata = response.json()
 
-
-
-
         aankomstDataItem = aankomstDataDict.get(ritnummer, {})
         vertrekDataItem = vertrekDataDict.get(ritnummer, {})
-
 
         geplande_aankomst = aankomstDataItem.get("plannedDateTime")
         echte_aankomst = aankomstDataItem.get("actualDateTime")
@@ -232,8 +210,6 @@ def meliag_treintijden(station):
         geplande_vertrek_tijd = datetime.strptime(geplande_vertrek, "%Y-%m-%dT%H:%M:%S%z").strftime("%H:%M") if geplande_vertrek else "-"
         echte_vertrek_tijd = datetime.strptime(echte_vertrek, "%Y-%m-%dT%H:%M:%S%z").strftime("%H:%M") if echte_vertrek else "-"
 
-
-
         try:
             if echte_aankomst and geplande_aankomst:
                 vertraging_aankomst = round((datetime.strptime(echte_aankomst, "%Y-%m-%dT%H:%M:%S%z") - datetime.strptime(geplande_aankomst, "%Y-%m-%dT%H:%M:%S%z")).total_seconds() / 60)
@@ -241,7 +217,6 @@ def meliag_treintijden(station):
                 vertraging_aankomst = None
         except Exception as e:
             vertraging_aankomst = None
-
 
         try:
             if echte_vertrek and geplande_vertrek:
@@ -251,41 +226,25 @@ def meliag_treintijden(station):
         except Exception as e:
             vertraging_vertrek = None
 
-
         materieellijst = []
-
-        faciliteiten_iconen_dict = {
-            "WIFI": "fa-solid fa-wifi",
-            "TOILET": "fa-solid fa-toilet",
-            "STILTE": "fa-solid fa-ear-deaf",
-            "STROOM": "fa-solid fa-plug",
-            "FIETS": "fa-solid fa-bicycle",
-            "TOEGANKELIJK": "fa-solid fa-wheelchair"
-        }
-
-
 
         for item in treindata.get("materieeldelen", []):
             faciliteiten_iconen = []
             for faciliteit in item.get("faciliteiten", []):
-                faciliteiten_iconen.append(faciliteiten_iconen_dict.get(faciliteit.upper(),""))
+                faciliteiten_iconen.append(faciliteiten_iconen_dict.get(faciliteit.upper(), ""))
             faciliteiten_iconen = sorted(faciliteiten_iconen)
             materieellijst.append({
                 "matnum": item.get("materieelnummer", ""),
                 "afb_url": item.get("afbeelding", ""),
-                "mat": item.get("type", ""),
+                "mat": matvervang.get(item.get("type", ""), item.get("type", "")),
                 "faciliteiten": item.get("faciliteiten", []),
                 "faciliteiten_iconen": faciliteiten_iconen
             })
-
-
-
 
         volledigeData.append({
             "ritnummer": ritnummer,
             "stationVan": aankomstDataItem.get("origin", ""),
             "stationNaar": vertrekDataItem.get("direction", ""),
-
 
             "geplandeAankomstTijd": geplande_aankomst_tijd,
             "echteAankomstTijd": echte_aankomst_tijd,
@@ -294,23 +253,17 @@ def meliag_treintijden(station):
             "vertragingAankomst": vertraging_aankomst,
             "vertragingVertrek": vertraging_vertrek,
 
-
-
-
             "sort": vertrekDataItem.get("actualDateTime", aankomstDataItem.get("actualDateTime", "")),
-
 
             "geplandAankomstSpoor": aankomstDataItem.get("plannedTrack", ""),
             "echtAankomstSpoor": aankomstDataItem.get("actualTrack", ""),
             "geplandVertrekSpoor": vertrekDataItem.get("plannedTrack", ""),
             "echtVertrekSpoor": vertrekDataItem.get("actualTrack", ""),
 
-
             "afkoCat": vertrekDataItem.get("product", {}).get("categoryCode", aankomstDataItem.get("product", {}).get("categoryCode", "")),
             "kleineCat": vertrekDataItem.get("product", {}).get("longCategoryName", aankomstDataItem.get("product", {}).get("longCategoryName", "")),
             "groteCat": vertrekDataItem.get("product", {}).get("shortCategoryName", aankomstDataItem.get("product", {}).get("shortCategoryName", "")),
             "operator": vertrekDataItem.get("product", {}).get("operatorName", aankomstDataItem.get("product", {}).get("operatorName", "")),
-
 
             "stationsOpDeRoute": [station["mediumName"] for station in vertrekDataItem.get("routeStations", [])],
 
@@ -319,8 +272,6 @@ def meliag_treintijden(station):
 
             "vervallen": vertrekDataItem.get("cancelled", False),
             "berichten": vertrekDataItem.get("messages", []),
-
-
 
             "materieel": treindata.get("type", "N/A"),
             "station": treindata.get("station", "N/A"),
@@ -331,42 +282,22 @@ def meliag_treintijden(station):
             "matlijst": materieellijst,
         })
 
-
     volledigeData = sorted(volledigeData, key=lambda x: datetime.strptime(x["sort"], "%Y-%m-%dT%H:%M:%S%z"))
-
 
     stationvolledig = afkoNaarVolledig.get(station, "NIET BESCHIKBAAR")
 
-
     return render_template("meliag/meliag_treintijden.html", data=volledigeData, volledigestationsnaam=stationvolledig)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 @app.errorhandler(404)
 def not_found(e):
     return render_template("404.html", e=e), 404
 
+
 @app.errorhandler(500)
 def internal_server_error(e):
     return render_template('500.html', e=e), 500
 
 
-
 if __name__ == '__main__':
     app.run()
-

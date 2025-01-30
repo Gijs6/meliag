@@ -24,7 +24,6 @@
 #pageheader {
     font-size: 1.5em;
     font-weight: 500;
-    text-align: center;
 }
 
 #stationbenadruk {
@@ -104,6 +103,7 @@
     flex-direction: row;
     align-items: flex-start;
     justify-content: flex-start;
+    flex-wrap: wrap;
 }
 
 .treinmetinfo {
@@ -149,4 +149,13 @@
     gap: 1em;
     align-items: stretch;
     justify-content: center;
+}
+
+
+.treininfotekst {
+    padding: 0 0.5em 0 0.5em;
+}
+
+.treinmetinfo img {
+    height: 1.5em;
 }

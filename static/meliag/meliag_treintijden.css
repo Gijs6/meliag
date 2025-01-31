@@ -109,7 +109,7 @@
 .treinmetinfo {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
 }
 
@@ -148,14 +148,9 @@
     flex-wrap: wrap;
     gap: 1em;
     align-items: stretch;
-    justify-content: center;
-}
-
-
-.treininfotekst {
-    padding: 0 0.5em 0 0.5em;
+    justify-content: flex-start;
 }
 
 .treinmetinfo img {
-    height: 1.5em;
+    height: 1.75em;
 }

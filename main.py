@@ -180,6 +180,8 @@ def meliag_treintijden(station):
         "ELOC TR25": "TRAXX",
         "SW7-25KV_2+7": "ICR",
         "ELOC VECT": "VECTRON",
+        "Flirt 3 FFF": "Flirt 3",
+        "Flirt 4 FFF": "Flirt 4"
     }
 
     for ritnummer in alleRitnums:

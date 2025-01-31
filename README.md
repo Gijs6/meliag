@@ -33,10 +33,12 @@ Data from the [NS API](https://apiportal.ns.nl/) and (maybe in the future from [
 - [x] Add a redirect/search page for the _treintijden_!
 - [x] Nice exit animation for the submenu (with JS?)
 - [ ] Add links to the _op de route_ (en route) stations in _treintijden_ (with UIC?)
-- [ ] Responsive design for the _treintijden_ (fix flexbox and div's)
+- [ ] Responsive design for the _treintijden_ (fix flexbox and div's (in the entire row))
 - [ ] Fix bug: the _treintijden_ for the **first** station (in the country [such as _Breda_]) of an international train
   shows that the train started at that station
 - [ ] Fix layout for really long trains (and/or just normal trains on mobile)
+- [ ] Fix "no image available" if it occurs many times (such as with the _European Sleeper_)
+- [ ] Fix spacing between trains (if the description text is long)
 
 #### Other
 

@@ -1,4 +1,4 @@
-# <span style="font-variant: small-caps;">[Meliag](https://www.gijs6.nl/meliag)</span> <img src="https://www.gijs6.nl/static/meliag/Loogootje.svg" width=50>
+# <div style="display:flex;flex-direction:row;gap:10px;align-items:center"><span style="font-variant: small-caps;">[Meliag](https://www.gijs6.nl/meliag)</span> <img src="https://www.gijs6.nl/static/meliag/Loogootje.svg" width=45></div>
 
 From Latin _**meli**us **ag**men_ meaning _better train_ (I hope :D)
 
@@ -12,7 +12,7 @@ Data from the [NS API](https://apiportal.ns.nl/) and (maybe in the future from [
 
 #### Map
 
-- [ ] Images on the map
+- [x] Images on the map (semi-fixed)
 - [ ] Filters on the map (_materieel_ and other stuff)
 - [ ] Fix images in the popup and the content/layout/styles of the popup
 - [ ] More info in popup
@@ -20,7 +20,8 @@ Data from the [NS API](https://apiportal.ns.nl/) and (maybe in the future from [
 
 #### _Treintijden_ and the map
 
-- [ ] Fix and combine the _ritnummer_-data for the _treintijden_ and the map!!!
+- [x] Fix and combine the _ritnummer_-data for the _treintijden_ and the map!!!
+- [ ] Fix thread bug _ritnummer_-data
 
 #### _Treintijden_
 

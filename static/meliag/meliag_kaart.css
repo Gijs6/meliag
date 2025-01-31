@@ -9,3 +9,10 @@
 #content {
     padding: 0;
 }
+
+.train-icon {
+    object-fit: cover;
+    object-position: left;
+    width: 32px;
+    height: 32px;
+}

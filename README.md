@@ -1,4 +1,4 @@
-# <span style="font-variant: small-caps;">[Meliag](https://www.gijs6.nl/meliag)</span> <img src="https://www.gijs6.nl/static/meliag/Loogootje.svg" width=50>
+# <div style="display:flex;flex-direction:row;gap:10px;align-items:center"><span style="font-variant: small-caps;">[Meliag](https://www.gijs6.nl/meliag)</span> <img src="https://www.gijs6.nl/static/meliag/Loogootje.svg" width=45></div>
 
 From Latin _**meli**us **ag**men_ meaning _better train_ (I hope :D)
 
@@ -12,15 +12,16 @@ Data from the [NS API](https://apiportal.ns.nl/) and (maybe in the future from [
 
 #### Map
 
-- [ ] Images on the map
+- [x] Images on the map (semi-fixed)
 - [ ] Filters on the map (_materieel_ and other stuff)
 - [ ] Fix images in the popup and the content/layout/styles of the popup
 - [ ] More info in popup
 - [ ] Station info in popup (current station & stations en route?)
 
-#### _Treintijden_ and the map
+#### _Treintijden_ **and** the map
 
-- [ ] Fix and combine the _ritnummer_-data for the _treintijden_ and the map!!!
+- [x] Fix and combine the _ritnummer_-data for the _treintijden_ and the map!!!
+- [ ] Fix thread bug _ritnummer_-data
 
 #### _Treintijden_
 
@@ -39,13 +40,15 @@ Data from the [NS API](https://apiportal.ns.nl/) and (maybe in the future from [
 - [ ] Fix layout for really long trains (and/or just normal trains on mobile)
 - [ ] Fix "no image available" if it occurs many times (such as with the _European Sleeper_)
 - [ ] Fix spacing between trains (if the description text is long)
+- [ ] Fix no image displayed (probably some bug with the new data system)
 
 #### Other
 
 - [ ] Responsive design for menu, homepage and footer
+- [ ] Fix long loading times
 
 ### Pages to add
 
 - [x] Departing / arriving times (per station) + images/drawings (of the trains (so that the _materieel_ clear is))
-- [ ] _Spoorkaart_ (the rail lines) with _SpoorKaart API_ (+ disruptions?)
-- [ ] Search box for _matnummers_ and _ritnummers_ (-> redirect to /matnummer/{matnum} or /ritnummer/{ritnum})
+- [ ] _Spoorkaart_ (the rail lines) with _SpoorKaart API_ (+ disruptions?) (-> combining with map?)
+- [ ] Search box for _matnummers_ and _ritnummers_ (-> redirect to /matnummer/{matnum} and/or /ritnummer/{ritnum})

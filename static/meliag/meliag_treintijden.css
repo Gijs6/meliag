@@ -101,7 +101,7 @@
 .treinen {
     display: flex;
     flex-direction: row;
-    align-items: flex-start;
+    align-items: stretch;
     justify-content: flex-start;
     flex-wrap: wrap;
 }
@@ -110,7 +110,7 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    justify-content: center;
+    justify-content: space-between;
 }
 
 .bericht {
@@ -135,6 +135,7 @@
 .errortext {
     color: var(--grijs);
     font-style: italic;
+    padding: 0 1em 0 0;
 }
 
 .itemrij:last-child {
@@ -153,4 +154,8 @@
 
 .treinmetinfo img {
     height: 1.75em;
+}
+
+.treininfotekst {
+    padding: 0 1em 0 0;
 }

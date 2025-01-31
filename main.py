@@ -1,12 +1,16 @@
 from flask import Flask, render_template, jsonify
 from datetime import datetime
+from threading import Thread, Lock
 import pickle
 import time
-import threading
 import requests
 import json
 
 app = Flask(__name__)
+
+
+ritnummer_thread = None
+ritnummer_lock = Lock()
 
 
 @app.route("/meliag")
@@ -57,63 +61,83 @@ def api_pos():
 
         try:
             dataDezeTrein = ritnummerData[str(item["treinNummer"])]
-            if (time.time() - dataDezeTrein["laatstBijgewerkt"]) > 300:
+            if (time.time() - dataDezeTrein["dataOpgehaald"]) > 300:
                 ritnummersDataVernieuwen.append(item["treinNummer"])
         except KeyError:
             ritnummersDataVernieuwen.append(item["treinNummer"])
 
-    thread = threading.Thread(target=dataVernieuwenVanRitnummers, args=(ritnummersDataVernieuwen,))
-    thread.start()
+    global ritnummer_thread
+    with ritnummer_lock:
+        if ritnummer_thread is None or not ritnummer_thread.is_alive():
+            ritnummer_thread = Thread(target=dataVernieuwenVanRitnummers, args=(ritnummersDataVernieuwen,))
+            ritnummer_thread.daemon = True
+            ritnummer_thread.start()
 
     return jsonify(data2)
 
-
 def dataVernieuwenVanRitnummers(ritnummerlijst):
     with open("ritnummers.pkl", "rb") as file:
-        oudeData = pickle.load(file)
+        data = pickle.load(file)
 
-    itemsVerwijderen = []
+    faciliteiten_iconen_dict = {
+        "WIFI": "fa-solid fa-wifi",
+        "TOILET": "fa-solid fa-toilet",
+        "STILTE": "fa-solid fa-ear-deaf",
+        "STROOM": "fa-solid fa-plug",
+        "FIETS": "fa-solid fa-bicycle",
+        "TOEGANKELIJK": "fa-solid fa-wheelchair"
+    }
 
-    for ritnummer, itemdata in oudeData.items():
-        if (time.time() - itemdata.get("laatstBijgewerkt", 0)) > 600 or itemdata.get("ritnummer", "N/A") in ritnummerlijst:
-            itemsVerwijderen.append(itemdata.get("ritnummer", "N/A"))
-
-    for item in itemsVerwijderen:
-        if item in oudeData:
-            del oudeData[str(item)]
+    matvervang = {
+        "ELOC TR25": "TRAXX",
+        "SW7-25KV_2+7": "ICR",
+        "ELOC VECT": "VECTRON",
+        "Flirt 3 FFF": "Flirt 3",
+        "Flirt 4 FFF": "Flirt 4"
+    }
 
     for ritnummer in ritnummerlijst:
-        try:
-            url = f"https://gateway.apiportal.ns.nl/virtual-train-api/v1/trein/{ritnummer}?features=drukte"
+        url = f"https://gateway.apiportal.ns.nl/virtual-train-api/v1/trein/{ritnummer}?features=drukte"
 
-            headers = {
-                "Cache-Control": "no-cache",
-                "Ocp-Apim-Subscription-Key": api_key
-            }
+        headers = {
+            "Cache-Control": "no-cache",
+            "Ocp-Apim-Subscription-Key": api_key
+        }
 
-            response = requests.get(url, headers=headers)
+        response = requests.get(url, headers=headers)
 
-            if response.status_code != 200:
-                return 500
+        if response.status_code != 200:
+            return 500
 
-            treindata = response.json()
+        treindata = response.json()
 
-            oudeData[str(ritnummer)] = ({
-                "ritnummer": ritnummer,
-                "laatstBijgewerkt": time.time(),
-                "materieel": treindata.get("type", "N/A"),
-                "vervoerder": treindata.get("vervoerder", "N/A"),
-                "station": treindata.get("station", "N/A"),
-                "spoor": treindata.get("spoor", "N/A"),
-                "materieelNums": [deel.get("materieelnummer", "N/A") for deel in treindata.get("materieeldelen", [])],
-                "afbeeldingen": [deel.get("afbeelding", "N/A") for deel in treindata.get("materieeldelen", [])]
+        materieellijst = []
+
+        for item in treindata.get("materieeldelen", []):
+            faciliteiten_iconen = []
+            for faciliteit in item.get("faciliteiten", []):
+                faciliteiten_iconen.append(faciliteiten_iconen_dict.get(faciliteit.upper(), ""))
+            faciliteiten_iconen = sorted(faciliteiten_iconen)
+            materieellijst.append({
+                "matnum": item.get("materieelnummer", ""),
+                "afb_url": item.get("afbeelding", ""),
+                "mat": matvervang.get(item.get("type", ""), item.get("type", "")),
+                "faciliteiten": item.get("faciliteiten", []),
+                "faciliteiten_iconen": faciliteiten_iconen
             })
 
-        except Exception as e:
-            print(f"Errort {e}")
+        data[str(ritnummer)] = ({
+            "dataOpgehaald": time.time(),
+            "materieel": treindata.get("type", "N/A"),
+            "station": treindata.get("station", "N/A"),
+            "spoor": treindata.get("spoor", "N/A"),
+            "materieelNums": [deel.get("materieelnummer", "N/A") for deel in treindata.get("materieeldelen", [])],
+            "afbeeldingen": [deel.get("afbeelding", "N/A") for deel in treindata.get("materieeldelen", [])],
+            "matlijst": materieellijst,
+        })
 
     with open("ritnummers.pkl", "wb") as file:
-        pickle.dump(oudeData, file)
+        pickle.dump(data, file)
 
 
 @app.route("/meliag/api/ritnummers")
@@ -163,41 +187,36 @@ def meliag_treintijden(station):
     aankomstDataDict = {item.get("product", {})["number"]: item for item in aankomstData["payload"]["arrivals"]}
     vertrekDataDict = {item.get("product", {})["number"]: item for item in vertrekData["payload"]["departures"]}
 
-    alleRitnums = set(aankomstDataDict.keys()).union(vertrekDataDict.keys())
+    alleRitnumsInVertrekEnAankomst = set(aankomstDataDict.keys()).union(vertrekDataDict.keys())
+
+    alleRitnummersWaaranDeDataMoetWordenBijgewerkt = []
+
+    ritNumDataDIRECTOPHALEN = []
+
+    with open("ritnummers.pkl", "rb") as file:
+        ritnumData = pickle.load(file)
+
+    ritNumsInRitnumData = ritnumData.keys()
+
+    for ritnum in alleRitnumsInVertrekEnAankomst:
+        if ritnum not in ritNumsInRitnumData:
+            ritNumDataDIRECTOPHALEN.append(ritnum)
+        elif (ritnumData[ritnum].get("dataOpgehaald", time.time() - 3600) - time.time()) > 600:
+            alleRitnummersWaaranDeDataMoetWordenBijgewerkt.append(ritnum)
+
+    if alleRitnummersWaaranDeDataMoetWordenBijgewerkt:
+        thread = Thread(target=dataVernieuwenVanRitnummers, args=(alleRitnummersWaaranDeDataMoetWordenBijgewerkt,))
+        thread.start()
+
+    if ritNumDataDIRECTOPHALEN:
+        dataVernieuwenVanRitnummers(ritNumDataDIRECTOPHALEN)
+
+        with open("ritnummers.pkl", "rb") as file:
+            ritnumData = pickle.load(file)
 
     volledigeData = []
 
-    faciliteiten_iconen_dict = {
-        "WIFI": "fa-solid fa-wifi",
-        "TOILET": "fa-solid fa-toilet",
-        "STILTE": "fa-solid fa-ear-deaf",
-        "STROOM": "fa-solid fa-plug",
-        "FIETS": "fa-solid fa-bicycle",
-        "TOEGANKELIJK": "fa-solid fa-wheelchair"
-    }
-
-    matvervang = {
-        "ELOC TR25": "TRAXX",
-        "SW7-25KV_2+7": "ICR",
-        "ELOC VECT": "VECTRON",
-        "Flirt 3 FFF": "Flirt 3",
-        "Flirt 4 FFF": "Flirt 4"
-    }
-
-    for ritnummer in alleRitnums:
-        url = f"https://gateway.apiportal.ns.nl/virtual-train-api/v1/trein/{ritnummer}"
-
-        headers = {
-            "Cache-Control": "no-cache",
-            "Ocp-Apim-Subscription-Key": api_key
-        }
-
-        response = requests.get(url, headers=headers)
-
-        if response.status_code != 200:
-            return 500
-
-        treindata = response.json()
+    for ritnummer in alleRitnumsInVertrekEnAankomst:
 
         aankomstDataItem = aankomstDataDict.get(ritnummer, {})
         vertrekDataItem = vertrekDataDict.get(ritnummer, {})
@@ -207,41 +226,46 @@ def meliag_treintijden(station):
         geplande_vertrek = vertrekDataItem.get("plannedDateTime")
         echte_vertrek = vertrekDataItem.get("actualDateTime")
 
-        geplande_aankomst_tijd = datetime.strptime(geplande_aankomst, "%Y-%m-%dT%H:%M:%S%z").strftime("%H:%M") if geplande_aankomst else "-"
-        echte_aankomst_tijd = datetime.strptime(echte_aankomst, "%Y-%m-%dT%H:%M:%S%z").strftime("%H:%M") if echte_aankomst else "-"
-        geplande_vertrek_tijd = datetime.strptime(geplande_vertrek, "%Y-%m-%dT%H:%M:%S%z").strftime("%H:%M") if geplande_vertrek else "-"
-        echte_vertrek_tijd = datetime.strptime(echte_vertrek, "%Y-%m-%dT%H:%M:%S%z").strftime("%H:%M") if echte_vertrek else "-"
+        geplande_aankomst_tijd = datetime.strptime(geplande_aankomst, "%Y-%m-%dT%H:%M:%S%z").strftime(
+            "%H:%M") if geplande_aankomst else "-"
+        echte_aankomst_tijd = datetime.strptime(echte_aankomst, "%Y-%m-%dT%H:%M:%S%z").strftime(
+            "%H:%M") if echte_aankomst else "-"
+        geplande_vertrek_tijd = datetime.strptime(geplande_vertrek, "%Y-%m-%dT%H:%M:%S%z").strftime(
+            "%H:%M") if geplande_vertrek else "-"
+        echte_vertrek_tijd = datetime.strptime(echte_vertrek, "%Y-%m-%dT%H:%M:%S%z").strftime(
+            "%H:%M") if echte_vertrek else "-"
 
         try:
             if echte_aankomst and geplande_aankomst:
-                vertraging_aankomst = round((datetime.strptime(echte_aankomst, "%Y-%m-%dT%H:%M:%S%z") - datetime.strptime(geplande_aankomst, "%Y-%m-%dT%H:%M:%S%z")).total_seconds() / 60)
+                vertraging_aankomst = round((datetime.strptime(echte_aankomst,
+                                                               "%Y-%m-%dT%H:%M:%S%z") - datetime.strptime(
+                    geplande_aankomst, "%Y-%m-%dT%H:%M:%S%z")).total_seconds() / 60)
             else:
                 vertraging_aankomst = None
-        except Exception as e:
+        except:
             vertraging_aankomst = None
 
         try:
             if echte_vertrek and geplande_vertrek:
-                vertraging_vertrek = round((datetime.strptime(echte_vertrek, "%Y-%m-%dT%H:%M:%S%z") - datetime.strptime(geplande_vertrek, "%Y-%m-%dT%H:%M:%S%z")).total_seconds() / 60)
+                vertraging_vertrek = round((datetime.strptime(echte_vertrek, "%Y-%m-%dT%H:%M:%S%z") - datetime.strptime(
+                    geplande_vertrek, "%Y-%m-%dT%H:%M:%S%z")).total_seconds() / 60)
             else:
                 vertraging_vertrek = None
-        except Exception as e:
+        except:
             vertraging_vertrek = None
 
-        materieellijst = []
+        berichtenDict = {}
 
-        for item in treindata.get("materieeldelen", []):
-            faciliteiten_iconen = []
-            for faciliteit in item.get("faciliteiten", []):
-                faciliteiten_iconen.append(faciliteiten_iconen_dict.get(faciliteit.upper(), ""))
-            faciliteiten_iconen = sorted(faciliteiten_iconen)
-            materieellijst.append({
-                "matnum": item.get("materieelnummer", ""),
-                "afb_url": item.get("afbeelding", ""),
-                "mat": matvervang.get(item.get("type", ""), item.get("type", "")),
-                "faciliteiten": item.get("faciliteiten", []),
-                "faciliteiten_iconen": faciliteiten_iconen
-            })
+        for bericht in vertrekDataItem.get("messages", []) + aankomstDataItem.get("messages", []):
+            text, style = bericht["message"], bericht["style"]
+
+            if text in berichtenDict:
+                if style == "WARNING" or berichtenDict[text] != "WARNING":
+                    berichtenDict[text] = "WARNING"
+            else:
+                berichtenDict[text] = style
+
+        berichten = [{"message": bericht, "style": style} for bericht, style in berichtenDict.items()]
 
         volledigeData.append({
             "ritnummer": ritnummer,
@@ -272,16 +296,11 @@ def meliag_treintijden(station):
             "aankomstStatus": aankomstDataItem.get("arrivalStatus", ""),
             "vertrekStatus": vertrekDataItem.get("departureStatus", ""),
 
-            "vervallen": vertrekDataItem.get("cancelled", False),
-            "berichten": vertrekDataItem.get("messages", []),
+            "vervallen": (vertrekDataItem.get("cancelled", False) or aankomstDataItem.get("cancelled", False)),
+            "berichten": berichten,
 
-            "materieel": treindata.get("type", "N/A"),
-            "station": treindata.get("station", "N/A"),
-            "spoor": treindata.get("spoor", "N/A"),
-            "materieelNums": [deel.get("materieelnummer", "N/A") for deel in treindata.get("materieeldelen", [])],
-            "afbeeldingen": [deel.get("afbeelding", "N/A") for deel in treindata.get("materieeldelen", [])],
+            "matData": ritnumData.get(str(ritnummer), {})
 
-            "matlijst": materieellijst,
         })
 
     volledigeData = sorted(volledigeData, key=lambda x: datetime.strptime(x["sort"], "%Y-%m-%dT%H:%M:%S%z"))

@@ -52,7 +52,7 @@
                 </div>
             </div>
             <div class="treinen">
-                {% for trein in item.matlijst %}
+                {% for trein in item.matData.matlijst %}
                     <div class="treinmetinfo">
                         {% if trein.afb_url %}
                             <img src="{{ trein.afb_url }}" alt="Afbeelding van een {{ trein.mat }}">

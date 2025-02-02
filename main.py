@@ -305,7 +305,7 @@ def meliag_treintijden(station):
 
     volledigeData = sorted(volledigeData, key=lambda x: datetime.strptime(x["sort"], "%Y-%m-%dT%H:%M:%S%z"))
 
-    stationvolledig = afkoNaarVolledig.get(station, "NIET BESCHIKBAAR")
+    stationvolledig = afkoNaarVolledig.get(station.capitalize(), "NIET BESCHIKBAAR")
 
     return render_template("meliag/meliag_treintijden.html", data=volledigeData, volledigestationsnaam=stationvolledig)
 

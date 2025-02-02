@@ -52,5 +52,5 @@ tr.header, tr:hover {
     align-items: stretch;
     justify-content: flex-start;
     gap: 2em;
-    width: 40%;
+    width: min(100%, 600px);
 }

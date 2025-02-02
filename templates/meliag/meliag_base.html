@@ -27,7 +27,7 @@
                 </div>
 
                 <div class="menuitemcontainer met-submenu">
-                    <a class="menu-item {% if active_page in ['treintijden', 'treintijdenzoeken'] %}active{% endif %}" href="/meliag/treintijden">
+                    <a class="menu-item {% if active_page in ['treintijden', 'treintijdenzoeken'] %}active{% endif %} met-submenu" href="/meliag/treintijden">
                         <span class="menuitemtext">Treintijden</span>
                         <div class="menuitemslide"></div>
                     </a>
@@ -123,6 +123,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             const menuItemsLijst = document.querySelectorAll('.menuitemcontainer.met-submenu');
             const onzichtbarehoverzooien = document.querySelectorAll('.onzichtbarehoverzooi');
+            const kanHoveren = window.matchMedia("(hover: hover)");
 
             menuItemsLijst.forEach((menuItem, index) => {
                 const onzichtbarehoverzooi = onzichtbarehoverzooien[index];
@@ -150,10 +151,30 @@
                     }
                 }
 
-                menuItem.addEventListener('mouseleave', hideOnHover);
-                onzichtbarehoverzooi.addEventListener('mouseleave', hideOnHover);
-                menuItem.addEventListener('mouseenter', showOnHover);
-                onzichtbarehoverzooi.addEventListener('mouseenter', showOnHover);
+                function klikToggle() {
+                    console.log("tets");
+                    if (window.getComputedStyle(onzichtbarehoverzooi).display === "none") {
+                        // Als hij niet zichtbaar is, dus dan moet hij wel zichtbaar worden
+                        onzichtbarehoverzooi.style.display = "block";
+                    } else { // if (window.getComputedStyle(onzichtbarehoverzooi).display === "block")
+                        // Als hij wel zichtbaar is, dus dan moet hij onzichtbaar worden.
+                        onzichtbarehoverzooi.classList.add("sluiten");
+                        setTimeout(() => {
+                            onzichtbarehoverzooi.style.display = "none";
+                            onzichtbarehoverzooi.classList.remove("sluiten");
+                        }, 300);
+                    }
+                }
+
+
+                if (!kanHoveren.matches) {
+                    menuItem.addEventListener("click", klikToggle);
+                } else {
+                    menuItem.addEventListener('mouseleave', hideOnHover);
+                    onzichtbarehoverzooi.addEventListener('mouseleave', hideOnHover);
+                    menuItem.addEventListener('mouseenter', showOnHover);
+                    onzichtbarehoverzooi.addEventListener('mouseenter', showOnHover);
+                }
             });
         });
     </script>

@@ -45,8 +45,8 @@ Data from the [NS API](https://apiportal.ns.nl/) and (maybe in the future from [
 #### Other
 
 - [ ] Responsive design for menu, homepage and footer
-- [ ] Fix submenu hover on mobile (disable link, make the menu item clickable)
-- [ ] Fix layout _treintijden_ search page on mobile
+- [x] Fix submenu hover on mobile (disable link, make the menu item clickable)
+- [x] Fix layout _treintijden_ search page on mobile
 - [ ] Fix long loading times
 
 ### Pages to add

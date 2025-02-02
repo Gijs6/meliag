@@ -41,13 +41,15 @@ body {
 }
 
 #title {
-    font-size: 2em;
+    font-size: 1.3em;
     font-variant: small-caps;
     user-select: none;
     display: flex;
     flex-direction: row;
     align-items: center;
     gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 #menu {
@@ -154,7 +156,7 @@ body {
     animation: 300ms fadeOMLAAG;
     opacity: 0;
     animation-fill-mode: forwards;
-    z-index: 1;
+    z-index: 120;
 }
 
 
@@ -186,12 +188,39 @@ body {
 .submenuitem {
     color: var(--zwart);
     transition: 200ms all ease;
+    font-size: 0.9em;
+    word-wrap: break-word;
+    hyphens: auto;
 }
 
 .submenuitem:hover {
     font-weight: 900;
     color: var(--dblauw);
 }
+
+
+
+
+@media not (hover: hover) {
+  .menu-item.met-submenu {
+    pointer-events: none;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

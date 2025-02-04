@@ -1,3 +1,20 @@
+#content {
+    display: flex;
+    align-items: stretch;
+    align-content: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+#pageheader {
+    font-size: 1.5em;
+    font-weight: 500;
+}
+
+#stationbenadruk {
+    font-weight: 800;
+}
+
 .itemrij {
     display: flex;
     flex-direction: row;
@@ -10,30 +27,47 @@
     gap: 1%;
 }
 
-#content {
+.itemrij:last-child {
+    border-bottom: none !important;
+}
+
+.itemrij.vervallen {
+    color: var(--rood);
+    font-style: italic;
+}
+
+
+.links {
+    min-width: 5%;
+    text-align: center;
+}
+
+.vertragingsinfo {
+    color: var(--rood);
+    font-weight: 700;
+}
+
+
+.middenrij {
     display: flex;
-    align-items: stretch;
-    align-content: center;
-    justify-content: center;
     flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 15px;
 }
 
 
-
-#pageheader {
-    font-size: 1.5em;
-    font-weight: 500;
+.treinCat {
+    font-weight: 600;
 }
-
-#stationbenadruk {
-    font-weight: 800;
-}
-
-
 
 .vannaar-label {
     font-weight: 300;
     color: var(--grijs);
+}
+
+.vannaar-label.vervallen {
+    color: var(--rood);
 }
 
 .stationvn {
@@ -46,56 +80,10 @@
     font-size: 1.1em;
 }
 
-
-
-.vertragingsinfo {
-    color: var(--rood);
-    font-weight: 700;
-}
-
-
-.treinCat {
-    font-weight: 600;
-}
-
-.spoor {
-    font-size: 1.15em;
-    font-weight: 500;
-}
-
-.itemrij.vervallen {
-    color: var(--rood);
-    font-style: italic;
-}
-
 .via-container {
     font-size: 0.9em;
     font-weight: 300;
 }
-
-.spoor.verandering {
-    color: var(--rood);
-    font-weight: 700;
-}
-
-.links {
-    min-width: 5%;
-    text-align: center;
-}
-
-.rechts {
-    flex-grow: 1;
-    text-align: end;
-}
-
-.middenrij {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: center;
-    gap: 15px;
-}
-
 
 .treinen {
     display: flex;
@@ -110,6 +98,30 @@
     flex-direction: column;
     align-items: flex-start;
     justify-content: space-between;
+}
+
+.treinmetinfo img {
+    height: 1.75em;
+}
+
+.errortext {
+    color: var(--grijs);
+    font-style: italic;
+    padding: 0 1em 0 0;
+}
+
+.treininfotekst {
+    padding: 0 1em 0 0;
+}
+
+
+.berichten {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1em;
+    align-items: stretch;
+    justify-content: flex-start;
 }
 
 .bericht {
@@ -127,34 +139,25 @@
     background: var(--rood);
 }
 
-.vannaar-label.vervallen {
+
+.itemrij.vervallen .bericht {
+    background: var(--rood) !important;
+}
+
+
+.rechts {
+    flex-grow: 1;
+    text-align: end;
+}
+
+
+.spoor {
+    font-size: 1.15em;
+    font-weight: 500;
+}
+
+
+.spoor.verandering {
     color: var(--rood);
-}
-
-.errortext {
-    color: var(--grijs);
-    font-style: italic;
-    padding: 0 1em 0 0;
-}
-
-.itemrij:last-child {
-    border-bottom: none !important;
-}
-
-
-.berichten {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 1em;
-    align-items: stretch;
-    justify-content: flex-start;
-}
-
-.treinmetinfo img {
-    height: 1.75em;
-}
-
-.treininfotekst {
-    padding: 0 1em 0 0;
+    font-weight: 700;
 }

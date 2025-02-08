@@ -4,28 +4,8 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>500 Internal Server Error</title>
-        <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='error.ico') }}">
-        <style>
-            :root {
-                color-scheme: light dark;
-            }
-            body {
-                justify-items: center;
-                padding: clamp(25px, 2.5%, 50px);
-                margin: 0;
-                font-family: monospace;
-            }
-            .container {
-                max-width: clamp(750px, 50%, 1500px);
-            }
-            h1, p {
-                margin: 0;
-            }
-
-            p {
-                font-size: 1.25em;
-            }
-        </style>
+        <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favs/error.ico') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='min.css') }}">
     </head>
     <body>
         <div class="container">

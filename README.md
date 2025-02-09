@@ -6,7 +6,7 @@ A website I am building to display all kinds of data about trains in a 'better' 
 
 Built with the _amazing_ Python framework [Flask](https://github.com/pallets/flask) and the [Jinja](https://github.com/pallets/jinja) templating engine.
 
-Data from the [NS API](https://apiportal.ns.nl/) and (maybe in the future from [NDOV](https://ndovloket.nl/))?
+Data from the [NS API](https://apiportal.ns.nl/).
 
 ## Ideas / stuff to add
 

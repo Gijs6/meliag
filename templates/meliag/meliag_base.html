@@ -116,14 +116,16 @@
 
         <div id="footer">
             <p>Gemaakt door <a href="/" target="_blank">Gijs</a></p>
+            <p><a href="/meliag/colofon">Colofon</a></p>
         </div>
-    </body>
+
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const menuItemsLijst = document.querySelectorAll('.menuitemcontainer.met-submenu');
             const onzichtbarehoverzooien = document.querySelectorAll('.onzichtbarehoverzooi');
             const kanHoveren = window.matchMedia("(hover: hover)");
+
 
             menuItemsLijst.forEach((menuItem, index) => {
                 const onzichtbarehoverzooi = onzichtbarehoverzooien[index];
@@ -178,4 +180,5 @@
             });
         });
     </script>
+    </body>
 </html>

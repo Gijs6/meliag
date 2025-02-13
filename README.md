@@ -1,4 +1,4 @@
-# <div style="display:flex;flex-direction:row;gap:10px;align-items:center"><span style="font-variant: small-caps;">[Meliag](https://www.gijs6.nl/meliag)</span> <img src="https://www.gijs6.nl/static/meliag/Loogootje.svg" width=45></div>
+# <span style="font-variant: small-caps;">[Meliag](https://www.gijs6.nl/meliag)</span> <img src="https://www.gijs6.nl/static/meliag/Loogootje.svg" width=45>
 
 From Latin _**meli**us **ag**men_ meaning _better train_ (I hope :D)
 
@@ -20,10 +20,10 @@ Data from the [NS API](https://apiportal.ns.nl/).
 - [ ] More info in popup
 - [ ] Station info in popup (current station & stations en route?)
 
-#### _Treintijden_ **and** the map
+#### Both _Treintijden_ **and** the map
 
 - [x] Fix and combine the _ritnummer_-data for the _treintijden_ and the map!!!
-- [ ] Fix thread bug _ritnummer_-data
+- [ ] Fix thread bug _ritnummer_-data and just the ritnumdata in general
 
 #### _Treintijden_
 
@@ -47,7 +47,7 @@ Data from the [NS API](https://apiportal.ns.nl/).
 #### Other
 
 - [ ] Responsive design for menu, homepage and footer
-- [x] Fix submenu hover on mobile (disable link, make the menu item clickable)
+- [ ] Fix submenu hover on mobile (disable link, make the menu item clickable)
 - [x] Fix layout _treintijden_ search page on mobile
 - [ ] Fix long loading times
 

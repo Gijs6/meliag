@@ -1,10 +1,10 @@
 # <span style="font-variant: small-caps;">[Meliag](https://www.gijs6.nl/meliag)</span> <img src="https://www.gijs6.nl/static/meliag/Loogootje.svg" width=45>
 
-From Latin _**meli**us **ag**men_ meaning _better train_ (I hope :D)
+From Latin ***meli**us **ag**men* meaning *better train* (I hope :D)
 
 A website I am building to display all kinds of data about trains in a 'better' way.
 
-Built with the _amazing_ Python framework [Flask](https://github.com/pallets/flask) and the [Jinja](https://github.com/pallets/jinja) templating engine.
+Built with the *amazing* Python framework [Flask](https://github.com/pallets/flask) and the [Jinja](https://github.com/pallets/jinja) templating engine.
 
 Data from the [NS API](https://apiportal.ns.nl/).
 
@@ -15,32 +15,32 @@ Data from the [NS API](https://apiportal.ns.nl/).
 #### Map
 
 - [x] Images on the map (semi-fixed)
-- [ ] Filters on the map (_materieel_ and other stuff)
+- [ ] Filters on the map (*materieel* and other stuff)
 - [ ] Fix images in the popup and the content/layout/styles of the popup
 - [ ] More info in popup
 - [ ] Station info in popup (current station & stations en route?)
 
-#### Both _Treintijden_ **and** the map
+#### Both *Treintijden* **and** the map
 
-- [x] Fix and combine the _ritnummer_-data for the _treintijden_ and the map!!!
-- [ ] Fix thread bug _ritnummer_-data and just the ritnumdata in general
+- [x] Fix and combine the *ritnummer*-data for the *treintijden* and the map!!!
+- [ ] Fix thread bug *ritnummer*-data and just the ritnumdata in general
 
-#### _Treintijden_
+#### *Treintijden*
 
-- [x] Adding some better styles to the _treintijden_
-- [x] Adding images and more info to the _treintijden_
+- [x] Adding some better styles to the *treintijden*
+- [x] Adding images and more info to the *treintijden*
 - [x] Bug with the alt text of the train image with international trains
 - [x] Cleaning up delays and other time information
-- [x] A menu for the _treintijden_ in the menu bar
+- [x] A menu for the *treintijden* in the menu bar
 - [x] Add the 15 biggest stations in the submenu
-- [x] Add a redirect/search page for the _treintijden_!
+- [x] Add a redirect/search page for the *treintijden*!
 - [x] Nice exit animation for the submenu (with JS?)
-- [ ] Add links to the _op de route_ (en route) stations in _treintijden_ (with UIC?)
-- [ ] Responsive design for the _treintijden_ (fix flexbox and div's (in the entire row))
-- [ ] Fix bug: the _treintijden_ for the **first** station (in the country [such as _Breda_]) of an international train
+- [ ] Add links to the *op de route* (en route) stations in *treintijden* (with UIC?)
+- [ ] Responsive design for the *treintijden* (fix flexbox and div's (in the entire row))
+- [ ] Fix bug: the *treintijden* for the **first** station (in the country [such as *Breda*]) of an international train
   shows that the train started at that station
 - [ ] Fix layout for really long trains (and/or just normal trains on mobile)
-- [ ] Fix "no image available" if it occurs many times (such as with the _European Sleeper_)
+- [ ] Fix "no image available" if it occurs many times (such as with the *European Sleeper*)
 - [ ] Fix spacing between trains (if the description text is long)
 - [ ] Fix no image displayed (probably some bug with the new data system)
 
@@ -48,11 +48,11 @@ Data from the [NS API](https://apiportal.ns.nl/).
 
 - [ ] Responsive design for menu, homepage and footer
 - [ ] Fix submenu hover on mobile (disable link, make the menu item clickable)
-- [x] Fix layout _treintijden_ search page on mobile
+- [x] Fix layout *treintijden* search page on mobile
 - [ ] Fix long loading times
 
 ### Pages to add
 
-- [x] Departing / arriving times (per station) + images/drawings (of the trains (so that the _materieel_ clear is))
-- [ ] _Spoorkaart_ (the rail lines) with _SpoorKaart API_ (+ disruptions?) (-> combining with map?)
-- [ ] Search box for _matnummers_ and _ritnummers_ (-> redirect to /matnummer/{matnum} and/or /ritnummer/{ritnum})
+- [x] Departing / arriving times (per station) + images/drawings (of the trains (so that the *materieel* clear is))
+- [ ] *Spoorkaart* (the rail lines) with *SpoorKaart API* (+ disruptions?) (-> combining with map?)
+- [ ] Search box for *matnummers* and *ritnummers* (-> redirect to /matnummer/{matnum} and/or /ritnummer/{ritnum})

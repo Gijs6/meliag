@@ -9,3 +9,6 @@
 .venv/
 .env
 stationslijst.pkl
+
+dekstop.ini
+**/desktop.ini

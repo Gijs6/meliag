@@ -1,16 +1,11 @@
 from flask import Flask, render_template, jsonify
-from datetime import datetime
-from threading import Thread, Lock
+from datetime import datetime, timedelta
 import pickle
 import time
 import requests
 import json
 
 app = Flask(__name__)
-
-
-ritnummer_thread = None
-ritnummer_lock = Lock()
 
 
 @app.route("/meliag")
@@ -45,11 +40,6 @@ def api_pos():
 
     data2 = []
 
-    with open("ritnummers.pkl", "rb") as file:
-        ritnummerData = pickle.load(file)
-
-    ritnummersDataVernieuwen = []
-
     for item in data["payload"]["treinen"]:
         data2.append({
             "ritNum": item.get("treinNummer", "N/A"),
@@ -59,21 +49,30 @@ def api_pos():
             "treinSoort": item.get("type", "N/A"),
         })
 
-        try:
-            dataDezeTrein = ritnummerData[str(item["treinNummer"])]
-            if (time.time() - dataDezeTrein["dataOpgehaald"]) > 300:
-                ritnummersDataVernieuwen.append(item["treinNummer"])
-        except KeyError:
-            ritnummersDataVernieuwen.append(item["treinNummer"])
-
-    global ritnummer_thread
-    with ritnummer_lock:
-        if ritnummer_thread is None or not ritnummer_thread.is_alive():
-            ritnummer_thread = Thread(target=dataVernieuwenVanRitnummers, args=(ritnummersDataVernieuwen,))
-            ritnummer_thread.daemon = True
-            ritnummer_thread.start()
-
     return jsonify(data2)
+
+
+def alleRitNumsInDePosDataVerversen():
+    url = "https://gateway.apiportal.ns.nl/virtual-train-api/vehicle?lat=0&lng=0"
+    headers = {
+        "Cache-Control": "no-cache",
+        "Ocp-Apim-Subscription-Key": api_key
+    }
+
+    response = requests.get(url, headers=headers)
+
+    if response.status_code != 200:
+        return 500
+
+    data = response.json()
+
+    ritNums = []
+
+    for item in data["payload"]["treinen"]:
+        ritNums.append(item.get("treinNummer", "0000"))
+
+    dataVernieuwenVanRitnummers(ritNums)
+
 
 def dataVernieuwenVanRitnummers(ritnummerlijst):
     with open("ritnummers.pkl", "rb") as file:
@@ -136,8 +135,24 @@ def dataVernieuwenVanRitnummers(ritnummerlijst):
             "matlijst": materieellijst,
         })
 
+
     with open("ritnummers.pkl", "wb") as file:
         pickle.dump(data, file)
+
+    return data
+
+
+def ritnumdatacleanup():
+    with open("ritnummers.pkl", "rb") as file:
+        data = pickle.load(file)
+
+    yesterday = datetime.now() - timedelta(days=1)
+    timestamp_yesterday = int(datetime(yesterday.year, yesterday.month, yesterday.day, 23, 59).timestamp())
+
+    nieuwe_data = {k: v for k, v in data.items() if v.get("dataOpgehaald", 0) > timestamp_yesterday}
+
+    with open("ritnummers.pkl", "wb") as file:
+        pickle.dump(nieuwe_data, file)
 
 
 @app.route("/meliag/api/ritnummers")
@@ -154,7 +169,7 @@ def meliag_treintijden_zoeken():
     return render_template("meliag/meliag_treintijden_zoeken.html", stationslijst=data)
 
 
-with open('stations.json', 'r', encoding='utf-8') as file:
+with open('afkoNaarVolledig.json', 'r', encoding='utf-8') as file:
     afkoNaarVolledig = json.load(file)
 
 
@@ -189,8 +204,6 @@ def meliag_treintijden(station):
 
     alleRitnumsInVertrekEnAankomst = set(aankomstDataDict.keys()).union(vertrekDataDict.keys())
 
-    alleRitnummersWaaranDeDataMoetWordenBijgewerkt = []
-
     ritNumDataDIRECTOPHALEN = []
 
     with open("ritnummers.pkl", "rb") as file:
@@ -201,18 +214,9 @@ def meliag_treintijden(station):
     for ritnum in alleRitnumsInVertrekEnAankomst:
         if ritnum not in ritNumsInRitnumData:
             ritNumDataDIRECTOPHALEN.append(ritnum)
-        elif (ritnumData[ritnum].get("dataOpgehaald", time.time() - 3600) - time.time()) > 600:
-            alleRitnummersWaaranDeDataMoetWordenBijgewerkt.append(ritnum)
-
-    if alleRitnummersWaaranDeDataMoetWordenBijgewerkt:
-        thread = Thread(target=dataVernieuwenVanRitnummers, args=(alleRitnummersWaaranDeDataMoetWordenBijgewerkt,))
-        thread.start()
 
     if ritNumDataDIRECTOPHALEN:
-        dataVernieuwenVanRitnummers(ritNumDataDIRECTOPHALEN)
-
-        with open("ritnummers.pkl", "rb") as file:
-            ritnumData = pickle.load(file)
+        ritnumData = dataVernieuwenVanRitnummers(ritNumDataDIRECTOPHALEN)
 
     volledigeData = []
 
@@ -256,8 +260,8 @@ def meliag_treintijden(station):
 
         berichtenDict = {}
 
-        for bericht in vertrekDataItem.get("messages", []) + aankomstDataItem.get("messages", []):
-            text, style = bericht["message"], bericht["style"]
+        for msg in vertrekDataItem.get("messages", []) + aankomstDataItem.get("messages", []):
+            text, style = msg["message"], msg["style"]
 
             if text in berichtenDict:
                 if style == "WARNING" or berichtenDict[text] != "WARNING":
@@ -265,7 +269,7 @@ def meliag_treintijden(station):
             else:
                 berichtenDict[text] = style
 
-        berichten = [{"message": bericht, "style": style} for bericht, style in berichtenDict.items()]
+        berichten = [{"message": msg, "style": style} for msg, style in berichtenDict.items()]
 
         volledigeData.append({
             "ritnummer": ritnummer,
@@ -286,10 +290,18 @@ def meliag_treintijden(station):
             "geplandVertrekSpoor": vertrekDataItem.get("plannedTrack", ""),
             "echtVertrekSpoor": vertrekDataItem.get("actualTrack", ""),
 
-            "afkoCat": vertrekDataItem.get("product", {}).get("categoryCode", aankomstDataItem.get("product", {}).get("categoryCode", "")),
-            "kleineCat": vertrekDataItem.get("product", {}).get("longCategoryName", aankomstDataItem.get("product", {}).get("longCategoryName", "")),
-            "groteCat": vertrekDataItem.get("product", {}).get("shortCategoryName", aankomstDataItem.get("product", {}).get("shortCategoryName", "")),
-            "operator": vertrekDataItem.get("product", {}).get("operatorName", aankomstDataItem.get("product", {}).get("operatorName", "")),
+            "afkoCat": vertrekDataItem.get("product", {}).get("categoryCode",
+                                                              aankomstDataItem.get("product", {}).get("categoryCode",
+                                                                                                      "")),
+            "kleineCat": vertrekDataItem.get("product", {}).get("longCategoryName",
+                                                                aankomstDataItem.get("product", {}).get(
+                                                                    "longCategoryName", "")),
+            "groteCat": vertrekDataItem.get("product", {}).get("shortCategoryName",
+                                                               aankomstDataItem.get("product", {}).get(
+                                                                   "shortCategoryName", "")),
+            "operator": vertrekDataItem.get("product", {}).get("operatorName",
+                                                               aankomstDataItem.get("product", {}).get("operatorName",
+                                                                                                       "")),
 
             "stationsOpDeRoute": [station["mediumName"] for station in vertrekDataItem.get("routeStations", [])],
 

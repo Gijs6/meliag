@@ -3,7 +3,12 @@ from datetime import datetime, timedelta
 import pickle
 import time
 import requests
+import os
 import json
+from dotenv import load_dotenv
+
+load_dotenv()
+api_key = os.getenv("api_key")
 
 app = Flask(__name__)
 
@@ -127,6 +132,7 @@ def update_train_data(train_numbers):
 
 
 def clean_train_number_data():
+    # This function is ran (externally) every day
     with open("ritnummers.pkl", "rb") as file:
         data = pickle.load(file)
 
@@ -150,6 +156,141 @@ def meliag_timetable_search():
     with open("stationslijst.pkl", "rb") as file:
         station_list = pickle.load(file)
     return render_template("meliag/meliag_treintijden_zoeken.html", stationslijst=station_list)
+
+
+with open('afkoNaarVolledig.json', 'r', encoding='utf-8') as file:
+    abbreviationToFull = json.load(file)
+
+
+@app.route("/meliag/treintijden/<station>")
+def meliag_train_times(station):
+    url = f"https://gateway.apiportal.ns.nl/reisinformatie-api/api/v2/arrivals?station={station}"
+
+    headers = {
+        "Cache-Control": "no-cache",
+        "Ocp-Apim-Subscription-Key": api_key
+    }
+    response = requests.get(url, headers=headers)
+    if response.status_code != 200:
+        return 500
+
+    arrivalData = response.json()
+
+    url = f"https://gateway.apiportal.ns.nl/reisinformatie-api/api/v2/departures?station={station}"
+
+    headers = {
+        "Cache-Control": "no-cache",
+        "Ocp-Apim-Subscription-Key": api_key
+    }
+    response = requests.get(url, headers=headers)
+    if response.status_code != 200:
+        return 500
+
+    departureData = response.json()
+
+    arrivalDataDict = {item.get("product", {})["number"]: item for item in arrivalData["payload"]["arrivals"]}
+    departureDataDict = {item.get("product", {})["number"]: item for item in departureData["payload"]["departures"]}
+
+    allTripNumbersInArrivalAndDeparture = set(arrivalDataDict.keys()).union(departureDataDict.keys())
+
+    tripNumbersToFetch = []
+
+    with open("ritnummers.pkl", "rb") as file:
+        tripNumberData = pickle.load(file)
+
+    tripNumbersInData = tripNumberData.keys()
+
+    for tripNumber in allTripNumbersInArrivalAndDeparture:
+        if tripNumber not in tripNumbersInData:
+            tripNumbersToFetch.append(tripNumber)
+
+    if tripNumbersToFetch:
+        tripNumberData = update_train_data(tripNumbersToFetch)
+
+    fullData = []
+
+    for tripNumber in allTripNumbersInArrivalAndDeparture:
+        arrivalItem = arrivalDataDict.get(tripNumber, {})
+        departureItem = departureDataDict.get(tripNumber, {})
+
+        plannedArrival = arrivalItem.get("plannedDateTime")
+        actualArrival = arrivalItem.get("actualDateTime")
+        plannedDeparture = departureItem.get("plannedDateTime")
+        actualDeparture = departureItem.get("actualDateTime")
+
+        plannedArrivalTime = datetime.strptime(plannedArrival, "%Y-%m-%dT%H:%M:%S%z").strftime("%H:%M") if plannedArrival else "-"
+        actualArrivalTime = datetime.strptime(actualArrival, "%Y-%m-%dT%H:%M:%S%z").strftime("%H:%M") if actualArrival else "-"
+        plannedDepartureTime = datetime.strptime(plannedDeparture, "%Y-%m-%dT%H:%M:%S%z").strftime("%H:%M") if plannedDeparture else "-"
+        actualDepartureTime = datetime.strptime(actualDeparture, "%Y-%m-%dT%H:%M:%S%z").strftime("%H:%M") if actualDeparture else "-"
+
+        try:
+            if actualArrival and plannedArrival:
+                delayArrival = round((datetime.strptime(actualArrival, "%Y-%m-%dT%H:%M:%S%z") - datetime.strptime(plannedArrival, "%Y-%m-%dT%H:%M:%S%z")).total_seconds() / 60)
+            else:
+                delayArrival = None
+        except:
+            delayArrival = None
+
+        try:
+            if actualDeparture and plannedDeparture:
+                delayDeparture = round((datetime.strptime(actualDeparture, "%Y-%m-%dT%H:%M:%S%z") - datetime.strptime(plannedDeparture, "%Y-%m-%dT%H:%M:%S%z")).total_seconds() / 60)
+            else:
+                delayDeparture = None
+        except:
+            delayDeparture = None
+
+        messagesDict = {}
+
+        for msg in departureItem.get("messages", []) + arrivalItem.get("messages", []):
+            text, style = msg["message"], msg["style"]
+
+            if text in messagesDict:
+                if style == "WARNING" or messagesDict[text] != "WARNING":
+                    messagesDict[text] = "WARNING"
+            else:
+                messagesDict[text] = style
+
+        messages = [{"message": msg, "style": style} for msg, style in messagesDict.items()]
+
+        fullData.append({
+            "ritnummer": tripNumber,
+            "stationVan": arrivalItem.get("origin", ""),
+            "stationNaar": departureItem.get("direction", ""),
+
+            "geplandeAankomstTijd": plannedArrivalTime,
+            "echteAankomstTijd": actualArrivalTime,
+            "geplandeVertrekTijd": plannedDepartureTime,
+            "echteVertrekTijd": actualDepartureTime,
+            "vertragingAankomst": delayArrival,
+            "vertragingVertrek": delayDeparture,
+
+            "sort": departureItem.get("actualDateTime", arrivalItem.get("actualDateTime", "")),
+
+            "geplandAankomstSpoor": arrivalItem.get("plannedTrack", ""),
+            "echtAankomstSpoor": arrivalItem.get("actualTrack", ""),
+            "geplandVertrekSpoor": departureItem.get("plannedTrack", ""),
+            "echtVertrekSpoor": departureItem.get("actualTrack", ""),
+
+            "afkoCat": departureItem.get("product", {}).get("categoryCode",arrivalItem.get("product", {}).get("categoryCode", "")),
+            "kleineCat": departureItem.get("product", {}).get("longCategoryName", arrivalItem.get("product", {}).get("longCategoryName", "")),
+            "groteCat": departureItem.get("product", {}).get("shortCategoryName",arrivalItem.get("product", {}).get("shortCategoryName", "")),
+            "operator": departureItem.get("product", {}).get("operatorName",arrivalItem.get("product", {}).get("operatorName", "")),
+            "stationsOnRoute": [station["mediumName"] for station in departureItem.get("routeStations", [])],
+
+            "aankomstStatus": arrivalItem.get("arrivalStatus", ""),
+            "vertrekStatus": departureItem.get("departureStatus", ""),
+
+            "vervallen": (departureItem.get("cancelled", False) or arrivalItem.get("cancelled", False)),
+            "berichten": messages,
+
+            "matData": tripNumberData.get(str(tripNumber), {})
+        })
+
+    fullData = sorted(fullData, key=lambda x: datetime.strptime(x["sort"], "%Y-%m-%dT%H:%M:%S%z"))
+
+    fullStationName = abbreviationToFull.get(station.capitalize(), "NIET BESCHIKBAAR")
+
+    return render_template("meliag/meliag_treintijden.html", data=fullData, volledigestationsnaam=fullStationName)
 
 
 @app.errorhandler(404)

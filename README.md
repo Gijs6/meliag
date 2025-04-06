@@ -1,4 +1,4 @@
-# <span style="font-variant: small-caps;">[Meliag](https://www.gijs6.nl/meliag)</span> <img src="https://www.gijs6.nl/static/meliag/Loogootje.svg" width=45>
+# Meliag
 
 From Latin ***meli**us **ag**men* meaning *better train* (I hope :D)
 

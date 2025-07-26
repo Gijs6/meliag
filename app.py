@@ -2,6 +2,7 @@ from flask import Flask, render_template, request
 
 from datetime import datetime
 from dotenv import load_dotenv
+import string
 import requests
 import os
 import json
@@ -92,7 +93,7 @@ def normalize_name(name):
 
 @app.template_filter("format_name")
 def format_name(name):
-    return "".join(c for c in name if c.isalpha() or c == " ").strip()
+    return "".join(c for c in name if c.isalpha() or c == " " or c in string.punctuation).strip()
 
 
 @app.template_filter("format_datetime")

@@ -43,6 +43,15 @@ main {
     column-gap: 10px;
 }
 
+.train-cancelled {
+    background: var(--oc-red-1);
+}
+
+.train-cancelled .train-metadata,
+.train-cancelled .train-route {
+    text-decoration: line-through 2px var(--oc-red-9);
+}
+
 .train-times {
     grid-area: times;
     width: fit-content;

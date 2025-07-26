@@ -7,9 +7,9 @@
 {% endblock %}
 
 {% block content %}
-    <pre><code>{{ station_data | tojson(indent=4) }}</code></pre>
-
-    <img src="{{ station_picture }}" />
+    <section class="trains-header" style="background-image: url({{ station_picture }})">
+        <h1>{{ station_data.names.long }}</h1>
+    </section>
 
     <ol class="trains-container">
         {% for train_number, train in trains.items() %}
@@ -180,6 +180,4 @@
             </li>
         {% endfor %}
     </ol>
-
-    <pre><code>{{ trains | tojson(indent=4) }}</code></pre>
 {% endblock %}

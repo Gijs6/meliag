@@ -1,3 +1,24 @@
+.trains-header {
+    height: 500px;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    isolation: isolate;
+}
+
+.trains-header h1 {
+    margin-left: 5%;
+    color: white;
+    mix-blend-mode: difference;
+    font-size: 7em;
+    font-weight: 900;
+    text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+    word-wrap: break-word;
+    hyphens: auto;
+    max-width: 90%;
+}
+
 .trains-container {
     list-style: none;
     display: flex;

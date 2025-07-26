@@ -26,7 +26,10 @@
                 <a href="{{ url_for(endpoint) }}" class="menu-item{% if request.endpoint == endpoint %} menu-item-active{% endif %}">{{ name }}</a>
             {% endmacro %}
             
-            {{ menu_item('index', 'Index') }}
+            <nav class="header-menu">
+                {{ menu_item('index', 'Index') }}
+                {{ menu_item('station_search', 'Stations') }}
+            </nav>
         </header>
 
         <main>{% block content %}{% endblock %}</main>

@@ -163,6 +163,13 @@ def station_times(station_code):
     )
 
 
+@app.route("/station-search")
+def station_search():
+    stations = list(load_station_data_mapping().values())
+    stations = sorted(stations, key=lambda s: s.get("names", {}).get("long", "").lower())
+    return render_template("station_search.html", stations=stations)
+
+
 if __name__ == "__main__":
     get_all_stations()
     print("Saved stations and UIC mapping.")

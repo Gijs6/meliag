@@ -7,6 +7,10 @@
 {% endblock %}
 
 {% block content %}
+    <pre><code>{{ station_data | tojson(indent=4) }}</code></pre>
+
+    <img src="{{ station_picture }}" />
+
     <ol class="trains-container">
         {% for train_number, train in trains.items() %}
             <li class="train{% if train.arrival.cancelled or train.departure.cancelled %} train-cancelled{% endif %}">
@@ -64,16 +68,26 @@
                 </section>
 
                 <section class="train-route">
+                    {% set origin_uic = station_name_to_uic.get(train.arrival.origin | lower) if train.arrival.origin else None %}
                     {% if train.arrival.origin %}
-                        <span class="train-route-origin">{{ train.arrival.origin }}</span>
+                        {% if origin_uic %}
+                            <a class="train-route-origin" href="{{ url_for('station_times', station_code=origin_uic) }}">{{ train.arrival.origin }}</a>
+                        {% else %}
+                            <span class="train-route-origin">{{ train.arrival.origin }}</span>
+                        {% endif %}
                     {% else %}
                         <span class="train-route-origin train-route-thisstation">This station</span>
                     {% endif %}
 
                     <i class="fa-solid fa-arrow-right"></i>
 
+                    {% set direction_uic = station_name_to_uic.get(train.departure.direction | lower) if train.departure.direction else None %}
                     {% if train.departure.direction %}
-                        <span class="train-route-direction">{{ train.departure.direction }}</span>
+                        {% if direction_uic %}
+                            <a class="train-route-direction" href="{{ url_for('station_times', station_code=direction_uic) }}">{{ train.departure.direction }}</a>
+                        {% else %}
+                            <span class="train-route-direction">{{ train.departure.direction }}</span>
+                        {% endif %}
                     {% else %}
                         <span class="train-route-direction train-route-thisstation">This station</span>
                     {% endif %}

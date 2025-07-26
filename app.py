@@ -1,4 +1,4 @@
-from flask import Flask, render_template, abort, request
+from flask import Flask, render_template, request
 
 from datetime import datetime
 from dotenv import load_dotenv
@@ -95,14 +95,25 @@ def station_times(station_code):
             sorted(trains.items(), key=lambda item: average_actual_time(item[1]))
         )
 
+    station_name_to_uic = load_uic_mapping()
+
+    station_data_mapping = load_station_data_mapping()
+    station_data = station_data_mapping.get(station_code)
+
+    station_pictures_mapping = load_station_pictures_mapping()
+    station_picture = station_pictures_mapping.get(station_code)
+
     return render_template(
         "station_times.html",
         trains=trains,
+        station_name_to_uic=station_name_to_uic,
+        station_data=station_data,
+        station_picture=station_picture,
     )
 
 
 def get_all_stations():
-    url = "https://gateway.apiportal.ns.nl/nsapp-stations/v3?includeNonPlannableStations=false&limit=10"
+    url = "https://gateway.apiportal.ns.nl/nsapp-stations/v3?includeNonPlannableStations=false"
     headers = {
         "Cache-Control": "no-cache",
         "Ocp-Apim-Subscription-Key": API_KEY,
@@ -117,8 +128,49 @@ def get_all_stations():
     with open(json_path, "w") as f:
         json.dump(data, f, indent=4)
 
+    uic_mapping = {}
+    for station in data.get("payload", []):
+        names = station.get("names", {})
+        uic = station.get("id", {}).get("uicCode")
+        if not uic:
+            continue
+        for key in ("long", "medium", "short"):
+            name = names.get(key)
+            if name:
+                uic_mapping[name.lower()] = uic
+        for syn in names.get("synonyms", []):
+            uic_mapping[syn.lower()] = uic
+
+    with open(os.path.join(app.root_path, "data", "uic_mapping.json"), "w") as f:
+        json.dump(uic_mapping, f, indent=4)
+
+    station_data_mapping = {}
+    for station in data.get("payload", []):
+        uic = station.get("id", {}).get("uicCode")
+        station_data_mapping[uic] = station
+
+    with open(
+        os.path.join(app.root_path, "data", "station_data_mapping.json"), "w"
+    ) as f:
+        json.dump(station_data_mapping, f, indent=4)
+
+
+def load_uic_mapping():
+    with open(os.path.join(app.root_path, "data", "uic_mapping.json")) as f:
+        return json.load(f)
+
+
+def load_station_data_mapping():
+    with open(os.path.join(app.root_path, "data", "station_data_mapping.json")) as f:
+        return json.load(f)
+
+
+def load_station_pictures_mapping():
+    with open(os.path.join(app.root_path, "station_images.json")) as f:
+        return json.load(f)
+
 
 if __name__ == "__main__":
     get_all_stations()
-    print("Saved stations.")
+    print("Saved stations and UIC mapping.")
     app.run(debug=True)

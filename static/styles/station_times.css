@@ -1,110 +1,118 @@
 .trains-container {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
 }
 
 .train {
-  border-bottom: 1px solid var(--oc-gray-3);
-  padding: 20px;
-  display: grid;
-  grid-template-areas:
-    "times meta track"
-    "times route track"
-    "times via track"
-    "times messages track";
-  grid-template-columns: 100px 1fr 50px;
-  align-items: center;
-  column-gap: 10px;
+    border-bottom: 1px solid var(--oc-gray-3);
+    padding: 20px;
+    display: grid;
+    grid-template-areas:
+        "times meta track"
+        "times route track"
+        "times via track"
+        "times messages track";
+    grid-template-columns: 100px 1fr 50px;
+    align-items: center;
+    column-gap: 10px;
 }
 
 .train-times {
-  grid-area: times;
-  width: fit-content;
-  margin: auto;
+    grid-area: times;
+    width: fit-content;
+    margin: auto;
 }
 
 .train-time-arrival,
 .train-time-departure,
 .train-track-arrival,
 .train-track-departure {
-  display: flex;
-  flex-direction: revert;
-  gap: 5px;
-  align-items: center;
-  justify-content: center;
+    display: flex;
+    flex-direction: revert;
+    gap: 5px;
+    align-items: center;
+    justify-content: center;
 }
 
 .train-time-invalid,
 .train-track-invalid {
-  color: var(--oc-red-6);
-  font-weight: 600;
+    color: var(--oc-red-6);
+    font-weight: 600;
 }
 
 .train-metadata {
-  grid-area: meta;
-  font-size: 0.9em;
-  color: var(--oc-gray-6);
+    grid-area: meta;
+    font-size: 0.9em;
+    color: var(--oc-gray-6);
 }
 
 .train-metadata-train-type {
-  font-weight: 700;
+    font-weight: 700;
 }
 
 .train-route {
-  grid-area: route;
-  font-size: 1.1em;
-  display: flex;
-  align-items: center;
-  gap: 5px;
+    grid-area: route;
+    font-size: 1.1em;
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }
 
 .train-route-origin {
-  font-weight: 600;
-  color: var(--oc-gray-7);
+    font-weight: 600;
+    color: var(--oc-gray-7);
 }
 
 .train-route-direction {
-  font-weight: 800;
+    font-weight: 800;
+    color: black;
 }
 
 .train-route-thisstation {
-  color: var(--oc-orange-7);
+    color: var(--oc-orange-7);
 }
 
 .train-via {
-  grid-area: via;
-  font-size: 0.9em;
+    grid-area: via;
+    font-size: 0.9em;
 }
 
 .train-via-station {
-  color: inherit;
-  text-decoration: 2px underline var(--oc-blue-3);
+    color: inherit;
 }
 
-.train-via-station:hover {
-  color: var(--oc-blue-9);
+.train-via-station,
+a.train-route-direction,
+a.train-route-origin {
+    text-decoration: 2px underline var(--oc-blue-3);
+}
+
+.train-via-station:hover,
+a.train-route-direction:hover,
+a.train-route-origin:hover {
+    color: var(--oc-blue-9);
 }
 
 .train-messages {
-  grid-area: messages;
+    grid-area: messages;
 }
 
 .train-track {
-  grid-area: track;
-  width: fit-content;
-  margin: auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
+    grid-area: track;
+    width: fit-content;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
 }
 
 .train-messages-container {
-  list-style: none;
+    list-style: none;
 }
 
 s {
-  display: inline-block;
+    display: inline-block;
 }

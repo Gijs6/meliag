@@ -1,0 +1,109 @@
+@import "colors.css";
+
+:root {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100vh;
+  scrollbar-gutter: stable;
+  -webkit-text-size-adjust: none;
+  -moz-text-size-adjust: none;
+  text-size-adjust: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+*,
+:after,
+:before {
+  box-sizing: inherit;
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+  min-height: 100vh;
+}
+
+img {
+  background-repeat: no-repeat;
+  background-size: cover;
+  font-style: italic;
+  shape-margin: 0.75em;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  vertical-align: middle;
+}
+
+audio,
+canvas,
+img,
+picture,
+svg,
+video {
+  height: auto;
+  max-width: 100%;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  text-wrap: auto;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  overflow-wrap: break-word;
+}
+
+pre {
+  max-width: 100%;
+  overflow-x: auto;
+  width: 100%;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+table {
+  border-collapse: collapse;
+  max-width: 100%;
+}
+
+td,
+th {
+  padding: 0.2em;
+  text-align: left;
+}
+
+tr {
+  border-bottom: 1px solid;
+  border-color: inherit;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+textarea:not([rows]) {
+  min-height: 10em;
+}
+
+:target {
+  scroll-margin-block: 5ex;
+}

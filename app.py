@@ -23,6 +23,14 @@ def fetch_ns_data(endpoint, station_code):
     return response.json()
 
 
+@app.template_filter("normalize_name")
+def normalize_name(name):
+    return ''.join(c for c in name.lower() if c.isalpha())
+
+@app.template_filter("format_name")
+def format_name(name):
+    return ''.join(c for c in name if c.isalpha() or c == ' ').strip()
+
 def get_all_stations():
     url = "https://gateway.apiportal.ns.nl/nsapp-stations/v3?includeNonPlannableStations=false"
     headers = {
@@ -53,10 +61,10 @@ def get_all_stations():
         for key in ("long", "medium", "short"):
             name = names.get(key)
             if name:
-                uic_mapping[name.lower()] = uic
+                uic_mapping[normalize_name(name)] = uic
 
         for syn in names.get("synonyms", []):
-            uic_mapping[syn.lower()] = uic
+            uic_mapping[normalize_name(syn)] = uic
 
         station_data_mapping[uic] = station
 
@@ -103,7 +111,7 @@ def isoformat(value, fmt="%Y-%m-%dT%H:%M:%S%z"):
 
 @app.route("/")
 def index():
-    return "Meliag"
+    return render_template("index.html")
 
 
 @app.route("/station-times/<station_code>")

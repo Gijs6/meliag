@@ -1,3 +1,7 @@
+main {
+    padding: 0 !important;
+}
+
 .trains-header {
     height: 500px;
     background-size: cover;
@@ -119,6 +123,33 @@ a.train-route-origin:hover {
     grid-area: messages;
 }
 
+.train-messages-container {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.train-message:first-child {
+    margin-top: 10px;
+}
+
+.train-message {
+    background: var(--oc-teal-7);
+    padding: 5px 10px;
+    color: white;
+    font-weight: 700;
+    width: fit-content;
+}
+
+.train-message-info {
+    background: var(--oc-blue-8);
+}
+
+.train-message-warning {
+    background: var(--oc-red-9);
+}
+
 .train-track {
     grid-area: track;
     width: fit-content;
@@ -128,10 +159,6 @@ a.train-route-origin:hover {
     align-items: center;
     justify-content: center;
     gap: 5px;
-}
-
-.train-messages-container {
-    list-style: none;
 }
 
 s {

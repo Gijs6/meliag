@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block content %}
-    <section class="trains-header" style="background-image: url({{ station_picture }})">
+    <section class="trains-header" style="background-image: url('{{ station_picture }}')">
         <h1>{{ station_data.names.long }}</h1>
     </section>
 
@@ -68,12 +68,12 @@
                 </section>
 
                 <section class="train-route">
-                    {% set origin_uic = station_name_to_uic.get(train.arrival.origin | lower) if train.arrival.origin else None %}
+                    {% set origin_uic = station_name_to_uic.get(train.arrival.origin | normalize_name | lower) if train.arrival.origin else None %}
                     {% if train.arrival.origin %}
                         {% if origin_uic %}
-                            <a class="train-route-origin" href="{{ url_for('station_times', station_code=origin_uic) }}">{{ train.arrival.origin }}</a>
+                            <a class="train-route-origin" href="{{ url_for('station_times', station_code=origin_uic) }}">{{ train.arrival.origin | format_name}}</a>
                         {% else %}
-                            <span class="train-route-origin">{{ train.arrival.origin }}</span>
+                            <span class="train-route-origin">{{ train.arrival.origin | format_name}}</span>
                         {% endif %}
                     {% else %}
                         <span class="train-route-origin train-route-thisstation">This station</span>
@@ -81,12 +81,12 @@
 
                     <i class="fa-solid fa-arrow-right"></i>
 
-                    {% set direction_uic = station_name_to_uic.get(train.departure.direction | lower) if train.departure.direction else None %}
+                    {% set direction_uic = station_name_to_uic.get(train.departure.direction | normalize_name | lower) if train.departure.direction else None %}
                     {% if train.departure.direction %}
                         {% if direction_uic %}
-                            <a class="train-route-direction" href="{{ url_for('station_times', station_code=direction_uic) }}">{{ train.departure.direction }}</a>
+                            <a class="train-route-direction" href="{{ url_for('station_times', station_code=direction_uic) }}">{{ train.departure.direction | format_name }}</a>
                         {% else %}
-                            <span class="train-route-direction">{{ train.departure.direction }}</span>
+                            <span class="train-route-direction">{{ train.departure.direction | format_name }}</span>
                         {% endif %}
                     {% else %}
                         <span class="train-route-direction train-route-thisstation">This station</span>
@@ -99,7 +99,7 @@
                     {% endif %}
                     {% for via_station in train.departure.routeStations %}
                         <a class="train-via-station" href="{{ url_for('station_times', station_code=via_station.uicCode) }}">
-                            {{ via_station.mediumName }}
+                            {{ via_station.mediumName | format_name }}
                         </a>
                         {% if not loop.last %}
                             <i class="fa-solid fa-angle-right"></i>

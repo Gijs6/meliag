@@ -1,15 +1,15 @@
 {% extends "base.html" %}
-
 {% block title %}Search{% endblock %}
-
 {% block extra_headers %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles/staion_search.css') }}" />
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='styles/staion_search.css') }}" />
 {% endblock %}
-
 {% block content %}
     <h1>Search</h1>
-    <input type="text" id="stationSearchInput" class="station-search-input" placeholder="Search for a station...">
-
+    <input type="text"
+           id="stationSearchInput"
+           class="station-search-input"
+           placeholder="Search for a station...">
     <table class="station-table" id="stationTable">
         <thead>
             <tr>
@@ -22,9 +22,7 @@
             {% for station in stations %}
                 <tr>
                     <td>
-                        <a href="{{ url_for('station_times', station_code=station.id.uicCode) }}">
-                            {{ station.names.long }}
-                        </a>
+                        <a href="{{ url_for('station_times', station_code=station.id.uicCode) }}">{{ station.names.long }}</a>
                     </td>
                     <td>{{ station.id.uicCode }}</td>
                     <td>{{ station.country }}</td>
@@ -32,7 +30,6 @@
             {% endfor %}
         </tbody>
     </table>
-
     <script>
         const input = document.getElementById('stationSearchInput');
         const table = document.getElementById('stationTable').getElementsByTagName('tbody')[0];

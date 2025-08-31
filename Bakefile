@@ -1,0 +1,13 @@
+#!/bin/bash
+
+serve() {
+  .venv/bin/python app.py
+}
+
+format() {
+  ruff format .
+  prettier --write "**/*.{css,js}"
+  prettier --write "**/*.json"
+  djlint . --reformat
+  markdownlint --fix "**/*.md" || true
+}

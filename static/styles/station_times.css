@@ -41,7 +41,7 @@ main {
         "times route track"
         "times via track"
         "times messages track";
-    grid-template-columns: 50px 1fr 50px;
+    grid-template-columns: 75px 1fr 50px;
     align-items: center;
     column-gap: 10px;
     grid-template-rows: auto auto auto auto;
@@ -100,6 +100,13 @@ main {
 .train-track-outdated {
     color: var(--oc-red-6);
     font-weight: 600;
+}
+
+.train-time-outdated {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    align-items: center;
 }
 
 .train-metadata {

@@ -184,6 +184,12 @@ a.train-route-origin:hover {
     align-items: flex-start;
 }
 
+.train-stock-car {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .train-stock-car-image {
     height: 1.25em;
     width: auto;
@@ -193,10 +199,25 @@ a.train-route-origin:hover {
     font-size: 0.9em;
     text-align: center;
     margin-top: 2.5px;
+    width: fit-content;
+    display: flex;
+    flex-direction: column;
+}
+
+.train-stock-car-data {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
 }
 
 .train-stock-car-number {
     font-weight: 700;
+}
+
+.train-stock-car-facilities {
+    font-size: 0.8em;
+    color: var(--oc-gray-6);
 }
 
 .train-stock-length {

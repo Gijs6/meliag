@@ -115,20 +115,44 @@
                                     <div class="train-stock-car">
                                         <img src="{{ car.afbeelding }}" class="train-stock-car-image" />
                                         <div class="train-stock-car-info">
-                                            <span class="train-stock-car-type">{{ car.type }}</span>
-                                            <span class="train-stock-car-number">{{ car.materieelnummer }}</span>
+                                            <div class="train-stock-car-data">
+                                                <span class="train-stock-car-type">{{ car.type }}</span>
+                                                <span class="train-stock-car-number">{{ car.materieelnummer }}</span>
+                                            </div>
+                                            {% if car.faciliteiten %}
+                                                {% set facility_icons = {
+                                                    "WIFI": "fa-solid fa-wifi",
+                                                    "TOILET": "fa-solid fa-toilet-paper",
+                                                    "STILTE": "fa-solid fa-ear-deaf",
+                                                    "STROOM": "fa-solid fa-plug",
+                                                    "FIETS": "fa-solid fa-bicycle",
+                                                    "TOEGANKELIJK": "fa-solid fa-wheelchair"
+                                                } %}
+                                                <div class="train-stock-car-facilities">
+                                                    {% for facility in car.faciliteiten %}
+                                                        {% set icon = facility_icons.get(facility) %}
+                                                        {% if icon %}
+                                                            <span class="train-stock-facility train-stock-facility-{{ facility | lower }}">
+                                                                <i class="{{ icon }}"></i>
+                                                            </span>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                            {% endif %}
                                         </div>
                                     </div>
                                 {% endfor %}
                             </div>
-                            <div class="train-stock-length">
-                                <i class="fa-solid fa-arrow-left"></i>
-                                <span class="train-stock-length-center-info">
-                                    <i class="fa-solid fa-minus"></i>
-                                    <span class="train-stock-length-label">{{ train.stock.lengteInMeters }} m</span>
-                                    <i class="fa-solid fa-minus"></i>
-                                </span>
-                                <i class="fa-solid fa-arrow-right"></i>
+                            <div class="train-stock-info">
+                                <div class="train-stock-length">
+                                    <i class="fa-solid fa-arrow-left"></i>
+                                    <span class="train-stock-length-center-info">
+                                        <i class="fa-solid fa-minus"></i>
+                                        <span class="train-stock-length-label">{{ train.stock.lengteInMeters }} m</span>
+                                        <i class="fa-solid fa-minus"></i>
+                                    </span>
+                                    <i class="fa-solid fa-arrow-right"></i>
+                                </div>
                             </div>
                         {% endif %}
                     </section>
@@ -138,7 +162,14 @@
                         {% set arrival_msgs = train.arrival.messages if train.arrival and train.arrival.messages else [] %}
                         {% set departure_msgs = train.departure.messages if train.departure and train.departure.messages else [] %}
                         {% for message in arrival_msgs + departure_msgs %}
-                            <li class="train-message train-message-{{ message.style | lower }}">{{ message.message }}</li>
+                            <li class="train-message train-message-{{ message.style | lower }}">
+                                {% if message.style == 'WARNING' %}
+                                    <i class="fa-solid fa-triangle-exclamation"></i>
+                                {% elif message.style == 'INFO' %}
+                                    <i class="fa-solid fa-info-circle"></i>
+                                {% endif %}
+                                {{ message.message }}
+                            </li>
                         {% endfor %}
                         {% if train.arrival and train.departure and train.arrival.actualTrack != train.departure.actualTrack %}
                             <li class="train-message train-message-warning">Train arrives on a different platform than it departs from</li>

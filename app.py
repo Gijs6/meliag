@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from dotenv import load_dotenv
 import string
 import requests
@@ -162,7 +162,24 @@ def parse_datetime(value):
 
 @app.template_filter("truncate_seconds")
 def truncate_seconds(dt):
+    if dt is None:
+        return None
     return dt.replace(second=0, microsecond=0)
+
+
+@app.template_filter("calculate_delay_minutes")
+def calculate_delay_minutes(actual_time, planned_time):
+    if not actual_time or not planned_time:
+        return 0
+    actual_dt = parse_datetime(actual_time)
+    planned_dt = parse_datetime(planned_time)
+    if not actual_dt or not planned_dt:
+        return 0
+    actual_truncated = truncate_seconds(actual_dt)
+    planned_truncated = truncate_seconds(planned_dt)
+    if not actual_truncated or not planned_truncated:
+        return 0
+    return round((actual_truncated - planned_truncated).total_seconds() / 60)
 
 
 @app.route("/")
@@ -223,7 +240,12 @@ def station_times(station_code):
             arrival_dt = datetime.strptime(arrival, fmt) if arrival else None
             departure_dt = datetime.strptime(departure, fmt) if departure else None
 
-            return departure_dt or arrival_dt or datetime.max
+            if departure_dt:
+                return departure_dt
+            elif arrival_dt:
+                return arrival_dt
+            else:
+                return datetime.max.replace(tzinfo=timezone.utc)
 
         trains = dict(sorted(trains.items(), key=lambda item: actual_time(item[1])))
 

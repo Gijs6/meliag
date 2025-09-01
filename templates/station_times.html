@@ -22,7 +22,7 @@
                                     <s class="train-time-arrival-planned train-time-outdated">
                                         <time datetime="{{ train.arrival.plannedDateTime | isoformat }}">{{ train.arrival.plannedDateTime | format_datetime("%H:%M") }}</time>
                                     </s>
-                                    <span class="train-time-arrival-delay">+{{ (((train.arrival.actualDateTime | parse_datetime | truncate_seconds) - (train.arrival.plannedDateTime | parse_datetime | truncate_seconds)).total_seconds() / 60) | round | int}}</span>
+                                    <span class="train-time-arrival-delay">+{{ train.arrival.actualDateTime | calculate_delay_minutes(train.arrival.plannedDateTime) }}</span>
                                 </span>
                                 <span class="train-time-arrival-actual">
                                     <time datetime="{{ train.arrival.actualDateTime | isoformat }}">{{ train.arrival.actualDateTime | format_datetime("%H:%M") }}</time>
@@ -44,7 +44,7 @@
                                     <s class="train-time-departure-planned train-time-outdated">
                                         <time datetime="{{ train.departure.plannedDateTime | isoformat }}">{{ train.departure.plannedDateTime | format_datetime("%H:%M") }}</time>
                                     </s>
-                                    <span class="train-time-departure-delay">+{{ (((train.departure.actualDateTime | parse_datetime | truncate_seconds) - (train.departure.plannedDateTime | parse_datetime | truncate_seconds)).total_seconds() / 60) | round | int}}</span>
+                                    <span class="train-time-departure-delay">+{{ train.departure.actualDateTime | calculate_delay_minutes(train.departure.plannedDateTime) }}</span>
                                 </span>
                                 <span class="train-time-departure-actual">
                                     <time datetime="{{ train.departure.actualDateTime | isoformat }}">{{ train.departure.actualDateTime | format_datetime("%H:%M") }}</time>

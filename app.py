@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from dotenv import load_dotenv
 import string
 import requests
@@ -12,6 +12,8 @@ load_dotenv()
 API_KEY = os.getenv("API_KEY")
 
 app = Flask(__name__)
+
+train_stock_cache = {}
 
 
 def load_json(path):
@@ -40,6 +42,39 @@ def fetch_ns_data(endpoint, station_code):
     response = requests.get(url, headers=headers)
     response.raise_for_status()
     return response.json()
+
+
+def is_cache_valid(cached_time):
+    now = datetime.now()
+    cache_date = cached_time.date()
+    current_date = now.date()
+
+    if cache_date != current_date:
+        return False
+
+    time_diff = now - cached_time
+    return time_diff < timedelta(hours=3)
+
+
+def fetch_train_stock(ritnummer):
+    cache_key = str(ritnummer)
+
+    if cache_key in train_stock_cache:
+        cached_data, cached_time = train_stock_cache[cache_key]
+        if is_cache_valid(cached_time):
+            return cached_data
+
+    url = f"https://gateway.apiportal.ns.nl/virtual-train-api/v1/trein/{ritnummer}"
+    headers = {
+        "Cache-Control": "no-cache",
+        "Ocp-Apim-Subscription-Key": API_KEY,
+    }
+    response = requests.get(url, headers=headers)
+    response.raise_for_status()
+    data = response.json()
+
+    train_stock_cache[cache_key] = (data, datetime.now())
+    return data
 
 
 def get_all_stations():
@@ -172,6 +207,13 @@ def station_times(station_code):
             number = departure["product"]["number"]
             trains.setdefault(number, {"arrival": {}, "departure": {}})
             trains[number]["departure"] = departure
+
+        for train_number in trains:
+            try:
+                train_stock = fetch_train_stock(train_number)
+                trains[train_number]["stock"] = train_stock
+            except requests.exceptions.RequestException:
+                trains[train_number]["stock"] = None
 
         def actual_time(train):
             fmt = "%Y-%m-%dT%H:%M:%S%z"

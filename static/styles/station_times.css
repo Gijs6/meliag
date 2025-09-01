@@ -40,6 +40,7 @@ main {
         "times meta track"
         "times route track"
         "times via track"
+        "times stock track"
         "times messages track";
     grid-template-columns: 75px 1fr 50px;
     align-items: center;
@@ -169,6 +170,50 @@ a.train-route-origin {
 a.train-route-direction:hover,
 a.train-route-origin:hover {
     color: var(--oc-blue-9);
+}
+
+.train-stock {
+    grid-area: stock;
+    width: fit-content;
+    margin-top: 5px;
+}
+
+.train-stock-composition {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+}
+
+.train-stock-car-image {
+    height: 1.25em;
+    width: auto;
+}
+
+.train-stock-car-info {
+    font-size: 0.9em;
+    text-align: center;
+    margin-top: 2.5px;
+}
+
+.train-stock-car-number {
+    font-weight: 700;
+}
+
+.train-stock-length {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 5px;
+    font-size: 0.9em;
+    color: var(--oc-gray-5);
+}
+
+.train-stock-length-center-info {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 2.5px;
 }
 
 .train-messages {

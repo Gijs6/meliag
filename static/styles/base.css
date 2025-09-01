@@ -22,10 +22,11 @@ html {
 }
 
 body {
-    font-family: "Inter", sans-serif;
+    font-family: "Montserrat", sans-serif;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    font-weight: 500;
 }
 
 header {
@@ -35,12 +36,13 @@ header {
     justify-content: space-between;
     gap: 20px;
     flex-wrap: wrap;
-    padding: 15px 15px 10px 15px;
+    padding: 15px 25px;
 }
 
 .header-menu {
     display: flex;
     flex-direction: row;
+    gap: 10px;
 }
 
 .menu-item {
@@ -48,19 +50,19 @@ header {
     color: white;
     text-decoration: none;
     font-size: 1.2em;
-    padding: 5px;
-    border: 2px solid var(--oc-green-9);
+    padding: 7.5px;
+    border: solid var(--oc-green-9);
+    border-width: 2px 0;
 }
 
 .menu-item-active,
 .menu-item:hover {
-    background: white;
-    color: var(--oc-green-9);
+    border-color: white;
 }
 
 .header-logo {
     font-size: 2em;
-    font-weight: 900;
+    font-weight: 800;
     color: white;
 }
 
@@ -81,8 +83,12 @@ footer {
 
 .footer-logo {
     font-size: 1.5em;
-    font-weight: 900;
+    font-weight: 800;
     color: var(--oc-green-9);
+}
+
+a {
+    color: var(--oc-blue-9);
 }
 
 img {

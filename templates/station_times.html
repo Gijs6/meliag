@@ -7,23 +7,24 @@
 {% block content %}
     <section class="trains-header"
              style="background-image: url('{{ station_picture }}')">
-        <h1>{{ station_data.names.long }}</h1>
+        <h1 lang="nl">{{ station_data.names.long }}</h1>
     </section>
     <ol class="trains-container">
         {% for train_number, train in trains.items() %}
             <li class="train{% if train.arrival.cancelled or train.departure.cancelled %} train-cancelled{% endif %}">
                 <section class="train-times">
-                    <div class="train-time-arrival">
+                    <div class="train-time-arrival{% if train.arrival.plannedDateTime != train.arrival.actualDateTime %} train-time-arrival-delays{% endif %}">
                         {% if not train.arrival.plannedDateTime %}
                             <span class="train-time-notapplicable"><i class="fa-solid fa-caret-down"></i></span>
                         {% else %}
                             {% if train.arrival.plannedDateTime != train.arrival.actualDateTime %}
-                                <s class="train-time-arrival-planned train-time-invalid">
+                                <s class="train-time-arrival-planned train-time-outdated">
                                     <time datetime="{{ train.arrival.plannedDateTime | isoformat }}">{{ train.arrival.plannedDateTime | format_datetime("%H:%M") }}</time>
                                 </s>
                                 <span class="train-time-arrival-actual">
                                     <time datetime="{{ train.arrival.actualDateTime | isoformat }}">{{ train.arrival.actualDateTime | format_datetime("%H:%M") }}</time>
                                 </span>
+                                <span class="train-time-arrival-delay">+{{ (((train.arrival.actualDateTime | parse_datetime | truncate_seconds) - (train.arrival.plannedDateTime | parse_datetime | truncate_seconds)).total_seconds() / 60) | round | int}}</span>
                             {% else %}
                                 <span class="train-time-arrival-normal">
                                     <time datetime="{{ train.arrival.plannedDateTime | isoformat }}">{{ train.arrival.plannedDateTime | format_datetime("%H:%M") }}</time>
@@ -31,17 +32,18 @@
                             {% endif %}
                         {% endif %}
                     </div>
-                    <div class="train-time-departure">
+                    <i class="fa-solid fa-angles-down"></i>
+                    <div class="train-time-departure{% if train.departure.plannedDateTime != train.departure.actualDateTime %} train-time-departure-delays{% endif %}">
                         {% if not train.departure.plannedDateTime %}
                             <span class="train-time-notapplicable"><i class="fa-solid fa-caret-up"></i></span>
                         {% else %}
                             {% if train.departure.plannedDateTime != train.departure.actualDateTime %}
-                                <s class="train-time-departure-planned train-time-invalid">
+                                <s class="train-time-departure-planned train-time-outdated">
                                     <time datetime="{{ train.departure.plannedDateTime | isoformat }}">{{ train.departure.plannedDateTime | format_datetime("%H:%M") }}</time>
                                 </s>
                                 <span class="train-time-departure-actual">
                                     <time datetime="{{ train.departure.actualDateTime | isoformat }}">{{ train.departure.actualDateTime | format_datetime("%H:%M") }}</time>
-                                </span>
+                                </span><span class="train-time-departure-delay">+{{ (((train.arrival.actualDateTime | parse_datetime | truncate_seconds) - (train.arrival.plannedDateTime | parse_datetime | truncate_seconds)).total_seconds() / 60) | round | int}}</span>
                             {% else %}
                                 <span class="train-time-departure-normal">
                                     <time datetime="{{ train.departure.plannedDateTime | isoformat }}">{{ train.departure.plannedDateTime | format_datetime("%H:%M") }}</time>
@@ -67,9 +69,10 @@
                     {% if train.arrival.origin %}
                         {% if origin_uic %}
                             <a class="train-route-origin"
+                               lang="nl"
                                href="{{ url_for('station_times', station_code=origin_uic) }}">{{ train.arrival.origin | format_name }}</a>
                         {% else %}
-                            <span class="train-route-origin">{{ train.arrival.origin | format_name }}</span>
+                            <span class="train-route-origin" lang="nl">{{ train.arrival.origin | format_name }}</span>
                         {% endif %}
                     {% else %}
                         <span class="train-route-origin train-route-thisstation">This station</span>
@@ -79,9 +82,10 @@
                     {% if train.departure.direction %}
                         {% if direction_uic %}
                             <a class="train-route-direction"
+                               lang="nl"
                                href="{{ url_for('station_times', station_code=direction_uic) }}">{{ train.departure.direction | format_name }}</a>
                         {% else %}
-                            <span class="train-route-direction">{{ train.departure.direction | format_name }}</span>
+                            <span class="train-route-direction" lang="nl">{{ train.departure.direction | format_name }}</span>
                         {% endif %}
                     {% else %}
                         <span class="train-route-direction train-route-thisstation">This station</span>
@@ -91,6 +95,7 @@
                     {% if train.departure.routeStations %}<span class="train-via-header">Via</span>{% endif %}
                     {% for via_station in train.departure.routeStations %}
                         <a class="train-via-station"
+                           lang="nl"
                            href="{{ url_for('station_times', station_code=via_station.uicCode) }}">
                             {{ via_station.mediumName | format_name }}
                         </a>
@@ -115,7 +120,7 @@
                             <span class="train-track-normal">{{ train.departure.plannedTrack }}</span>
                         {% elif train.arrival.actualTrack == train.departure.actualTrack and train.departure.plannedTrack == train.arrival.plannedTrack %}
                             <div class="train-track-smallchange">
-                                <s class="train-track-planned train-track-invalid">{{ train.arrival.plannedTrack }}</s>
+                                <s class="train-track-planned train-track-outdated">{{ train.arrival.plannedTrack }}</s>
                                 <span class="train-track-actual">{{ train.arrival.actualTrack }}</span>
                             </div>
                         {% else %}
@@ -123,16 +128,16 @@
                                 {% if train.arrival.actualTrack == train.arrival.plannedTrack %}
                                     <span class="train-track-arrival-normal">{{ train.arrival.actualTrack }}</span>
                                 {% else %}
-                                    <s class="train-track-arrival-planned train-track-invalid">{{ train.arrival.plannedTrack }}</s>
+                                    <s class="train-track-arrival-planned train-track-outdated">{{ train.arrival.plannedTrack }}</s>
                                     <span class="train-track-arrival-actual">{{ train.arrival.actualTrack }}</span>
                                 {% endif %}
                             </div>
-                            <i class="fa-solid fa-arrow-down"></i>
+                            <i class="fa-solid fa-angles-down"></i>
                             <div class="train-track-departure">
                                 {% if train.departure.actualTrack == train.departure.plannedTrack %}
                                     <span class="train-track-departure-normal">{{ train.departure.actualTrack }}</span>
                                 {% else %}
-                                    <s class="train-track-departure-planned train-track-invalid">{{ train.departure.plannedTrack }}</s>
+                                    <s class="train-track-departure-planned train-track-outdated">{{ train.departure.plannedTrack }}</s>
                                     <span class="train-track-departure-actual">{{ train.departure.actualTrack }}</span>
                                 {% endif %}
                             </div>
@@ -142,7 +147,7 @@
                             {% if train.arrival.actualTrack == train.arrival.plannedTrack %}
                                 <span class="train-track-arrival-normal">{{ train.arrival.actualTrack }}</span>
                             {% else %}
-                                <s class="train-track-arrival-planned train-track-invalid">{{ train.arrival.plannedTrack }}</s>
+                                <s class="train-track-arrival-planned train-track-outdated">{{ train.arrival.plannedTrack }}</s>
                                 <span class="train-track-arrival-actual">{{ train.arrival.actualTrack }}</span>
                             {% endif %}
                         </div>
@@ -151,7 +156,7 @@
                             {% if train.departure.actualTrack == train.departure.plannedTrack %}
                                 <span class="train-track-departure-normal">{{ train.departure.actualTrack }}</span>
                             {% else %}
-                                <s class="train-track-departure-planned train-track-invalid">{{ train.departure.plannedTrack }}</s>
+                                <s class="train-track-departure-planned train-track-outdated">{{ train.departure.plannedTrack }}</s>
                                 <span class="train-track-departure-actual">{{ train.departure.actualTrack }}</span>
                             {% endif %}
                         </div>

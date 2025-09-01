@@ -115,6 +115,21 @@ def isoformat(value, fmt="%Y-%m-%dT%H:%M:%S%z"):
     return datetime.strptime(value, fmt).isoformat()
 
 
+@app.template_filter("parse_datetime")
+def parse_datetime(value):
+    if not value:
+        return None
+    try:
+        return datetime.strptime(value, "%Y-%m-%dT%H:%M:%S%z")
+    except ValueError:
+        return None
+
+
+@app.template_filter("truncate_seconds")
+def truncate_seconds(dt):
+    return dt.replace(second=0, microsecond=0)
+
+
 @app.route("/")
 def index():
     return render_template("index.html")

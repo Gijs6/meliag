@@ -3,24 +3,24 @@ main {
 }
 
 .trains-header {
-    height: 500px;
+    min-height: 500px;
     background-size: cover;
     background-position: center;
     display: flex;
     align-items: center;
     isolation: isolate;
+    padding: 20px 30px;
 }
 
 .trains-header h1 {
-    margin-left: 5%;
     color: white;
     mix-blend-mode: difference;
     font-size: 7em;
-    font-weight: 900;
-    text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
-    word-wrap: break-word;
+    font-weight: 800;
+    text-shadow: 5px 5px var(--oc-gray-4);
     hyphens: auto;
-    max-width: 90%;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
 }
 
 .trains-container {
@@ -41,9 +41,10 @@ main {
         "times route track"
         "times via track"
         "times messages track";
-    grid-template-columns: 100px 1fr 50px;
+    grid-template-columns: 50px 1fr 50px;
     align-items: center;
     column-gap: 10px;
+    grid-template-rows: auto auto auto auto;
 }
 
 .train-cancelled {
@@ -59,21 +60,44 @@ main {
     grid-area: times;
     width: fit-content;
     margin: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2.5px;
 }
 
 .train-time-arrival,
-.train-time-departure,
+.train-time-departure {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
 .train-track-arrival,
 .train-track-departure {
     display: flex;
-    flex-direction: revert;
+    flex-direction: row;
     gap: 5px;
     align-items: center;
     justify-content: center;
 }
 
-.train-time-invalid,
-.train-track-invalid {
+.train-time-arrival {
+    color: var(--oc-gray-6);
+    font-weight: 400;
+    font-size: 0.9em;
+}
+
+.train-time-arrival-delay,
+.train-time-departure-delay {
+    font-size: 0.8em;
+}
+
+.train-time-arrival-delay,
+.train-time-departure-delay,
+.train-time-outdated,
+.train-track-outdated {
     color: var(--oc-red-6);
     font-weight: 600;
 }
@@ -92,6 +116,7 @@ main {
     grid-area: route;
     font-size: 1.1em;
     display: flex;
+    flex-direction: row;
     align-items: center;
     gap: 5px;
 }
@@ -113,6 +138,14 @@ main {
 .train-via {
     grid-area: via;
     font-size: 0.9em;
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    align-items: center;
+}
+
+.train-via-header {
+    font-weight: 600;
 }
 
 .train-via-station {
@@ -133,17 +166,16 @@ a.train-route-origin:hover {
 
 .train-messages {
     grid-area: messages;
+    align-self: start;
 }
 
 .train-messages-container {
     list-style: none;
     display: flex;
-    flex-direction: column;
-    gap: 3px;
-}
-
-.train-message:first-child {
+    flex-direction: row;
+    gap: 2.5px 5px;
     margin-top: 10px;
+    flex-wrap: wrap;
 }
 
 .train-message {

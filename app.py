@@ -6,6 +6,9 @@ import string
 import requests
 import os
 import json
+import atexit
+import signal
+import sys
 
 
 load_dotenv()
@@ -16,25 +19,62 @@ app = Flask(__name__)
 train_stock_cache = {}
 
 
-def load_json(path):
-    with open(os.path.join(app.root_path, path)) as f:
-        return json.load(f)
+DATA_FILE_PATH = os.path.join(app.root_path, "data")
+os.makedirs(DATA_FILE_PATH, exist_ok=True)
+
+
+def load_json(file):
+    path = os.path.join(DATA_FILE_PATH, file)
+
+    if os.path.exists(path):
+        with open(path) as f:
+            try:
+                return json.load(f)
+            except:
+                return None
+
+    return None
+
+
+def save_json(file, data):
+    path = os.path.join(DATA_FILE_PATH, file)
+
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+
+    with open(path, "w") as f:
+        json.dump(data, f, indent=4)
+
+
+def load_cache():
+    global train_stock_cache
+    cached_data = load_json("train_stock_cache.json")
+    if cached_data:
+        train_stock_cache = cached_data
+    else:
+        print("Train stock chache empty.")
+        train_stock_cache = {}
+
+
+def save_cache():
+    print("Saving train stock cache...")
+    save_json("train_stock_cache.json", train_stock_cache)
+    print(f"Saved {len(train_stock_cache)} cache entries.")
 
 
 def load_uic_mapping():
-    return load_json("data/uic_mapping.json")
+    return load_json("uic_mapping.json")
 
 
 def load_station_data_mapping():
-    return load_json("data/station_data_mapping.json")
+    return load_json("station_data_mapping.json")
 
 
 def load_station_pictures_mapping():
     return load_json("station_images.json")
 
 
-def fetch_ns_data(endpoint, station_code):
-    url = f"https://gateway.apiportal.ns.nl/reisinformatie-api/api/v2/{endpoint}?uicCode={station_code}&lang=en"
+def fetch_ns_data(endpoint):
+    url = f"https://gateway.apiportal.ns.nl{endpoint}"
     headers = {
         "Cache-Control": "no-cache",
         "Ocp-Apim-Subscription-Key": API_KEY,
@@ -60,40 +100,24 @@ def fetch_train_stock(ritnummer):
     cache_key = str(ritnummer)
 
     if cache_key in train_stock_cache:
-        cached_data, cached_time = train_stock_cache[cache_key]
+        cache = train_stock_cache[cache_key]
+        cached_time = datetime.fromisoformat(cache["time"])
+        cached_data = cache["data"]
         if is_cache_valid(cached_time):
             return cached_data
 
-    url = f"https://gateway.apiportal.ns.nl/virtual-train-api/v1/trein/{ritnummer}"
-    headers = {
-        "Cache-Control": "no-cache",
-        "Ocp-Apim-Subscription-Key": API_KEY,
-    }
-    response = requests.get(url, headers=headers)
-    response.raise_for_status()
-    data = response.json()
+    data = fetch_ns_data(f"/virtual-train-api/v1/trein/{ritnummer}")
 
-    train_stock_cache[cache_key] = (data, datetime.now())
+    train_stock_cache[cache_key] = {"time": datetime.now().isoformat(), "data": data}
+
     return data
 
 
 def get_all_stations():
-    url = "https://gateway.apiportal.ns.nl/nsapp-stations/v3?includeNonPlannableStations=false"
-    headers = {
-        "Cache-Control": "no-cache",
-        "Ocp-Apim-Subscription-Key": API_KEY,
-    }
-
-    response = requests.get(url, headers=headers)
-    response.raise_for_status()
-    data = response.json()
+    data = fetch_ns_data("/nsapp-stations/v3?includeNonPlannableStations=false")
     payload = data.get("payload", [])
 
-    save_path = os.path.join(app.root_path, "data")
-    os.makedirs(save_path, exist_ok=True)
-
-    with open(os.path.join(save_path, "stations.json"), "w") as f:
-        json.dump(data, f, indent=4)
+    save_json("stations.json", data)
 
     uic_mapping = {}
     station_data_mapping = {}
@@ -114,11 +138,9 @@ def get_all_stations():
 
         station_data_mapping[uic] = station
 
-    with open(os.path.join(save_path, "uic_mapping.json"), "w") as f:
-        json.dump(uic_mapping, f, indent=4)
+    save_json("uic_mapping.json", uic_mapping)
 
-    with open(os.path.join(save_path, "station_data_mapping.json"), "w") as f:
-        json.dump(station_data_mapping, f, indent=4)
+    save_json("station_data_mapping.json", station_data_mapping)
 
 
 @app.template_filter("normalize_name")
@@ -204,12 +226,16 @@ def station_times(station_code):
         trains = load_json("data/testdata.json")
     else:
         arrivals = (
-            fetch_ns_data("arrivals", station_code)
+            fetch_ns_data(
+                f"/reisinformatie-api/api/v2/arrivals?uicCode={station_code}&lang=en"
+            )
             .get("payload", {})
             .get("arrivals", [])
         )
         departures = (
-            fetch_ns_data("departures", station_code)
+            fetch_ns_data(
+                f"/reisinformatie-api/api/v2/departures?uicCode={station_code}&lang=en"
+            )
             .get("payload", {})
             .get("departures", [])
         )
@@ -258,7 +284,21 @@ def station_times(station_code):
     )
 
 
+def signal_handler(sig, frame):
+    print("\nReceived interrupt signal. Saving cache before exit...")
+    save_cache()
+    sys.exit(0)
+
+
 if __name__ == "__main__":
     get_all_stations()
     print("Saved stations and UIC mapping.")
+
+    load_cache()
+    print("Loaded train stock cache.")
+
+    # Register both signal handler for CTRL+C and atexit for other shutdowns
+    signal.signal(signal.SIGINT, signal_handler)
+    atexit.register(save_cache)
+
     app.run(debug=True)

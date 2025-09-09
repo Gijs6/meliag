@@ -15,18 +15,17 @@
                 <section class="train-times">
                     <div class="train-time-arrival{% if train.arrival.plannedDateTime != train.arrival.actualDateTime %} train-time-arrival-delays{% endif %}">
                         {% if not train.arrival.plannedDateTime %}
-                            <span class="train-time-notapplicable"><i class="fa-solid fa-caret-down"></i></span>
+                            <span class="train-time-arrival-notapplicable"><i class="fa-solid fa-caret-down"></i></span>
                         {% else %}
+                            <span class="train-time-arrival-label"><i class="fa-solid fa-arrow-right"></i><i class="fa-solid fa-train"></i></span>
                             {% if train.arrival.plannedDateTime != train.arrival.actualDateTime %}
-                                <span class="train-time-arrival-planned train-time-outdated">
-                                    <s class="train-time-arrival-planned train-time-outdated">
-                                        <time datetime="{{ train.arrival.plannedDateTime | isoformat }}">{{ train.arrival.plannedDateTime | format_datetime("%H:%M") }}</time>
-                                    </s>
-                                    <span class="train-time-arrival-delay">+{{ train.arrival.actualDateTime | calculate_delay_minutes(train.arrival.plannedDateTime) }}</span>
-                                </span>
+                                <s class="train-time-arrival-planned train-time-outdated">
+                                    <time datetime="{{ train.arrival.plannedDateTime | isoformat }}">{{ train.arrival.plannedDateTime | format_datetime("%H:%M") }}</time>
+                                </s>
                                 <span class="train-time-arrival-actual">
                                     <time datetime="{{ train.arrival.actualDateTime | isoformat }}">{{ train.arrival.actualDateTime | format_datetime("%H:%M") }}</time>
                                 </span>
+                                <span class="train-time-arrival-delay">+{{ train.arrival.actualDateTime | calculate_delay_minutes(train.arrival.plannedDateTime) }}</span>
                             {% else %}
                                 <span class="train-time-arrival-normal">
                                     <time datetime="{{ train.arrival.plannedDateTime | isoformat }}">{{ train.arrival.plannedDateTime | format_datetime("%H:%M") }}</time>
@@ -34,21 +33,20 @@
                             {% endif %}
                         {% endif %}
                     </div>
-                    <i class="fa-solid fa-angles-down"></i>
+                    <i class="fa-solid fa-arrow-down"></i>
                     <div class="train-time-departure{% if train.departure.plannedDateTime != train.departure.actualDateTime %} train-time-departure-delays{% endif %}">
                         {% if not train.departure.plannedDateTime %}
-                            <span class="train-time-notapplicable"><i class="fa-solid fa-caret-up"></i></span>
+                            <span class="train-time-departure-notapplicable"><i class="fa-solid fa-caret-down"></i></span>
                         {% else %}
+                            <span class="train-time-departure-label"><i class="fa-solid fa-arrow-left"></i><i class="fa-solid fa-train"></i></span>
                             {% if train.departure.plannedDateTime != train.departure.actualDateTime %}
-                                <span class="train-time-departure-planned train-time-outdated">
-                                    <s class="train-time-departure-planned train-time-outdated">
-                                        <time datetime="{{ train.departure.plannedDateTime | isoformat }}">{{ train.departure.plannedDateTime | format_datetime("%H:%M") }}</time>
-                                    </s>
-                                    <span class="train-time-departure-delay">+{{ train.departure.actualDateTime | calculate_delay_minutes(train.departure.plannedDateTime) }}</span>
-                                </span>
+                                <s class="train-time-departure-planned train-time-outdated">
+                                    <time datetime="{{ train.departure.plannedDateTime | isoformat }}">{{ train.departure.plannedDateTime | format_datetime("%H:%M") }}</time>
+                                </s>
                                 <span class="train-time-departure-actual">
                                     <time datetime="{{ train.departure.actualDateTime | isoformat }}">{{ train.departure.actualDateTime | format_datetime("%H:%M") }}</time>
                                 </span>
+                                <span class="train-time-departure-delay">+{{ train.departure.actualDateTime | calculate_delay_minutes(train.departure.plannedDateTime) }}</span>
                             {% else %}
                                 <span class="train-time-departure-normal">
                                     <time datetime="{{ train.departure.plannedDateTime | isoformat }}">{{ train.departure.plannedDateTime | format_datetime("%H:%M") }}</time>
@@ -163,16 +161,18 @@
                         {% set departure_msgs = train.departure.messages if train.departure and train.departure.messages else [] %}
                         {% for message in arrival_msgs + departure_msgs %}
                             <li class="train-message train-message-{{ message.style | lower }}">
-                                {% if message.style == 'WARNING' %}
+                                {% if message.style == "WARNING" %}
                                     <i class="fa-solid fa-triangle-exclamation"></i>
-                                {% elif message.style == 'INFO' %}
-                                    <i class="fa-solid fa-info-circle"></i>
+                                {% elif message.style == "INFO" %}
+                                    <i class="fa-solid fa-info-circle "></i>
                                 {% endif %}
                                 {{ message.message }}
                             </li>
                         {% endfor %}
                         {% if train.arrival and train.departure and train.arrival.actualTrack != train.departure.actualTrack %}
-                            <li class="train-message train-message-warning">Train arrives on a different platform than it departs from</li>
+                            <li class="train-message train-message-warning">
+                                <i class="fa-solid fa-triangle-exclamation"></i> Train arrives on a different platform than it departs from
+                            </li>
                         {% endif %}
                     </ul>
                 </section>

@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Station times{% endblock %}
+{% block title %}Station times for {{ station_data.names.short }}{% endblock %}
 {% block extra_headers %}
     <link rel="stylesheet"
           href="{{ url_for('static', filename='styles/station_times.css') }}" />

@@ -114,7 +114,9 @@ def fetch_train_stock(ritnummer):
 
 
 def get_all_stations():
-    data = fetch_ns_data("/nsapp-stations/v3?includeNonPlannableStations=false")
+    data = fetch_ns_data(
+        "/nsapp-stations/v3?includeNonPlannableStations=false&countryCodes=nl"
+    )
     payload = data.get("payload", [])
 
     save_json("stations.json", data)

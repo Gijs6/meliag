@@ -105,56 +105,9 @@
                         {% if not loop.last %}<i class="fa-solid fa-angle-right"></i>{% endif %}
                     {% endfor %}
                 </section>
-                {% if train.stock %}
-                    <section class="train-stock">
-                        {% if train.stock.materieeldelen %}
-                            <div class="train-stock-composition">
-                                {% for car in train.stock.materieeldelen %}
-                                    <div class="train-stock-car">
-                                        <img src="{{ car.afbeelding }}" class="train-stock-car-image" />
-                                        <div class="train-stock-car-info">
-                                            <div class="train-stock-car-data">
-                                                <span class="train-stock-car-type">{{ car.type }}</span>
-                                                <span class="train-stock-car-number">{{ car.materieelnummer }}</span>
-                                            </div>
-                                            {% if car.faciliteiten %}
-                                                {% set facility_icons = {
-                                                    "WIFI": "fa-solid fa-wifi",
-                                                    "TOILET": "fa-solid fa-toilet-paper",
-                                                    "STILTE": "fa-solid fa-ear-deaf",
-                                                    "STROOM": "fa-solid fa-plug",
-                                                    "FIETS": "fa-solid fa-bicycle",
-                                                    "TOEGANKELIJK": "fa-solid fa-wheelchair"
-                                                } %}
-                                                <div class="train-stock-car-facilities">
-                                                    {% for facility in car.faciliteiten %}
-                                                        {% set icon = facility_icons.get(facility) %}
-                                                        {% if icon %}
-                                                            <span class="train-stock-facility train-stock-facility-{{ facility | lower }}">
-                                                                <i class="{{ icon }}"></i>
-                                                            </span>
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                </div>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                {% endfor %}
-                            </div>
-                            <div class="train-stock-info">
-                                <div class="train-stock-length">
-                                    <i class="fa-solid fa-arrow-left"></i>
-                                    <span class="train-stock-length-center-info">
-                                        <i class="fa-solid fa-minus"></i>
-                                        <span class="train-stock-length-label">{{ train.stock.lengteInMeters }} m</span>
-                                        <i class="fa-solid fa-minus"></i>
-                                    </span>
-                                    <i class="fa-solid fa-arrow-right"></i>
-                                </div>
-                            </div>
-                        {% endif %}
-                    </section>
-                {% endif %}
+                <section class="train-stock" data-train-number="{{ train_number }}">
+                    <div class="train-stock-loading">Loading train composition...</div>
+                </section>
                 <section class="train-messages">
                     <ul class="train-messages-container">
                         {% set arrival_msgs = train.arrival.messages if train.arrival and train.arrival.messages else [] %}
@@ -229,4 +182,23 @@
             </li>
         {% endfor %}
     </ol>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const trainStockSections = document.querySelectorAll('.train-stock[data-train-number]');
+            
+            trainStockSections.forEach(section => {
+                const trainNumber = section.dataset.trainNumber;
+                
+                fetch("{{ url_for('train_stock_api', train_number='') }}" + trainNumber)
+                    .then(response => response.json())
+                    .then(data => {
+                        section.innerHTML = data.html;
+                    })
+                    .catch(error => {
+                        console.error('Error fetching train stock:', error);
+                        section.innerHTML = '<div class="train-stock-error">Failed to load train composition</div>';
+                    });
+            });
+        });
+    </script>
 {% endblock %}

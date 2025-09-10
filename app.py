@@ -218,6 +218,25 @@ def station_search():
     return render_template("station_search.html", stations=stations)
 
 
+@app.route("/api/train-stock/<train_number>")
+def train_stock_api(train_number):
+    try:
+        stock_data = fetch_train_stock(train_number)
+        if stock_data and stock_data.get("materieeldelen"):
+            html = render_template("train_stock.html", stock=stock_data)
+            return {"success": True, "html": html}
+        else:
+            return {
+                "success": False,
+                "html": '<div class="train-stock-error">Train composition not available</div>',
+            }
+    except requests.exceptions.RequestException:
+        return {
+            "success": False,
+            "html": '<div class="train-stock-error">Failed to load train composition</div>',
+        }
+
+
 @app.route("/station-times/<station_code>")
 def station_times(station_code):
     debug = request.args.get("debug") == "true"
@@ -250,13 +269,6 @@ def station_times(station_code):
             number = departure["product"]["number"]
             trains.setdefault(number, {"arrival": {}, "departure": {}})
             trains[number]["departure"] = departure
-
-        for train_number in trains:
-            try:
-                train_stock = fetch_train_stock(train_number)
-                trains[train_number]["stock"] = train_stock
-            except requests.exceptions.RequestException:
-                trains[train_number]["stock"] = None
 
         def actual_time(train):
             fmt = "%Y-%m-%dT%H:%M:%S%z"

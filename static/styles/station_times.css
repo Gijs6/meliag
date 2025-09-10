@@ -192,6 +192,16 @@ a.train-route-origin:hover {
     margin-top: 5px;
 }
 
+.train-stock-loading {
+    animation: pulseColor 750ms infinite alternate;
+    font-weight: 500;
+}
+
+.train-stock-error {
+    color: var(--oc-red-9);
+    font-weight: 700;
+}
+
 .train-stock-composition {
     display: flex;
     flex-direction: row;
@@ -223,6 +233,7 @@ a.train-route-origin:hover {
     flex-direction: row;
     align-items: center;
     gap: 5px;
+    text-wrap: nowrap;
 }
 
 .train-stock-car-number {
@@ -303,4 +314,13 @@ a.train-route-origin:hover {
 
 s {
     display: inline-block;
+}
+
+@keyframes pulseColor {
+    from {
+        color: var(--oc-gray-3);
+    }
+    to {
+        color: var(--oc-gray-7);
+    }
 }

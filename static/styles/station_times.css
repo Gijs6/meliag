@@ -99,7 +99,7 @@ main {
     grid-template-columns: auto 1fr;
     height: fit-content;
     align-items: center;
-    gap: 5px;
+    gap: 7.5px 5px;
 }
 
 .station-info-accessibility-item {
@@ -109,7 +109,7 @@ main {
 .station-info-accessibility-item i {
     justify-self: stretch;
     text-align: center;
-    padding: 5px;
+    padding: 5px 7.5px;
     color: white;
 }
 
@@ -119,6 +119,11 @@ main {
 
 .station-info-accessibility-unavailable i {
     background-color: var(--oc-red-9);
+}
+
+.station-info-accessibility-unavailable:not(i) {
+    font-weight: 600;
+    color: var(--oc-red-9);
 }
 
 .station-info-tracks {
@@ -414,7 +419,7 @@ a.train-route-origin:hover {
 
 .train-message {
     background: var(--oc-teal-7);
-    padding: 5px 10px;
+    padding: 5px 7.5px;
     color: white;
     font-weight: 700;
     width: fit-content;

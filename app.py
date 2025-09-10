@@ -2,6 +2,7 @@ from flask import Flask, render_template, request
 
 from datetime import datetime, timedelta, timezone
 from dotenv import load_dotenv
+from colorama import Fore, Style, init
 import string
 import requests
 import os
@@ -9,6 +10,8 @@ import json
 import atexit
 import signal
 import sys
+
+init(autoreset=True)
 
 
 load_dotenv()
@@ -30,7 +33,7 @@ def load_json(file):
         with open(path) as f:
             try:
                 return json.load(f)
-            except:
+            except json.JSONDecodeError:
                 return None
 
     return None
@@ -50,15 +53,18 @@ def load_cache():
     cached_data = load_json("train_stock_cache.json")
     if cached_data:
         train_stock_cache = cached_data
+        print(f"  {Fore.GREEN}{Style.BRIGHT}Train stock cache loaded successfully{Style.RESET_ALL}")
+        print(f"    {Fore.GREEN}-> Found {len(train_stock_cache)} cached train entries{Style.RESET_ALL}")
     else:
-        print("Train stock chache empty.")
+        print(f"  {Fore.YELLOW}{Style.BRIGHT}No existing train stock cache found{Style.RESET_ALL}")
+        print(f"    {Fore.YELLOW}-> Starting with empty cache{Style.RESET_ALL}")
         train_stock_cache = {}
 
 
 def save_cache():
-    print("Saving train stock cache...")
+    print(f"\n{Fore.BLUE}{Style.BRIGHT}Saving train stock cache...{Style.RESET_ALL}")
     save_json("train_stock_cache.json", train_stock_cache)
-    print(f"Saved {len(train_stock_cache)} cache entries.")
+    print(f"  {Fore.GREEN}{Style.BRIGHT}-> Successfully saved {len(train_stock_cache)} cache entries{Style.RESET_ALL}")
 
 
 def load_uic_mapping():
@@ -225,14 +231,18 @@ def train_stock_api(train_number):
     try:
         stock_data = fetch_train_stock(train_number)
         if stock_data and stock_data.get("materieeldelen"):
+            parts_count = len(stock_data.get("materieeldelen", []))
+            print(f"{Fore.CYAN}[TRAIN-STOCK] Train {train_number} composition found ({parts_count} parts){Style.RESET_ALL}")
             html = render_template("train_stock.html", stock=stock_data)
             return {"success": True, "html": html}
         else:
+            print(f"{Fore.YELLOW}[TRAIN-STOCK] Train {train_number} composition unavailable{Style.RESET_ALL}")
             return {
                 "success": False,
                 "html": '<div class="train-stock-error">Train composition not available</div>',
             }
-    except requests.exceptions.RequestException:
+    except requests.exceptions.RequestException as e:
+        print(f"{Fore.RED}[TRAIN-STOCK] Failed to fetch train {train_number}: {str(e)}{Style.RESET_ALL}")
         return {
             "success": False,
             "html": '<div class="train-stock-error">Failed to load train composition</div>',
@@ -242,21 +252,20 @@ def train_stock_api(train_number):
 @app.route("/station-times/<station_code>")
 def station_times(station_code):
     debug = request.args.get("debug") == "true"
+    station_data = load_station_data_mapping().get(station_code)
+    station_name = station_data.get("names", {}).get("long", station_code) if station_data else station_code
 
     if debug:
         trains = load_json("data/testdata.json")
+        print(f"{Fore.YELLOW}[DEBUG] Loading test data for {station_name}{Style.RESET_ALL}")
     else:
         arrivals = (
-            fetch_ns_data(
-                f"/reisinformatie-api/api/v2/arrivals?uicCode={station_code}&lang=en"
-            )
+            fetch_ns_data(f"/reisinformatie-api/api/v2/arrivals?uicCode={station_code}&lang=en")
             .get("payload", {})
             .get("arrivals", [])
         )
         departures = (
-            fetch_ns_data(
-                f"/reisinformatie-api/api/v2/departures?uicCode={station_code}&lang=en"
-            )
+            fetch_ns_data(f"/reisinformatie-api/api/v2/departures?uicCode={station_code}&lang=en")
             .get("payload", {})
             .get("departures", [])
         )
@@ -276,10 +285,8 @@ def station_times(station_code):
             fmt = "%Y-%m-%dT%H:%M:%S%z"
             arrival = train.get("arrival", {}).get("actualDateTime")
             departure = train.get("departure", {}).get("actualDateTime")
-
             arrival_dt = datetime.strptime(arrival, fmt) if arrival else None
             departure_dt = datetime.strptime(departure, fmt) if departure else None
-
             if departure_dt:
                 return departure_dt
             elif arrival_dt:
@@ -288,31 +295,38 @@ def station_times(station_code):
                 return datetime.max.replace(tzinfo=timezone.utc)
 
         trains = dict(sorted(trains.items(), key=lambda item: actual_time(item[1])))
+        print(f"{Fore.CYAN}[STATION] {station_name}: {len(arrivals)} arrivals, {len(departures)} departures{Style.RESET_ALL}")
 
     return render_template(
         "station_times.html",
         trains=trains,
         station_name_to_uic=load_uic_mapping(),
-        station_data=load_station_data_mapping().get(station_code),
+        station_data=station_data,
         station_picture=load_station_pictures_mapping().get(station_code),
     )
 
 
-def signal_handler(sig, frame):
-    print("\nReceived interrupt signal. Saving cache before exit...")
+def signal_handler(_sig, _frame):
+    print(f"\n{Fore.RED}{Style.BRIGHT}Received interrupt signal (CTRL+C){Style.RESET_ALL}")
+    print(f"  {Fore.YELLOW}Performing graceful shutdown...{Style.RESET_ALL}")
     save_cache()
+    print(f"  {Fore.GREEN}{Style.BRIGHT}Graceful shutdown complete{Style.RESET_ALL}")
     sys.exit(0)
 
 
 if __name__ == "__main__":
+    print(f"{Fore.CYAN}{'=' * 30}{Style.RESET_ALL}")
+    print(f"{Fore.CYAN}{Style.BRIGHT}Meliag{Style.RESET_ALL}")
+    print(f"{Fore.CYAN}{'=' * 30}{Style.RESET_ALL}")
+
+    print(f"{Fore.BLUE}Initializing stations...{Style.RESET_ALL}")
     get_all_stations()
-    print("Saved stations and UIC mapping.")
 
+    print(f"{Fore.BLUE}Loading cache...{Style.RESET_ALL}")
     load_cache()
-    print("Loaded train stock cache.")
 
-    # Register both signal handler for CTRL+C and atexit for other shutdowns
     signal.signal(signal.SIGINT, signal_handler)
     atexit.register(save_cache)
-
+    print(f"{Fore.GREEN}Ready - Starting server{Style.RESET_ALL}")
+    
     app.run(debug=True)

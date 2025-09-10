@@ -2,7 +2,7 @@ main {
     padding: 0 !important;
 }
 
-.trains-header {
+.station-banner {
     min-height: 500px;
     background-size: cover;
     background-position: center;
@@ -12,15 +12,128 @@ main {
     padding: 20px 30px;
 }
 
-.trains-header h1 {
+.station-banner-name {
     color: white;
     mix-blend-mode: difference;
     font-size: 7em;
     font-weight: 800;
-    text-shadow: 5px 5px var(--oc-gray-4);
+    text-shadow: -5px 5px var(--oc-gray-4);
     hyphens: auto;
     overflow-wrap: break-word;
     word-wrap: break-word;
+}
+
+.station-info {
+    padding: 20px;
+    display: grid;
+    grid-template-areas:
+        "name labels"
+        "location labels"
+        "accessibility tracks";
+    gap: 10px 25px;
+    align-items: center;
+    border-bottom: 3px solid var(--oc-gray-4);
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.station-info-name {
+    grid-area: name;
+    font-size: 2em;
+    font-weight: 700;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5ch;
+}
+
+.station-info-name-long {
+    font-weight: 800;
+}
+
+.station-info-location {
+    grid-area: location;
+}
+
+.station-info-labels {
+    grid-area: labels;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.station-info-labels-synonym-item {
+    font-weight: 700;
+}
+
+.station-info-labels-ids {
+    display: grid;
+    grid-template-rows: repeat(2, auto);
+    grid-auto-flow: column;
+    justify-content: start;
+    justify-items: center;
+    gap: 2.5px 10px;
+}
+
+.station-info-labels-id-item {
+    display: contents;
+}
+
+.station-info-labels-id-label {
+    font-size: 0.8em;
+}
+
+.station-info-labels-id-value {
+    font-size: 1.25em;
+    font-weight: 600;
+}
+
+.station-info-accessibility {
+    grid-area: accessibility;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    height: fit-content;
+    align-items: center;
+    gap: 5px;
+}
+
+.station-info-accessibility-item {
+    display: contents;
+}
+
+.station-info-accessibility-item i {
+    justify-self: stretch;
+    text-align: center;
+    padding: 5px;
+    color: white;
+}
+
+.station-info-accessibility-available i {
+    background-color: var(--oc-green-9);
+}
+
+.station-info-accessibility-unavailable i {
+    background-color: var(--oc-red-9);
+}
+
+.station-info-tracks {
+    grid-area: tracks;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5px;
+}
+
+.station-info-tracks-list {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+.station-info-tracks-number {
+    background: var(--oc-orange-7);
+    padding: 5px 7.5px;
+    font-weight: 600;
+    color: white;
 }
 
 .trains-container {

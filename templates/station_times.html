@@ -5,9 +5,97 @@
           href="{{ url_for('static', filename='styles/station_times.css') }}" />
 {% endblock %}
 {% block content %}
-    <section class="trains-header"
+    <section class="station-container">
+        <div class="station-banner"
              style="background-image: url('{{ station_picture }}')">
-        <h1 lang="nl">{{ station_data.names.long }}</h1>
+            <h1 class="station-banner-name" lang="nl">{{ station_data.names.medium }}</h1>
+        </div>
+        <section class="station-info">
+            <div class="station-info-name" lang="nl">
+                <span class="station-info-name-label">Station</span>
+                <span class="station-info-name-long">{{ station_data.names.long }}</span>
+            </div>
+            <div class="station-info-location">
+                <i class="fa-solid fa-location-dot"></i>
+                <span class="station-info-coordinates">{{ station_data.location.lat | round(3) }}, {{ station_data.location.lng | round(3) }}</span>
+            </div>
+            <div class="station-info-accessibility">
+                {% if station_data.availableForAccessibleTravel %}
+                    <span class="station-info-accessibility-item station-info-accessible-travel-available station-info-accessibility-available">
+                        <i class="fa-solid fa-universal-access"></i>
+                        Accessible travel
+                    </span>
+                {% else %}
+                    <span class="station-info-accessibility-item station-info-accessible-travel-unavailable station-info-accessibility-unavailable">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        No accessible travel
+                    </span>
+                {% endif %}
+                {% if station_data.hasTravelAssistance is defined %}
+                    {% if station_data.hasTravelAssistance %}
+                        <span class="station-info-accessibility-item station-info-accessibility-assistance station-info-accessibility-available">
+                            <i class="fa-solid fa-hands-helping"></i>
+                            Travel assistance available
+                        </span>
+                    {% else %}
+                        <span class="station-info-accessibility-item station-info-accessibility-no-assistance station-info-accessibility-unavailable">
+                            <i class="fa-solid fa-user-slash"></i>
+                            No travel assistance
+                        </span>
+                    {% endif %}
+                {% endif %}
+                {% if station_data.areTracksIndependentlyAccessible is defined %}
+                    {% if station_data.areTracksIndependentlyAccessible %}
+                        <span class="station-info-accessibility-item station-info-accessibility-independent station-info-accessibility-available">
+                            <i class="fa-solid fa-elevator"></i>
+                            Tracks independently accessible
+                        </span>
+                    {% else %}
+                        <span class="station-info-accessibility-item station-info-accessibility-not-independent station-info-accessibility-unavailable">
+                            <i class="fa-solid fa-stairs"></i>
+                            Tracks not independently accessible
+                        </span>
+                    {% endif %}
+                {% endif %}
+            </div>
+            <div class="station-info-labels">
+                {% if station_data.names.synonyms %}
+                    <div class="station-info-labels-synonyms">
+                        <label class="station-info-labels-synonyms-label">Also known as</label>
+                        <span class="station-info-labels-synonyms-list">
+                            {% for synonym in station_data.names.synonyms %}
+                                <span class="station-info-labels-synonym-item">{{ synonym }}</span>
+                                {% if not loop.last %},{% endif %}
+                            {% endfor %}
+                        </span>
+                    </div>
+                {% endif %}
+                <div class="station-info-labels-ids">
+                    <div class="station-info-labels-id-item">
+                        <label class="station-info-labels-id-label">NS</label>
+                        <code class="station-info-labels-id-value station-info-labels-id-nscode">{{ station_data.id.code }}</code>
+                    </div>
+                    <div class="station-info-labels-id-item">
+                        <label class="station-info-labels-id-label">UIC</label>
+                        <code class="station-info-labels-id-value station-info-labels-id-uic">{{ station_data.id.uicCode }}</code>
+                    </div>
+                    <div class="station-info-labels-id-item">
+                        <label class="station-info-labels-id-label">UIC</label>
+                        <code class="station-info-labels-id-value station-info-labels-id-uiccd">{{ station_data.id.uicCdCode }}</code>
+                    </div>
+                    <div class="station-info-labels-id-item">
+                        <label class="station-info-labels-id-label">EVA</label>
+                        <code class="station-info-labels-id-value station-info-labels-id-eva">{{ station_data.id.evaCode }}</code>
+                    </div>
+                </div>
+            </div>
+            <div class="station-info-tracks">
+                <label class="station-info-tracks-label">Tracks</label>
+                <div class="station-info-tracks-list">
+                    {% for track in station_data.tracks %}<span class="station-info-tracks-number">{{ track }}</span>{% endfor %}
+                </div>
+            </div>
+        </section>
     </section>
     <ol class="trains-container">
         {% for train_number, train in trains.items() %}

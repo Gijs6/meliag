@@ -33,7 +33,10 @@ main {
 }
 
 .train {
-    border-bottom: 1px solid var(--oc-gray-3);
+    border: solid var(--oc-gray-3);
+    border-width: 1px 5px;
+    border-color: var(--oc-gray-3) transparent;
+
     padding: 20px 5px;
     display: grid;
     grid-template-areas:
@@ -47,8 +50,17 @@ main {
     column-gap: 10px;
 }
 
+.train:first-child {
+    border-top: none;
+}
+
+.train:last-child {
+    border-bottom: none;
+}
+
 .train-cancelled {
     background: var(--oc-red-1);
+    border-color: var(--oc-red-6);
 }
 
 .train-cancelled .train-metadata,

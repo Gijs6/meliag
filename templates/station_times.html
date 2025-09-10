@@ -109,25 +109,38 @@
                     <div class="train-stock-loading">Loading train composition...</div>
                 </section>
                 <section class="train-messages">
-                    <ul class="train-messages-container">
-                        {% set arrival_msgs = train.arrival.messages if train.arrival and train.arrival.messages else [] %}
-                        {% set departure_msgs = train.departure.messages if train.departure and train.departure.messages else [] %}
-                        {% for message in arrival_msgs + departure_msgs %}
-                            <li class="train-message train-message-{{ message.style | lower }}">
-                                {% if message.style == "WARNING" %}
-                                    <i class="fa-solid fa-triangle-exclamation"></i>
-                                {% elif message.style == "INFO" %}
-                                    <i class="fa-solid fa-info-circle "></i>
-                                {% endif %}
-                                {{ message.message }}
-                            </li>
-                        {% endfor %}
-                        {% if train.arrival and train.departure and train.arrival.actualTrack != train.departure.actualTrack %}
-                            <li class="train-message train-message-warning">
-                                <i class="fa-solid fa-triangle-exclamation"></i> Train arrives on a different platform than it departs from
-                            </li>
+                    {% set arrival_msgs = train.arrival.messages if train.arrival and train.arrival.messages else [] %}
+                    {% set departure_msgs = train.departure.messages if train.departure and train.departure.messages else [] %}
+                    {% set all_msgs = arrival_msgs + departure_msgs %}
+                    {% set priority_map = {"WARNING": 1, "INFO": 2} %}
+                    {% set unique_msgs = {} %}
+                    {% for message in all_msgs %}
+                        {% set msg_text = message.message %}
+                        {% set msg_priority = priority_map.get(message.style, 999) %}
+                        {% if msg_text not in unique_msgs or msg_priority < priority_map.get(unique_msgs[msg_text].style, 999) %}
+                            {% set _ = unique_msgs.update({msg_text: message}) %}
                         {% endif %}
-                    </ul>
+                    {% endfor %}
+                    {% set final_msgs = unique_msgs.values() | list %}
+                    {% if final_msgs %}
+                        <ul class="train-messages-container">
+                            {% for message in final_msgs %}
+                                <li class="train-message train-message-{{ message.style | lower }}">
+                                    {% if message.style == "WARNING" %}
+                                        <i class="fa-solid fa-triangle-exclamation"></i>
+                                    {% elif message.style == "INFO" %}
+                                        <i class="fa-solid fa-info-circle "></i>
+                                    {% endif %}
+                                    {{ message.message }}
+                                </li>
+                            {% endfor %}
+                            {% if train.arrival and train.departure and train.arrival.actualTrack != train.departure.actualTrack %}
+                                <li class="train-message train-message-warning">
+                                    <i class="fa-solid fa-triangle-exclamation"></i> Train arrives on a different platform than it departs from
+                                </li>
+                            {% endif %}
+                        </ul>
+                    {% endif %}
                 </section>
                 <section class="train-track">
                     {% if train.arrival.actualTrack and train.arrival.plannedTrack and train.departure.actualTrack and train.departure.plannedTrack %}

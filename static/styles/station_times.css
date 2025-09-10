@@ -48,6 +48,7 @@ main {
 
 .station-info-name-long {
     font-weight: 800;
+    text-wrap: nowrap;
 }
 
 .station-info-location {

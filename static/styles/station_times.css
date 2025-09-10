@@ -147,10 +147,10 @@ main {
 
 .train {
     border: solid var(--oc-gray-3);
-    border-width: 1px 5px;
+    border-width: 1px 7.5px;
     border-color: var(--oc-gray-3) transparent;
 
-    padding: 20px 5px;
+    padding: 20px 7.5px;
     display: grid;
     grid-template-areas:
         "times meta track"
@@ -158,7 +158,7 @@ main {
         "times via track"
         "times stock track"
         "times messages track";
-    grid-template-columns: 100px 1fr 50px;
+    grid-template-columns: 100px 1fr auto;
     align-items: center;
     column-gap: 10px;
 }
@@ -179,6 +179,12 @@ main {
 .train-cancelled .train-metadata,
 .train-cancelled .train-route {
     text-decoration: line-through 2px var(--oc-red-9);
+}
+
+.train-cancelled .train-times *:not(i):not(:has(*)) /* So this means select only all tags that are not an icon and that dont have children */ {
+    text-decoration: line-through 1px var(--oc-red-9);
+    color: var(--oc-red-9);
+    font-weight: 600;
 }
 
 .train-times {
@@ -243,8 +249,7 @@ main {
 
 .train-time-arrival-delay,
 .train-time-departure-delay,
-.train-time-outdated,
-.train-track-outdated {
+.train-time-outdated {
     color: var(--oc-red-6);
     font-weight: 600;
 }
@@ -435,6 +440,19 @@ a.train-route-origin:hover {
     gap: 5px;
     align-items: center;
     justify-content: center;
+}
+
+.train-track-number {
+    background: var(--oc-green-9);
+    padding: 5px 7.5px;
+    font-weight: 600;
+    color: white;
+}
+
+.train-track-outdated {
+    background: var(--oc-red-9);
+    font-style: italic;
+    font-weight: 300;
 }
 
 s {

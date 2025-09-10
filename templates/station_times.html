@@ -233,51 +233,51 @@
                 <section class="train-track">
                     {% if train.arrival.actualTrack and train.arrival.plannedTrack and train.departure.actualTrack and train.departure.plannedTrack %}
                         {% if train.arrival.actualTrack == train.arrival.plannedTrack == train.departure.actualTrack == train.departure.plannedTrack %}
-                            <span class="train-track-normal">{{ train.departure.plannedTrack }}</span>
+                            <span class="train-track-normal train-track-number">{{ train.departure.plannedTrack }}</span>
                         {% elif train.arrival.actualTrack == train.departure.actualTrack and train.departure.plannedTrack == train.arrival.plannedTrack %}
                             <div class="train-track-smallchange">
-                                <s class="train-track-planned train-track-outdated">{{ train.arrival.plannedTrack }}</s>
-                                <span class="train-track-actual">{{ train.arrival.actualTrack }}</span>
+                                <span class="train-track-planned train-track-outdated train-track-number">{{ train.arrival.plannedTrack }}</span>
+                                <span class="train-track-actual train-track-number">{{ train.arrival.actualTrack }}</span>
                             </div>
                         {% else %}
                             <div class="train-track-arrival">
                                 {% if train.arrival.actualTrack == train.arrival.plannedTrack %}
-                                    <span class="train-track-arrival-normal">{{ train.arrival.actualTrack }}</span>
+                                    <span class="train-track-arrival-normal train-track-number">{{ train.arrival.actualTrack }}</span>
                                 {% else %}
-                                    <s class="train-track-arrival-planned train-track-outdated">{{ train.arrival.plannedTrack }}</s>
-                                    <span class="train-track-arrival-actual">{{ train.arrival.actualTrack }}</span>
+                                    <span class="train-track-arrival-planned train-track-outdated train-track-number">{{ train.arrival.plannedTrack }}</span>
+                                    <span class="train-track-arrival-actual train-track-number">{{ train.arrival.actualTrack }}</span>
                                 {% endif %}
                             </div>
                             <i class="fa-solid fa-angles-down"></i>
                             <div class="train-track-departure">
                                 {% if train.departure.actualTrack == train.departure.plannedTrack %}
-                                    <span class="train-track-departure-normal">{{ train.departure.actualTrack }}</span>
+                                    <span class="train-track-departure-normal train-track-number">{{ train.departure.actualTrack }}</span>
                                 {% else %}
-                                    <s class="train-track-departure-planned train-track-outdated">{{ train.departure.plannedTrack }}</s>
-                                    <span class="train-track-departure-actual">{{ train.departure.actualTrack }}</span>
+                                    <span class="train-track-departure-planned train-track-outdated train-track-number">{{ train.departure.plannedTrack }}</span>
+                                    <span class="train-track-departure-actual train-track-number">{{ train.departure.actualTrack }}</span>
                                 {% endif %}
                             </div>
                         {% endif %}
                     {% elif train.arrival.actualTrack and train.arrival.plannedTrack %}
                         <div class="train-track-arrival">
                             {% if train.arrival.actualTrack == train.arrival.plannedTrack %}
-                                <span class="train-track-arrival-normal">{{ train.arrival.actualTrack }}</span>
+                                <span class="train-track-arrival-normal train-track-number">{{ train.arrival.actualTrack }}</span>
                             {% else %}
-                                <s class="train-track-arrival-planned train-track-outdated">{{ train.arrival.plannedTrack }}</s>
-                                <span class="train-track-arrival-actual">{{ train.arrival.actualTrack }}</span>
+                                <span class="train-track-arrival-planned train-track-outdated train-track-number">{{ train.arrival.plannedTrack }}</span>
+                                <span class="train-track-arrival-actual train-track-number">{{ train.arrival.actualTrack }}</span>
                             {% endif %}
                         </div>
                     {% elif train.departure.actualTrack and train.departure.plannedTrack %}
                         <div class="train-track-departure">
                             {% if train.departure.actualTrack == train.departure.plannedTrack %}
-                                <span class="train-track-departure-normal">{{ train.departure.actualTrack }}</span>
+                                <span class="train-track-departure-normal train-track-number">{{ train.departure.actualTrack }}</span>
                             {% else %}
-                                <s class="train-track-departure-planned train-track-outdated">{{ train.departure.plannedTrack }}</s>
-                                <span class="train-track-departure-actual">{{ train.departure.actualTrack }}</span>
+                                <span class="train-track-departure-planned train-track-outdated train-track-number">{{ train.departure.plannedTrack }}</span>
+                                <span class="train-track-departure-actual train-track-number">{{ train.departure.actualTrack }}</span>
                             {% endif %}
                         </div>
                     {% else %}
-                        <span class="train-track-notapplicable">-</span>
+                        <span class="train-track-notapplicable train-track-number">-</span>
                     {% endif %}
                 </section>
             </li>

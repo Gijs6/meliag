@@ -66,6 +66,11 @@ main {
     font-weight: 700;
 }
 
+.station-info-labels-synonym-item:not(:last-child)::after {
+    content: ", ";
+    font-weight: 500;
+}
+
 .station-info-labels-ids {
     display: grid;
     grid-template-rows: repeat(2, auto);

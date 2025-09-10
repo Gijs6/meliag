@@ -65,7 +65,6 @@
                         <span class="station-info-labels-synonyms-list">
                             {% for synonym in station_data.names.synonyms %}
                                 <span class="station-info-labels-synonym-item">{{ synonym }}</span>
-                                {% if not loop.last %},{% endif %}
                             {% endfor %}
                         </span>
                     </div>

@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 {% block title %}Home{% endblock %}
+{% block extra_headers %}
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='styles/index.css') }}" />
+{% endblock %}
 {% block content %}
     <img class="page-big-logo"
          src="{{ url_for('static', filename='logoset/full-small_bg-trans_green.png') }}" />

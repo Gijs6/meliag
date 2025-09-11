@@ -1,0 +1,24 @@
+.page-big-logo {
+    height: auto;
+    width: 500px;
+    max-width: 100%;
+}
+
+.stats {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.stat-number {
+    font-family: "Source Code Pro", monospace;
+    font-size: 2.5em;
+    font-weight: 800;
+}

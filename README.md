@@ -11,7 +11,7 @@ I am really proud of this project, because the code is just very very clean.
 You'll need an NS API key first. Get one from the [NS API portal](https://apiportal.ns.nl/) and put it in a `.env` file:
 
 ```
-API_KEY=your_api_key_here
+NS_API_KEY=your_api_key_here
 ```
 
 Then just:

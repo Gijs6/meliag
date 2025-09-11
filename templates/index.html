@@ -1,6 +1,12 @@
 {% extends "base.html" %}
 {% block title %}Home{% endblock %}
 {% block content %}
-    <h1>Welcome to Meliag</h1>
-    <p>Use the navigation above to search for stations or view station times.</p>
+    <img class="page-big-logo"
+         src="{{ url_for('static', filename='logoset/full-small_bg-trans_green.png') }}" />
+    <section class="stats">
+        <div class="stat-item">
+            <span class="stat-number">{{ stats.total_stations }}</span>
+            <span class="stat-label">Stations</span>
+        </div>
+    </section>
 {% endblock %}

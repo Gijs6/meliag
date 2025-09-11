@@ -208,7 +208,13 @@ def calculate_delay_minutes(actual_time, planned_time):
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    station_data = load_station_data_mapping()
+
+    stats = {
+        "total_stations": len(station_data)
+    }
+
+    return render_template("index.html", stats=stats)
 
 
 @app.route("/station-search")
@@ -326,6 +332,7 @@ if __name__ == "__main__":
 
     signal.signal(signal.SIGINT, signal_handler)
     atexit.register(save_cache)
+
     print("Server starting...")
 
     app.run(debug=True)

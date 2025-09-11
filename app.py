@@ -12,7 +12,9 @@ import sys
 
 
 load_dotenv()
-API_KEY = os.getenv("API_KEY")
+NS_API_KEY = os.getenv("NS_API_KEY")
+OWM_API_KEY = os.getenv("OWM_API_KEY")
+
 
 app = Flask(__name__)
 
@@ -77,7 +79,7 @@ def fetch_ns_data(endpoint):
     url = f"https://gateway.apiportal.ns.nl{endpoint}"
     headers = {
         "Cache-Control": "no-cache",
-        "Ocp-Apim-Subscription-Key": API_KEY,
+        "Ocp-Apim-Subscription-Key": NS_API_KEY,
     }
     response = requests.get(url, headers=headers)
     response.raise_for_status()
@@ -259,6 +261,15 @@ def station_times(station_code):
         else station_code
     )
 
+    lat = station_data["location"]["lat"]
+    lon = station_data["location"]["lng"]
+
+    weather_resp = requests.get(
+        f"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={OWM_API_KEY}&lang=en&units=metric"
+    )
+    weather_resp.raise_for_status()
+    weather_data = weather_resp.json()
+
     if debug:
         trains = load_json("data/testdata.json")
         print(f"Debug mode: {station_name}")
@@ -311,6 +322,7 @@ def station_times(station_code):
         station_name_to_uic=load_uic_mapping(),
         station_data=station_data,
         station_picture=load_station_pictures_mapping().get(station_code),
+        weather_data=weather_data,
     )
 
 

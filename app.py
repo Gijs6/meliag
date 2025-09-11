@@ -2,7 +2,6 @@ from flask import Flask, render_template, request
 
 from datetime import datetime, timedelta, timezone
 from dotenv import load_dotenv
-from colorama import Fore, Style, init
 import string
 import requests
 import os
@@ -10,8 +9,6 @@ import json
 import atexit
 import signal
 import sys
-
-init(autoreset=True)
 
 
 load_dotenv()
@@ -53,26 +50,15 @@ def load_cache():
     cached_data = load_json("train_stock_cache.json")
     if cached_data:
         train_stock_cache = cached_data
-        print(
-            f"  {Fore.GREEN}{Style.BRIGHT}Train stock cache loaded successfully{Style.RESET_ALL}"
-        )
-        print(
-            f"    {Fore.GREEN}-> Found {len(train_stock_cache)} cached train entries{Style.RESET_ALL}"
-        )
+        print(f"Cache loaded: {len(train_stock_cache)} train entries")
     else:
-        print(
-            f"  {Fore.YELLOW}{Style.BRIGHT}No existing train stock cache found{Style.RESET_ALL}"
-        )
-        print(f"    {Fore.YELLOW}-> Starting with empty cache{Style.RESET_ALL}")
+        print("No cache found, starting empty")
         train_stock_cache = {}
 
 
 def save_cache():
-    print(f"\n{Fore.BLUE}{Style.BRIGHT}Saving train stock cache...{Style.RESET_ALL}")
     save_json("train_stock_cache.json", train_stock_cache)
-    print(
-        f"  {Fore.GREEN}{Style.BRIGHT}-> Successfully saved {len(train_stock_cache)} cache entries{Style.RESET_ALL}"
-    )
+    print(f"Cache saved: {len(train_stock_cache)} entries")
 
 
 def load_uic_mapping():
@@ -240,23 +226,17 @@ def train_stock_api(train_number):
         stock_data = fetch_train_stock(train_number)
         if stock_data and stock_data.get("materieeldelen"):
             parts_count = len(stock_data.get("materieeldelen", []))
-            print(
-                f"{Fore.CYAN}[TRAIN-STOCK] Train {train_number} composition found ({parts_count} parts){Style.RESET_ALL}"
-            )
+            print(f"Train {train_number}: {parts_count} parts")
             html = render_template("train_stock.html", stock=stock_data)
             return {"success": True, "html": html}
         else:
-            print(
-                f"{Fore.YELLOW}[TRAIN-STOCK] Train {train_number} composition unavailable{Style.RESET_ALL}"
-            )
+            print(f"Train {train_number}: no composition data")
             return {
                 "success": False,
                 "html": '<div class="train-stock-error">Train composition not available</div>',
             }
     except requests.exceptions.RequestException as e:
-        print(
-            f"{Fore.RED}[TRAIN-STOCK] Failed to fetch train {train_number}: {str(e)}{Style.RESET_ALL}"
-        )
+        print(f"Train {train_number}: fetch failed - {str(e)}")
         return {
             "success": False,
             "html": '<div class="train-stock-error">Failed to load train composition</div>',
@@ -275,9 +255,7 @@ def station_times(station_code):
 
     if debug:
         trains = load_json("data/testdata.json")
-        print(
-            f"{Fore.YELLOW}[DEBUG] Loading test data for {station_name}{Style.RESET_ALL}"
-        )
+        print(f"Debug mode: {station_name}")
     else:
         arrivals = (
             fetch_ns_data(
@@ -319,9 +297,7 @@ def station_times(station_code):
                 return datetime.max.replace(tzinfo=timezone.utc)
 
         trains = dict(sorted(trains.items(), key=lambda item: actual_time(item[1])))
-        print(
-            f"{Fore.CYAN}[STATION] {station_name}: {len(arrivals)} arrivals, {len(departures)} departures{Style.RESET_ALL}"
-        )
+        print(f"{station_name}: {len(arrivals)} arrivals, {len(departures)} departures")
 
     return render_template(
         "station_times.html",
@@ -333,28 +309,23 @@ def station_times(station_code):
 
 
 def signal_handler(_sig, _frame):
-    print(
-        f"\n{Fore.RED}{Style.BRIGHT}Received interrupt signal (CTRL+C){Style.RESET_ALL}"
-    )
-    print(f"  {Fore.YELLOW}Performing graceful shutdown...{Style.RESET_ALL}")
+    print("Shutting down...")
     save_cache()
-    print(f"  {Fore.GREEN}{Style.BRIGHT}Graceful shutdown complete{Style.RESET_ALL}")
+    print("Shutdown complete")
     sys.exit(0)
 
 
 if __name__ == "__main__":
-    print(f"{Fore.CYAN}{'=' * 30}{Style.RESET_ALL}")
-    print(f"{Fore.CYAN}{Style.BRIGHT}Meliag{Style.RESET_ALL}")
-    print(f"{Fore.CYAN}{'=' * 30}{Style.RESET_ALL}")
+    print("\n---\nMeliag\n---\n")
 
-    print(f"{Fore.BLUE}Initializing stations...{Style.RESET_ALL}")
+    print("Initializing stations...")
     get_all_stations()
 
-    print(f"{Fore.BLUE}Loading cache...{Style.RESET_ALL}")
+    print("Loading cache...")
     load_cache()
 
     signal.signal(signal.SIGINT, signal_handler)
     atexit.register(save_cache)
-    print(f"{Fore.GREEN}Ready - Starting server{Style.RESET_ALL}")
+    print("Server starting...")
 
     app.run(debug=True)

@@ -40,10 +40,6 @@ main {
     grid-area: name;
     font-size: 2em;
     font-weight: 700;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 0.5ch;
 }
 
 .station-info-name-long {

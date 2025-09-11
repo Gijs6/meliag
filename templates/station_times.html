@@ -283,20 +283,26 @@
         {% endfor %}
     </ol>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const trainStockSections = document.querySelectorAll('.train-stock[data-train-number]');
-            
-            trainStockSections.forEach(section => {
+        document.addEventListener("DOMContentLoaded", function () {
+            const trainStockSections = document.querySelectorAll(
+                ".train-stock[data-train-number]"
+            );
+
+            trainStockSections.forEach((section) => {
                 const trainNumber = section.dataset.trainNumber;
-                
-                fetch("{{ url_for('train_stock_api', train_number='') }}" + trainNumber)
-                    .then(response => response.json())
-                    .then(data => {
+
+                fetch(
+                    "{{ url_for('train_stock_api', train_number='') }}" +
+                        trainNumber
+                )
+                    .then((response) => response.json())
+                    .then((data) => {
                         section.innerHTML = data.html;
                     })
-                    .catch(error => {
-                        console.error('Error fetching train stock:', error);
-                        section.innerHTML = '<div class="train-stock-error">Failed to load train composition</div>';
+                    .catch((error) => {
+                        console.error("Error fetching train stock:", error);
+                        section.innerHTML =
+                            '<div class="train-stock-error">Failed to load train composition</div>';
                     });
             });
         });

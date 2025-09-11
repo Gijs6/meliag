@@ -9,7 +9,7 @@
     <input type="text"
            id="stationSearchInput"
            class="station-search-input"
-           placeholder="Search for a station...">
+           placeholder="Search for a station..." />
     <table class="station-table" id="stationTable">
         <thead>
             <tr>
@@ -32,13 +32,15 @@
         </tbody>
     </table>
     <script>
-        const input = document.getElementById('stationSearchInput');
-        const table = document.getElementById('stationTable').getElementsByTagName('tbody')[0];
-        input.addEventListener('keyup', function() {
+        const input = document.getElementById("stationSearchInput");
+        const table = document
+            .getElementById("stationTable")
+            .getElementsByTagName("tbody")[0];
+        input.addEventListener("keyup", function () {
             const filter = input.value.toLowerCase();
             for (const row of table.rows) {
                 const text = row.textContent.toLowerCase();
-                row.style.display = text.includes(filter) ? '' : 'none';
+                row.style.display = text.includes(filter) ? "" : "none";
             }
         });
     </script>

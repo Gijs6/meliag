@@ -11,17 +11,19 @@
         <link rel="icon"
               type="image/x-icon"
               href="{{ url_for('static', filename='images/fav.ico') }}" />
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
-              rel="stylesheet">
+              rel="stylesheet" />
         <script src="https://kit.fontawesome.com/4a94c21782.js"
                 crossorigin="anonymous"></script>
         {% block extra_headers %}{% endblock %}
     </head>
     <body>
         <header>
-            <span class="header-logo">Meliag</span>
+            <div class="header-logo">
+                <img src="{{ url_for('static', filename='logoset/full_bg-trans_white.png') }}" />
+            </div>
             {% macro menu_item(endpoint, name) %}
                 <a href="{{ url_for(endpoint) }}"
                    class="menu-item{% if request.endpoint == endpoint %} menu-item-active{% endif %}">{{ name }}</a>

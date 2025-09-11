@@ -210,9 +210,7 @@ def calculate_delay_minutes(actual_time, planned_time):
 def index():
     station_data = load_station_data_mapping()
 
-    stats = {
-        "total_stations": len(station_data)
-    }
+    stats = {"total_stations": len(station_data)}
 
     return render_template("index.html", stats=stats)
 
@@ -252,7 +250,9 @@ def train_stock_api(train_number):
 @app.route("/station-times/<station_code>")
 def station_times(station_code):
     debug = request.args.get("debug") == "true"
+
     station_data = load_station_data_mapping().get(station_code)
+
     station_name = (
         station_data.get("names", {}).get("long", station_code)
         if station_data

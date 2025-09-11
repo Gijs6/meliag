@@ -90,6 +90,13 @@ a {
     color: var(--oc-blue-9);
 }
 
+tt,
+code,
+kbd,
+samp {
+    font-family: "Source Code Pro", monospace;
+}
+
 img {
     background-repeat: no-repeat;
     background-size: cover;

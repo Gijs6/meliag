@@ -96,215 +96,220 @@
             </div>
         </section>
     </section>
-    <ol class="trains-container">
-        {% for train_number, train in trains.items() %}
-            <li class="train{% if train.arrival.cancelled or train.departure.cancelled %} train-cancelled{% endif %}">
-                <section class="train-times">
-                    <div class="train-time-arrival{% if train.arrival.plannedDateTime != train.arrival.actualDateTime %} train-time-arrival-delays{% endif %}">
-                        {% if not train.arrival.plannedDateTime %}
-                            <span class="train-time-arrival-notapplicable"><i class="fa-solid fa-caret-down"></i></span>
-                        {% else %}
-                            <span class="train-time-arrival-label"><i class="fa-solid fa-arrow-right"></i><i class="fa-solid fa-train"></i></span>
-                            {% if train.arrival.plannedDateTime != train.arrival.actualDateTime %}
-                                <s class="train-time-arrival-planned train-time-outdated">
-                                    <time datetime="{{ train.arrival.plannedDateTime | isoformat }}">{{ train.arrival.plannedDateTime | format_datetime("%H:%M") }}</time>
-                                </s>
-                                <span class="train-time-arrival-actual">
-                                    <time datetime="{{ train.arrival.actualDateTime | isoformat }}">{{ train.arrival.actualDateTime | format_datetime("%H:%M") }}</time>
-                                </span>
-                                <span class="train-time-arrival-delay">+{{ train.arrival.actualDateTime | calculate_delay_minutes(train.arrival.plannedDateTime) }}</span>
-                            {% else %}
-                                <span class="train-time-arrival-normal">
-                                    <time datetime="{{ train.arrival.plannedDateTime | isoformat }}">{{ train.arrival.plannedDateTime | format_datetime("%H:%M") }}</time>
-                                </span>
-                            {% endif %}
-                        {% endif %}
-                    </div>
-                    <i class="fa-solid fa-arrow-down"></i>
-                    <div class="train-time-departure{% if train.departure.plannedDateTime != train.departure.actualDateTime %} train-time-departure-delays{% endif %}">
-                        {% if not train.departure.plannedDateTime %}
-                            <span class="train-time-departure-notapplicable"><i class="fa-solid fa-caret-down"></i></span>
-                        {% else %}
-                            <span class="train-time-departure-label"><i class="fa-solid fa-arrow-left"></i><i class="fa-solid fa-train"></i></span>
-                            {% if train.departure.plannedDateTime != train.departure.actualDateTime %}
-                                <s class="train-time-departure-planned train-time-outdated">
-                                    <time datetime="{{ train.departure.plannedDateTime | isoformat }}">{{ train.departure.plannedDateTime | format_datetime("%H:%M") }}</time>
-                                </s>
-                                <span class="train-time-departure-actual">
-                                    <time datetime="{{ train.departure.actualDateTime | isoformat }}">{{ train.departure.actualDateTime | format_datetime("%H:%M") }}</time>
-                                </span>
-                                <span class="train-time-departure-delay">+{{ train.departure.actualDateTime | calculate_delay_minutes(train.departure.plannedDateTime) }}</span>
-                            {% else %}
-                                <span class="train-time-departure-normal">
-                                    <time datetime="{{ train.departure.plannedDateTime | isoformat }}">{{ train.departure.plannedDateTime | format_datetime("%H:%M") }}</time>
-                                </span>
-                            {% endif %}
-                        {% endif %}
-                    </div>
-                </section>
-                <section class="train-metadata">
-                    <span class="train-metadata-train-type">
-                        {% if train.arrival.product %}
-                            {{ train.arrival.product.shortCategoryName }}
-                        {% elif train.departure.product %}
-                            {{ train.departure.product.shortCategoryName }}
-                        {% else %}
-                            UNKNOWN
-                        {% endif %}
-                    </span>
-                    <span class="train-metadata-train-number">{{ train_number }}</span>
-                </section>
-                <section class="train-route">
-                    {% set origin_uic = station_name_to_uic.get(train.arrival.origin | normalize_name | lower) if train.arrival.origin else None %}
-                    {% if train.arrival.origin %}
-                        {% if origin_uic %}
-                            <a class="train-route-origin"
-                               lang="nl"
-                               href="{{ url_for('station_times', station_code=origin_uic) }}">{{ train.arrival.origin | format_name }}</a>
-                        {% else %}
-                            <span class="train-route-origin" lang="nl">{{ train.arrival.origin | format_name }}</span>
-                        {% endif %}
-                    {% else %}
-                        <span class="train-route-origin train-route-thisstation">This station</span>
-                    {% endif %}
-                    <i class="fa-solid fa-arrow-right"></i>
-                    {% set direction_uic = station_name_to_uic.get(train.departure.direction | normalize_name | lower) if train.departure.direction else None %}
-                    {% if train.departure.direction %}
-                        {% if direction_uic %}
-                            <a class="train-route-direction"
-                               lang="nl"
-                               href="{{ url_for('station_times', station_code=direction_uic) }}">{{ train.departure.direction | format_name }}</a>
-                        {% else %}
-                            <span class="train-route-direction" lang="nl">{{ train.departure.direction | format_name }}</span>
-                        {% endif %}
-                    {% else %}
-                        <span class="train-route-direction train-route-thisstation">This station</span>
-                    {% endif %}
-                </section>
-                <section class="train-via">
-                    {% if train.departure.routeStations %}<span class="train-via-header">Via</span>{% endif %}
-                    {% for via_station in train.departure.routeStations %}
-                        <a class="train-via-station"
-                           lang="nl"
-                           href="{{ url_for('station_times', station_code=via_station.uicCode) }}">
-                            {{ via_station.mediumName | format_name }}
-                        </a>
-                        {% if not loop.last %}<i class="fa-solid fa-angle-right"></i>{% endif %}
-                    {% endfor %}
-                </section>
-                <section class="train-stock" data-train-number="{{ train_number }}">
-                    <div class="train-stock-loading">Loading train composition...</div>
-                </section>
-                <section class="train-messages">
-                    {% set arrival_msgs = train.arrival.messages if train.arrival and train.arrival.messages else [] %}
-                    {% set departure_msgs = train.departure.messages if train.departure and train.departure.messages else [] %}
-                    {% set all_msgs = arrival_msgs + departure_msgs %}
-                    {% set priority_map = {"WARNING": 1, "INFO": 2} %}
-                    {% set unique_msgs = {} %}
-                    {% for message in all_msgs %}
-                        {% set msg_text = message.message %}
-                        {% set msg_priority = priority_map.get(message.style, 999) %}
-                        {% if msg_text not in unique_msgs or msg_priority < priority_map.get(unique_msgs[msg_text].style, 999) %}
-                            {% set _ = unique_msgs.update({msg_text: message}) %}
-                        {% endif %}
-                    {% endfor %}
-                    {% set final_msgs = unique_msgs.values() | list %}
-                    {% if final_msgs %}
-                        <ul class="train-messages-container">
-                            {% for message in final_msgs %}
-                                <li class="train-message train-message-{{ message.style | lower }}">
-                                    {% if message.style == "WARNING" %}
-                                        <i class="fa-solid fa-triangle-exclamation"></i>
-                                    {% elif message.style == "INFO" %}
-                                        <i class="fa-solid fa-info-circle "></i>
+    <section class="sections-container">
+        <section class="section-item section-trains">
+            <h2>Arrival and departure times</h2>
+            <ol class="trains-container">
+                {% for train_number, train in trains.items() %}
+                    <li class="train{% if train.arrival.cancelled or train.departure.cancelled %} train-cancelled{% endif %}">
+                        <section class="train-times">
+                            <div class="train-time-arrival{% if train.arrival.plannedDateTime != train.arrival.actualDateTime %} train-time-arrival-delays{% endif %}">
+                                {% if not train.arrival.plannedDateTime %}
+                                    <span class="train-time-arrival-notapplicable"><i class="fa-solid fa-caret-down"></i></span>
+                                {% else %}
+                                    <span class="train-time-arrival-label">Arr</span>
+                                    {% if train.arrival.plannedDateTime != train.arrival.actualDateTime %}
+                                        <s class="train-time-arrival-planned train-time-outdated">
+                                            <time datetime="{{ train.arrival.plannedDateTime | isoformat }}">{{ train.arrival.plannedDateTime | format_datetime("%H:%M") }}</time>
+                                        </s>
+                                        <span class="train-time-arrival-actual">
+                                            <time datetime="{{ train.arrival.actualDateTime | isoformat }}">{{ train.arrival.actualDateTime | format_datetime("%H:%M") }}</time>
+                                        </span>
+                                        <span class="train-time-arrival-delay">+{{ train.arrival.actualDateTime | calculate_delay_minutes(train.arrival.plannedDateTime) }}</span>
+                                    {% else %}
+                                        <span class="train-time-arrival-normal">
+                                            <time datetime="{{ train.arrival.plannedDateTime | isoformat }}">{{ train.arrival.plannedDateTime | format_datetime("%H:%M") }}</time>
+                                        </span>
                                     {% endif %}
-                                    {{ message.message }}
-                                </li>
+                                {% endif %}
+                            </div>
+                            <i class="fa-solid fa-arrow-down"></i>
+                            <div class="train-time-departure{% if train.departure.plannedDateTime != train.departure.actualDateTime %} train-time-departure-delays{% endif %}">
+                                {% if not train.departure.plannedDateTime %}
+                                    <span class="train-time-departure-notapplicable"><i class="fa-solid fa-caret-down"></i></span>
+                                {% else %}
+                                    <span class="train-time-departure-label">Dep</span>
+                                    {% if train.departure.plannedDateTime != train.departure.actualDateTime %}
+                                        <s class="train-time-departure-planned train-time-outdated">
+                                            <time datetime="{{ train.departure.plannedDateTime | isoformat }}">{{ train.departure.plannedDateTime | format_datetime("%H:%M") }}</time>
+                                        </s>
+                                        <span class="train-time-departure-actual">
+                                            <time datetime="{{ train.departure.actualDateTime | isoformat }}">{{ train.departure.actualDateTime | format_datetime("%H:%M") }}</time>
+                                        </span>
+                                        <span class="train-time-departure-delay">+{{ train.departure.actualDateTime | calculate_delay_minutes(train.departure.plannedDateTime) }}</span>
+                                    {% else %}
+                                        <span class="train-time-departure-normal">
+                                            <time datetime="{{ train.departure.plannedDateTime | isoformat }}">{{ train.departure.plannedDateTime | format_datetime("%H:%M") }}</time>
+                                        </span>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        </section>
+                        <section class="train-metadata">
+                            <span class="train-metadata-train-type">
+                                {% if train.arrival.product %}
+                                    {{ train.arrival.product.shortCategoryName }}
+                                {% elif train.departure.product %}
+                                    {{ train.departure.product.shortCategoryName }}
+                                {% else %}
+                                    UNKNOWN
+                                {% endif %}
+                            </span>
+                            <span class="train-metadata-train-number">{{ train_number }}</span>
+                        </section>
+                        <section class="train-route">
+                            {% set origin_uic = station_name_to_uic.get(train.arrival.origin | normalize_name | lower) if train.arrival.origin else None %}
+                            {% if train.arrival.origin %}
+                                {% if origin_uic %}
+                                    <a class="train-route-origin"
+                                       lang="nl"
+                                       href="{{ url_for('station_times', station_code=origin_uic) }}">{{ train.arrival.origin | format_name }}</a>
+                                {% else %}
+                                    <span class="train-route-origin" lang="nl">{{ train.arrival.origin | format_name }}</span>
+                                {% endif %}
+                            {% else %}
+                                <span class="train-route-origin train-route-thisstation">This station</span>
+                            {% endif %}
+                            <i class="fa-solid fa-arrow-right"></i>
+                            {% set direction_uic = station_name_to_uic.get(train.departure.direction | normalize_name | lower) if train.departure.direction else None %}
+                            {% if train.departure.direction %}
+                                {% if direction_uic %}
+                                    <a class="train-route-direction"
+                                       lang="nl"
+                                       href="{{ url_for('station_times', station_code=direction_uic) }}">{{ train.departure.direction | format_name }}</a>
+                                {% else %}
+                                    <span class="train-route-direction" lang="nl">{{ train.departure.direction | format_name }}</span>
+                                {% endif %}
+                            {% else %}
+                                <span class="train-route-direction train-route-thisstation">This station</span>
+                            {% endif %}
+                        </section>
+                        <section class="train-via">
+                            {% if train.departure.routeStations %}<span class="train-via-header">Via</span>{% endif %}
+                            {% for via_station in train.departure.routeStations %}
+                                <a class="train-via-station"
+                                   lang="nl"
+                                   href="{{ url_for('station_times', station_code=via_station.uicCode) }}">
+                                    {{ via_station.mediumName | format_name }}
+                                </a>
+                                {% if not loop.last %}<i class="fa-solid fa-angle-right"></i>{% endif %}
                             {% endfor %}
-                            {% if train.arrival and train.departure and train.arrival.actualTrack != train.departure.actualTrack %}
-                                <li class="train-message train-message-warning">
-                                    <i class="fa-solid fa-triangle-exclamation"></i> Train arrives on a different platform than it departs from
-                                </li>
-                            {% endif %}
-                        </ul>
-                    {% endif %}
-                </section>
-                <section class="train-track">
-                    {% if train.arrival.actualTrack and train.arrival.plannedTrack and train.departure.actualTrack and train.departure.plannedTrack %}
-                        {% if train.arrival.actualTrack == train.arrival.plannedTrack == train.departure.actualTrack == train.departure.plannedTrack %}
-                            <span class="train-track-normal train-track-number">{{ train.departure.plannedTrack }}</span>
-                        {% elif train.arrival.actualTrack == train.departure.actualTrack and train.departure.plannedTrack == train.arrival.plannedTrack %}
-                            <div class="train-track-smallchange">
-                                <span class="train-track-planned train-track-outdated train-track-number">{{ train.arrival.plannedTrack }}</span>
-                                <span class="train-track-actual train-track-number">{{ train.arrival.actualTrack }}</span>
-                            </div>
-                        {% else %}
-                            <div class="train-track-arrival">
-                                {% if train.arrival.actualTrack == train.arrival.plannedTrack %}
-                                    <span class="train-track-arrival-normal train-track-number">{{ train.arrival.actualTrack }}</span>
-                                {% else %}
-                                    <span class="train-track-arrival-planned train-track-outdated train-track-number">{{ train.arrival.plannedTrack }}</span>
-                                    <span class="train-track-arrival-actual train-track-number">{{ train.arrival.actualTrack }}</span>
-                                {% endif %}
-                            </div>
-                            <i class="fa-solid fa-angles-down"></i>
-                            <div class="train-track-departure">
-                                {% if train.departure.actualTrack == train.departure.plannedTrack %}
-                                    <span class="train-track-departure-normal train-track-number">{{ train.departure.actualTrack }}</span>
-                                {% else %}
-                                    <span class="train-track-departure-planned train-track-outdated train-track-number">{{ train.departure.plannedTrack }}</span>
-                                    <span class="train-track-departure-actual train-track-number">{{ train.departure.actualTrack }}</span>
-                                {% endif %}
-                            </div>
-                        {% endif %}
-                    {% elif train.arrival.actualTrack and train.arrival.plannedTrack %}
-                        <div class="train-track-arrival">
-                            {% if train.arrival.actualTrack == train.arrival.plannedTrack %}
-                                <span class="train-track-arrival-normal train-track-number">{{ train.arrival.actualTrack }}</span>
-                            {% else %}
-                                <span class="train-track-arrival-planned train-track-outdated train-track-number">{{ train.arrival.plannedTrack }}</span>
-                                <span class="train-track-arrival-actual train-track-number">{{ train.arrival.actualTrack }}</span>
-                            {% endif %}
-                        </div>
-                    {% elif train.departure.actualTrack and train.departure.plannedTrack %}
-                        <div class="train-track-departure">
-                            {% if train.departure.actualTrack == train.departure.plannedTrack %}
-                                <span class="train-track-departure-normal train-track-number">{{ train.departure.actualTrack }}</span>
-                            {% else %}
-                                <span class="train-track-departure-planned train-track-outdated train-track-number">{{ train.departure.plannedTrack }}</span>
-                                <span class="train-track-departure-actual train-track-number">{{ train.departure.actualTrack }}</span>
-                            {% endif %}
-                        </div>
-                    {% else %}
-                        <span class="train-track-notapplicable train-track-number">-</span>
-                    {% endif %}
-                </section>
-            </li>
-        {% endfor %}
-    </ol>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const trainStockSections = document.querySelectorAll(
-                ".train-stock[data-train-number]"
-            );
+                        </section>
+                        <section class="train-stock" data-train-number="{{ train_number }}">
+                            <div class="train-stock-loading">Loading train composition...</div>
+                        </section>
+                        <script>
+                    document.addEventListener("DOMContentLoaded", function () {
+                        const trainStockSections = document.querySelectorAll(
+                            ".train-stock[data-train-number]"
+                        );
 
-            trainStockSections.forEach((section) => {
-                const trainNumber = section.dataset.trainNumber;
+                        trainStockSections.forEach((section) => {
+                            const trainNumber = section.dataset.trainNumber;
 
-                fetch(
-                    "{{ url_for('train_stock_api', train_number='') }}" +
-                        trainNumber
-                )
-                    .then((response) => response.json())
-                    .then((data) => {
-                        section.innerHTML = data.html;
-                    })
-                    .catch((error) => {
-                        console.error("Error fetching train stock:", error);
-                        section.innerHTML =
-                            '<div class="train-stock-error">Failed to load train composition</div>';
+                            fetch(
+                                "{{ url_for('train_stock_api', train_number='') }}" +
+                                    trainNumber
+                            )
+                                .then((response) => response.json())
+                                .then((data) => {
+                                    section.innerHTML = data.html;
+                                })
+                                .catch((error) => {
+                                    console.error("Error fetching train stock:", error);
+                                    section.innerHTML =
+                                        '<div class="train-stock-error">Failed to load train composition</div>';
+                                });
+                        });
                     });
-            });
-        });
-    </script>
+                        </script>
+                        <section class="train-messages">
+                            {% set arrival_msgs = train.arrival.messages if train.arrival and train.arrival.messages else [] %}
+                            {% set departure_msgs = train.departure.messages if train.departure and train.departure.messages else [] %}
+                            {% set all_msgs = arrival_msgs + departure_msgs %}
+                            {% set priority_map = {"WARNING": 1, "INFO": 2} %}
+                            {% set unique_msgs = {} %}
+                            {% for message in all_msgs %}
+                                {% set msg_text = message.message %}
+                                {% set msg_priority = priority_map.get(message.style, 999) %}
+                                {% if msg_text not in unique_msgs or msg_priority < priority_map.get(unique_msgs[msg_text].style, 999) %}
+                                    {% set _ = unique_msgs.update({msg_text: message}) %}
+                                {% endif %}
+                            {% endfor %}
+                            {% set final_msgs = unique_msgs.values() | list %}
+                            {% if final_msgs %}
+                                <ul class="train-messages-container">
+                                    {% for message in final_msgs %}
+                                        <li class="train-message train-message-{{ message.style | lower }}">
+                                            {% if message.style == "WARNING" %}
+                                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                            {% elif message.style == "INFO" %}
+                                                <i class="fa-solid fa-info-circle "></i>
+                                            {% endif %}
+                                            {{ message.message }}
+                                        </li>
+                                    {% endfor %}
+                                    {% if train.arrival and train.departure and train.arrival.actualTrack != train.departure.actualTrack %}
+                                        <li class="train-message train-message-warning">
+                                            <i class="fa-solid fa-triangle-exclamation"></i> Train arrives on a different platform than it departs from
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            {% endif %}
+                        </section>
+                        <section class="train-track">
+                            {% if train.arrival.actualTrack and train.arrival.plannedTrack and train.departure.actualTrack and train.departure.plannedTrack %}
+                                {% if train.arrival.actualTrack == train.arrival.plannedTrack == train.departure.actualTrack == train.departure.plannedTrack %}
+                                    <span class="train-track-normal train-track-number">{{ train.departure.plannedTrack }}</span>
+                                {% elif train.arrival.actualTrack == train.departure.actualTrack and train.departure.plannedTrack == train.arrival.plannedTrack %}
+                                    <div class="train-track-smallchange">
+                                        <span class="train-track-planned train-track-outdated train-track-number">{{ train.arrival.plannedTrack }}</span>
+                                        <span class="train-track-actual train-track-number">{{ train.arrival.actualTrack }}</span>
+                                    </div>
+                                {% else %}
+                                    <div class="train-track-arrival">
+                                        {% if train.arrival.actualTrack == train.arrival.plannedTrack %}
+                                            <span class="train-track-arrival-normal train-track-number">{{ train.arrival.actualTrack }}</span>
+                                        {% else %}
+                                            <span class="train-track-arrival-planned train-track-outdated train-track-number">{{ train.arrival.plannedTrack }}</span>
+                                            <span class="train-track-arrival-actual train-track-number">{{ train.arrival.actualTrack }}</span>
+                                        {% endif %}
+                                    </div>
+                                    <i class="fa-solid fa-angles-down"></i>
+                                    <div class="train-track-departure">
+                                        {% if train.departure.actualTrack == train.departure.plannedTrack %}
+                                            <span class="train-track-departure-normal train-track-number">{{ train.departure.actualTrack }}</span>
+                                        {% else %}
+                                            <span class="train-track-departure-planned train-track-outdated train-track-number">{{ train.departure.plannedTrack }}</span>
+                                            <span class="train-track-departure-actual train-track-number">{{ train.departure.actualTrack }}</span>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                            {% elif train.arrival.actualTrack and train.arrival.plannedTrack %}
+                                <div class="train-track-arrival">
+                                    {% if train.arrival.actualTrack == train.arrival.plannedTrack %}
+                                        <span class="train-track-arrival-normal train-track-number">{{ train.arrival.actualTrack }}</span>
+                                    {% else %}
+                                        <span class="train-track-arrival-planned train-track-outdated train-track-number">{{ train.arrival.plannedTrack }}</span>
+                                        <span class="train-track-arrival-actual train-track-number">{{ train.arrival.actualTrack }}</span>
+                                    {% endif %}
+                                </div>
+                            {% elif train.departure.actualTrack and train.departure.plannedTrack %}
+                                <div class="train-track-departure">
+                                    {% if train.departure.actualTrack == train.departure.plannedTrack %}
+                                        <span class="train-track-departure-normal train-track-number">{{ train.departure.actualTrack }}</span>
+                                    {% else %}
+                                        <span class="train-track-departure-planned train-track-outdated train-track-number">{{ train.departure.plannedTrack }}</span>
+                                        <span class="train-track-departure-actual train-track-number">{{ train.departure.actualTrack }}</span>
+                                    {% endif %}
+                                </div>
+                            {% else %}
+                                <span class="train-track-notapplicable train-track-number">-</span>
+                            {% endif %}
+                        </section>
+                    </li>
+                {% endfor %}
+            </ol>
+        </section>
+    </section>
 {% endblock %}

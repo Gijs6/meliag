@@ -314,7 +314,6 @@ def station_times(station_code):
                 return datetime.max.replace(tzinfo=timezone.utc)
 
         trains = dict(sorted(trains.items(), key=lambda item: actual_time(item[1])))
-        print(f"{station_name}: {len(arrivals)} arrivals, {len(departures)} departures")
 
     return render_template(
         "station_times.html",

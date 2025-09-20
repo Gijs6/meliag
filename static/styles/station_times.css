@@ -11,7 +11,6 @@ main {
     align-items: flex-end;
     padding: 30px 40px;
     isolation: isolate;
-    background-attachment: fixed;
 }
 
 .station-banner::after {
@@ -41,7 +40,15 @@ main {
     word-wrap: break-word;
 }
 
+.station-banner-name::selection {
+    color: white;
+    background: gray;
+}
+
 .station-info {
+    width: 1000px;
+    max-width: 100%;
+    margin: auto;
     padding: 30px 40px;
     display: grid;
     grid-template-areas:
@@ -161,13 +168,17 @@ main {
     color: white;
 }
 
+.sections-container {
+    padding: 20px 40px;
+    width: 1000px;
+    max-width: 100%;
+    margin: auto;
+}
+
 .trains-container {
     list-style: none;
     display: flex;
     flex-direction: column;
-    width: 900px;
-    max-width: 100%;
-    margin: auto;
 }
 
 .train {

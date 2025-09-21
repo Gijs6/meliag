@@ -22,7 +22,7 @@
             {% for station in stations %}
                 <tr>
                     <td>
-                        <a href="{{ url_for('station_times', station_code=station.id.uicCode) }}"
+                        <a href="{{ url_for('station_page', station_code=station.id.uicCode) }}"
                            lang="nl">{{ station.names.long }}</a>
                     </td>
                     <td>{{ station.id.uicCode }}</td>

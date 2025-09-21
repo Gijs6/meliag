@@ -246,8 +246,8 @@ def train_stock_api(train_number):
         }
 
 
-@app.route("/station-times/<station_code>")
-def station_times(station_code):
+@app.route("/station-page/<station_code>")
+def station_page(station_code):
     debug = request.args.get("debug") == "true"
 
     station_data = load_station_data_mapping().get(station_code)
@@ -313,7 +313,7 @@ def station_times(station_code):
         trains = dict(sorted(trains.items(), key=lambda item: actual_time(item[1])))
 
     return render_template(
-        "station_times.html",
+        "station_page.html",
         trains=trains,
         station_name_to_uic=load_uic_mapping(),
         station_data=station_data,

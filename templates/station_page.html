@@ -1,8 +1,8 @@
 {% extends "base.html" %}
-{% block title %}Station times for {{ station_data.names.short }}{% endblock %}
+{% block title %}Station page for {{ station_data.names.short }}{% endblock %}
 {% block extra_headers %}
     <link rel="stylesheet"
-          href="{{ url_for('static', filename='styles/station_times.css') }}" />
+          href="{{ url_for('static', filename='styles/station_page.css') }}" />
 {% endblock %}
 {% block content %}
     <section class="station-container">
@@ -11,13 +11,19 @@
             <h1 class="station-banner-name" lang="nl">{{ station_data.names.medium }}</h1>
         </div>
         <section class="station-info">
+            <!-- {{ station_data | tojson(indent=4) }} -->
             <div class="station-info-name" lang="nl">
-                <span class="station-info-name-label">Station</span>
                 <span class="station-info-name-long">{{ station_data.names.long }}</span>
-            </div>
-            <div class="station-info-location">
-                <i class="fa-solid fa-location-dot"></i>
-                <span class="station-info-coordinates">{{ station_data.location.lat | round(3) }}, {{ station_data.location.lng | round(3) }}</span>
+                {% if station_data.names.synonyms %}
+                    <div class="station-info-name-synonyms">
+                        <label class="station-info-name-synonyms-label">Also known as</label>
+                        <span class="station-info-name-synonyms-list">
+                            {% for synonym in station_data.names.synonyms %}
+                                <span class="station-info-name-synonym-item">{{ synonym }}</span>
+                            {% endfor %}
+                        </span>
+                    </div>
+                {% endif %}
             </div>
             <div class="station-info-accessibility">
                 {% if station_data.availableForAccessibleTravel %}
@@ -58,40 +64,22 @@
                     {% endif %}
                 {% endif %}
             </div>
-            <div class="station-info-labels">
-                {% if station_data.names.synonyms %}
-                    <div class="station-info-labels-synonyms">
-                        <label class="station-info-labels-synonyms-label">Also known as</label>
-                        <span class="station-info-labels-synonyms-list">
-                            {% for synonym in station_data.names.synonyms %}
-                                <span class="station-info-labels-synonym-item">{{ synonym }}</span>
-                            {% endfor %}
-                        </span>
-                    </div>
-                {% endif %}
-                <div class="station-info-labels-ids">
-                    <div class="station-info-labels-id-item">
-                        <label class="station-info-labels-id-label">NS</label>
-                        <code class="station-info-labels-id-value station-info-labels-id-nscode">{{ station_data.id.code }}</code>
-                    </div>
-                    <div class="station-info-labels-id-item">
-                        <label class="station-info-labels-id-label">UIC</label>
-                        <code class="station-info-labels-id-value station-info-labels-id-uic">{{ station_data.id.uicCode }}</code>
-                    </div>
-                    <div class="station-info-labels-id-item">
-                        <label class="station-info-labels-id-label">UIC</label>
-                        <code class="station-info-labels-id-value station-info-labels-id-uiccd">{{ station_data.id.uicCdCode }}</code>
-                    </div>
-                    <div class="station-info-labels-id-item">
-                        <label class="station-info-labels-id-label">EVA</label>
-                        <code class="station-info-labels-id-value station-info-labels-id-eva">{{ station_data.id.evaCode }}</code>
-                    </div>
+            <div class="station-info-ids">
+                <div class="station-info-id-item">
+                    <label class="station-info-id-label">NS</label>
+                    <code class="station-info-id-value station-info-id-nscode">{{ station_data.id.code }}</code>
                 </div>
-            </div>
-            <div class="station-info-tracks">
-                <label class="station-info-tracks-label">Tracks</label>
-                <div class="station-info-tracks-list">
-                    {% for track in station_data.tracks %}<span class="station-info-tracks-number">{{ track }}</span>{% endfor %}
+                <div class="station-info-id-item">
+                    <label class="station-info-id-label">UIC</label>
+                    <code class="station-info-id-value station-info-id-uic">{{ station_data.id.uicCode }}</code>
+                </div>
+                <div class="station-info-id-item">
+                    <label class="station-info-id-label">UIC</label>
+                    <code class="station-info-id-value station-info-id-uiccd">{{ station_data.id.uicCdCode }}</code>
+                </div>
+                <div class="station-info-id-item">
+                    <label class="station-info-id-label">EVA</label>
+                    <code class="station-info-id-value station-info-id-eva">{{ station_data.id.evaCode }}</code>
                 </div>
             </div>
         </section>
@@ -102,6 +90,7 @@
             <ol class="trains-container">
                 {% for train_number, train in trains.items() %}
                     <li class="train{% if train.arrival.cancelled or train.departure.cancelled %} train-cancelled{% endif %}">
+                        <!-- {{ train | tojson(indent=4) }} -->
                         <section class="train-times">
                             <div class="train-time-arrival{% if train.arrival.plannedDateTime != train.arrival.actualDateTime %} train-time-arrival-delays{% endif %}">
                                 {% if not train.arrival.plannedDateTime %}
@@ -123,7 +112,6 @@
                                     {% endif %}
                                 {% endif %}
                             </div>
-                            <i class="fa-solid fa-arrow-down"></i>
                             <div class="train-time-departure{% if train.departure.plannedDateTime != train.departure.actualDateTime %} train-time-departure-delays{% endif %}">
                                 {% if not train.departure.plannedDateTime %}
                                     <span class="train-time-departure-notapplicable"><i class="fa-solid fa-caret-down"></i></span>
@@ -163,7 +151,7 @@
                                 {% if origin_uic %}
                                     <a class="train-route-origin"
                                        lang="nl"
-                                       href="{{ url_for('station_times', station_code=origin_uic) }}">{{ train.arrival.origin | format_name }}</a>
+                                       href="{{ url_for('station_page', station_code=origin_uic) }}">{{ train.arrival.origin | format_name }}</a>
                                 {% else %}
                                     <span class="train-route-origin" lang="nl">{{ train.arrival.origin | format_name }}</span>
                                 {% endif %}
@@ -176,7 +164,7 @@
                                 {% if direction_uic %}
                                     <a class="train-route-direction"
                                        lang="nl"
-                                       href="{{ url_for('station_times', station_code=direction_uic) }}">{{ train.departure.direction | format_name }}</a>
+                                       href="{{ url_for('station_page', station_code=direction_uic) }}">{{ train.departure.direction | format_name }}</a>
                                 {% else %}
                                     <span class="train-route-direction" lang="nl">{{ train.departure.direction | format_name }}</span>
                                 {% endif %}
@@ -189,7 +177,7 @@
                             {% for via_station in train.departure.routeStations %}
                                 <a class="train-via-station"
                                    lang="nl"
-                                   href="{{ url_for('station_times', station_code=via_station.uicCode) }}">
+                                   href="{{ url_for('station_page', station_code=via_station.uicCode) }}">
                                     {{ via_station.mediumName | format_name }}
                                 </a>
                                 {% if not loop.last %}<i class="fa-solid fa-angle-right"></i>{% endif %}

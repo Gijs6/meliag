@@ -34,7 +34,9 @@ main {
     mix-blend-mode: difference;
     font-size: 8em;
     font-weight: 800;
-    text-shadow: -10px 10px var(--oc-gray-4);
+    text-shadow:
+        -5px 5px var(--oc-gray-0),
+        5px -5px var(--oc-gray-0);
     hyphens: auto;
     overflow-wrap: break-word;
     word-wrap: break-word;
@@ -46,127 +48,86 @@ main {
 }
 
 .station-info {
-    width: 1000px;
+    width: 1250px;
     max-width: 100%;
     margin: auto;
     padding: 30px 40px;
     display: grid;
     grid-template-areas:
-        "name labels"
-        "location labels"
-        "accessibility tracks";
-    gap: 10px 25px;
+        "name ids"
+        "accessibility ids";
+    gap: 25px 10px;
     align-items: center;
     border-bottom: 3px solid var(--oc-gray-4);
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr auto;
 }
 
 .station-info-name {
     grid-area: name;
-    font-size: 3em;
-    font-weight: 500;
 }
 
 .station-info-name-long {
+    font-size: 3em;
     font-weight: 900;
-    text-wrap: nowrap;
 }
 
-.station-info-location {
-    grid-area: location;
-}
-
-.station-info-labels {
-    grid-area: labels;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.station-info-labels-synonym-item {
+.station-info-name-synonym-item {
     font-weight: 700;
 }
 
-.station-info-labels-synonym-item:not(:last-child)::after {
+.station-info-name-synonym-item:not(:last-child)::after {
     content: ", ";
     font-weight: 500;
 }
 
-.station-info-labels-ids {
+.station-info-ids {
+    grid-area: ids;
     display: grid;
-    grid-template-rows: repeat(2, auto);
-    grid-auto-flow: column;
+    grid-template-columns: repeat(2, auto);
     justify-content: start;
-    justify-items: center;
     gap: 2.5px 10px;
+    align-items: center;
+    font-size: 0.9em;
 }
 
-.station-info-labels-id-item {
+.station-info-id-item {
     display: contents;
 }
 
-.station-info-labels-id-label {
+.station-info-id-label {
     font-size: 0.8em;
+    justify-self: end;
 }
 
-.station-info-labels-id-value {
-    font-size: 1.25em;
+.station-info-id-value {
+    font-size: 1.1em;
     font-weight: 600;
+    justify-self: start;
 }
 
 .station-info-accessibility {
     grid-area: accessibility;
-    display: grid;
-    grid-template-columns: auto 1fr;
-    height: fit-content;
-    align-items: center;
-    gap: 7.5px 5px;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 15px;
 }
 
 .station-info-accessibility-item {
-    display: contents;
-}
-
-.station-info-accessibility-item i {
-    justify-self: stretch;
-    text-align: center;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
     padding: 5px 7.5px;
     color: white;
 }
 
-.station-info-accessibility-available i {
+.station-info-accessibility-available {
     background-color: var(--oc-green-9);
 }
 
-.station-info-accessibility-unavailable i {
+.station-info-accessibility-unavailable {
     background-color: var(--oc-red-9);
-}
-
-.station-info-accessibility-unavailable:not(i) {
-    font-weight: 600;
-    color: var(--oc-red-9);
-}
-
-.station-info-tracks {
-    grid-area: tracks;
-    display: flex;
-    flex-direction: column;
-    gap: 2.5px;
-}
-
-.station-info-tracks-list {
-    display: flex;
-    flex-direction: row;
-    gap: 5px;
-    flex-wrap: wrap;
-}
-
-.station-info-tracks-number {
-    background: var(--oc-orange-7);
-    padding: 5px 7.5px;
-    font-weight: 600;
-    color: white;
-    font-family: "Source Code Pro", monospace;
 }
 
 .sections-container {
@@ -200,12 +161,20 @@ main {
     column-gap: 10px;
 }
 
-.train:first-child {
+.train:first-child:not(.train-cancelled) {
     border-top: none;
 }
 
-.train:last-child {
+.train:first-child.train-cancelled {
+    border-top-width: 2px;
+}
+
+.train:last-child:not(.train-cancelled) {
     border-bottom: none;
+}
+
+.train:last-child.train-cancelled {
+    border-bottom-width: 2px;
 }
 
 .train-cancelled {
@@ -241,6 +210,7 @@ main {
     grid-template-rows: auto auto;
     align-items: center;
     gap: 0 5px;
+    text-align: center;
 }
 
 .train-time-arrival {

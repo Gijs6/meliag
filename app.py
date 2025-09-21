@@ -231,12 +231,9 @@ def train_stock_api(train_number):
     try:
         stock_data = fetch_train_stock(train_number)
         if stock_data and stock_data.get("materieeldelen"):
-            parts_count = len(stock_data.get("materieeldelen", []))
-            print(f"Train {train_number}: {parts_count} parts")
             html = render_template("train_stock.html", stock=stock_data)
             return {"success": True, "html": html}
         else:
-            print(f"Train {train_number}: no composition data")
             return {
                 "success": False,
                 "html": '<div class="train-stock-error">Train composition not available</div>',

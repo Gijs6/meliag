@@ -98,7 +98,7 @@
     </section>
     <section class="sections-container">
         <section class="section-item section-trains">
-            <h2>Arrival and departure times</h2>
+            <h2 class="section-item-header section-trains-header">Arrival and departure times</h2>
             <ol class="trains-container">
                 {% for train_number, train in trains.items() %}
                     <li class="train{% if train.arrival.cancelled or train.departure.cancelled %} train-cancelled{% endif %}">
@@ -198,31 +198,6 @@
                         <section class="train-stock" data-train-number="{{ train_number }}">
                             <div class="train-stock-loading">Loading train composition...</div>
                         </section>
-                        <script>
-                    document.addEventListener("DOMContentLoaded", function () {
-                        const trainStockSections = document.querySelectorAll(
-                            ".train-stock[data-train-number]"
-                        );
-
-                        trainStockSections.forEach((section) => {
-                            const trainNumber = section.dataset.trainNumber;
-
-                            fetch(
-                                "{{ url_for('train_stock_api', train_number='') }}" +
-                                    trainNumber
-                            )
-                                .then((response) => response.json())
-                                .then((data) => {
-                                    section.innerHTML = data.html;
-                                })
-                                .catch((error) => {
-                                    console.error("Error fetching train stock:", error);
-                                    section.innerHTML =
-                                        '<div class="train-stock-error">Failed to load train composition</div>';
-                                });
-                        });
-                    });
-                        </script>
                         <section class="train-messages">
                             {% set arrival_msgs = train.arrival.messages if train.arrival and train.arrival.messages else [] %}
                             {% set departure_msgs = train.departure.messages if train.departure and train.departure.messages else [] %}
@@ -312,4 +287,29 @@
             </ol>
         </section>
     </section>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const trainStockSections = document.querySelectorAll(
+                ".train-stock[data-train-number]"
+            );
+
+            trainStockSections.forEach((section) => {
+                const trainNumber = section.dataset.trainNumber;
+
+                fetch(
+                    "{{ url_for('train_stock_api', train_number='') }}" +
+                        trainNumber
+                )
+                    .then((response) => response.json())
+                    .then((data) => {
+                        section.innerHTML = data.html;
+                    })
+                    .catch((error) => {
+                        console.error("Error fetching train stock:", error);
+                        section.innerHTML =
+                            '<div class="train-stock-error">Failed to load train composition</div>';
+                    });
+            });
+        });
+    </script>
 {% endblock %}

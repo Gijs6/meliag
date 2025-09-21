@@ -166,6 +166,7 @@ main {
     padding: 5px 7.5px;
     font-weight: 600;
     color: white;
+    font-family: "Source Code Pro", monospace;
 }
 
 .sections-container {
@@ -411,23 +412,6 @@ a.train-route-origin:hover {
     color: var(--oc-gray-6);
 }
 
-.train-stock-length {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    gap: 5px;
-    font-size: 0.9em;
-    color: var(--oc-gray-5);
-}
-
-.train-stock-length-center-info {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 2.5px;
-}
-
 .train-messages {
     grid-area: messages;
     align-self: start;
@@ -483,12 +467,32 @@ a.train-route-origin:hover {
     padding: 5px 7.5px;
     font-weight: 600;
     color: white;
+    font-family: "Source Code Pro", monospace;
 }
 
 .train-track-outdated {
     background: var(--oc-red-9);
-    font-style: italic;
-    font-weight: 300;
+    font-weight: 500;
+    position: relative;
+}
+
+.train-track-outdated::before,
+.train-track-outdated::after {
+    content: "";
+    position: absolute;
+    left: 10%;
+    right: 10%;
+    top: 50%;
+    height: 1px;
+    background: currentColor;
+    transform-origin: center;
+}
+
+.train-track-outdated::before {
+    transform: translateY(-50%) rotate(45deg);
+}
+.train-track-outdated::after {
+    transform: translateY(-50%) rotate(-45deg);
 }
 
 s {

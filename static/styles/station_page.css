@@ -35,8 +35,8 @@ main {
     font-size: 8em;
     font-weight: 800;
     text-shadow:
-        -5px 5px var(--oc-gray-0),
-        5px -5px var(--oc-gray-0);
+        -5px 5px var(--oc-green-4),
+        5px -5px var(--oc-gray-4);
     hyphens: auto;
     overflow-wrap: break-word;
     word-wrap: break-word;

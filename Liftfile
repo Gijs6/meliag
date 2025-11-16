@@ -1,0 +1,4 @@
+name: meliag
+image: gijs6/meliag
+registry: ghcr.io
+host: dec

@@ -4,6 +4,10 @@ serve() {
   .venv/bin/python app.py
 }
 
+deploy() {
+  lift deploy
+}
+
 format() {
   ruff format .
   prettier --write "**/*.{css,js}"

@@ -28,7 +28,6 @@
                 {% for part in stock.trainParts %}
                     {% set facilities = {'WIFI': ('wifi', 'Wi-Fi'), 'TOILET': ('toilet', 'Toilet'), 'STILTE': ('ear-off', 'Quiet zone'), 'STROOM': ('plug', 'Power'), 'FIETS': ('bike', 'Bikes'), 'TOEGANKELIJK': ('accessibility', 'Step-free')} %}
                     <figure class="stock-car">
-                        <img class="stock-car__image" src="{{ part.image.uri }}" alt="" lang="nl" />
                         <figcaption class="stock-car__info">
                             <span class="stock-car__type">{{ stock.trainType }}</span>
                             <span class="stock-car__number id">{{ part.stockIdentifier }}</span>

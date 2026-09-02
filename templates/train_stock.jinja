@@ -6,7 +6,6 @@
     <div class="reel stock-reel">
         {% for car in stock.materieeldelen %}
             <figure class="stock-car">
-                <img class="stock-car__image" src="{{ car.afbeelding }}" alt="" lang="nl" />
                 <figcaption class="stock-car__info">
                     <span class="stock-car__type">{{ car.type }}</span>
                     <span class="stock-car__number id">{{ car.materieelnummer }}</span>

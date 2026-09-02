@@ -88,11 +88,6 @@
     gap: var(--sp-md);
     margin-block-end: var(--sp-2xl);
 }
-.station-info__photo {
-    --frame-ratio: 24 / 7;
-    max-block-size: 16rem;
-    border-radius: var(--radius);
-}
 .station-info__synonyms {
     margin: 0;
     font-size: var(--t--1);
@@ -304,11 +299,6 @@
     align-items: center;
     gap: var(--sp-2xs);
     inline-size: max-content;
-}
-.stock-car__image {
-    block-size: 1.5rem;
-    inline-size: auto;
-    border-radius: 0;
 }
 .stock-car__info {
     display: flex;

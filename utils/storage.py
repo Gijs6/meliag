@@ -31,7 +31,3 @@ def load_uic_mapping():
 
 def load_station_data_mapping():
     return load_json("station_data_mapping.json") or {}
-
-
-def load_station_pictures_mapping():
-    return load_json("station_images.json") or {}

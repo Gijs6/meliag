@@ -6,7 +6,6 @@ from utils.ns_api import fetch_arrivals, fetch_departures, fetch_train_stock
 from utils.storage import (
     load_json,
     load_station_data_mapping,
-    load_station_pictures_mapping,
     load_uic_mapping,
 )
 from utils.trains import merge_arrivals_departures, merged_messages
@@ -87,5 +86,4 @@ def station_page(station_code):
         station_name=station_name,
         station_name_to_uic=load_uic_mapping(),
         station_data=station_data,
-        station_picture=load_station_pictures_mapping().get(station_code),
     )

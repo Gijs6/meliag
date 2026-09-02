@@ -11,12 +11,6 @@
 
     {% if station_data %}
         <section class="station-info" aria-label="Station details">
-            {% if station_picture %}
-                <div class="frame station-info__photo">
-                    <img src="{{ station_picture }}" alt="" lang="nl" />
-                </div>
-            {% endif %}
-
             {% if station_data.names.synonyms %}
                 <p class="station-info__synonyms">
                     <span class="station-info__synonyms-label">Also called</span>

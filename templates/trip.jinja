@@ -26,7 +26,7 @@
             <h2>Composition</h2>
             <div class="reel stock-reel">
                 {% for part in stock.trainParts %}
-    {% set facilities = {'WIFI': ('wifi', 'Wi-Fi'), 'TOILET': ('toilet', 'Toilet'), 'STILTE': ('ear-off', 'Quiet zone'), 'STROOM': ('plug', 'Power'), 'FIETS': ('bike', 'Bikes'), 'TOEGANKELIJK': ('accessibility', 'Step-free')} %}
+                    {% set facilities = {'WIFI': ('wifi', 'Wi-Fi'), 'TOILET': ('toilet', 'Toilet'), 'STILTE': ('ear-off', 'Quiet zone'), 'STROOM': ('plug', 'Power'), 'FIETS': ('bike', 'Bikes'), 'TOEGANKELIJK': ('accessibility', 'Step-free')} %}
                     <figure class="stock-car">
                         <img class="stock-car__image" src="{{ part.image.uri }}" alt="" lang="nl" />
                         <figcaption class="stock-car__info">

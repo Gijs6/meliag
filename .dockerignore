@@ -14,7 +14,6 @@ __pycache__
 Shakefile
 Liftfile
 *.db
-data/
 dev
 node_modules
 package.json

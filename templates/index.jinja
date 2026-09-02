@@ -1,0 +1,25 @@
+{% extends "base.jinja" %}
+
+{% from "_macros.jinja" import icon %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+    <div class="home">
+        <div class="home__lede stack">
+            <h1>Dutch trains</h1>
+            <p class="lead">Departures, arrivals, delays and platform changes for every station.</p>
+            <p>
+                <a class="button button--lg"
+                   href="{{ url_for('stations.station_search') }}">{{ icon("search") }} Find a station</a>
+            </p>
+        </div>
+
+        <div class="stat-row stat-row--bordered home__stats">
+            <div class="stat">
+                <span class="stat__value">{{ stats.total_stations }}</span>
+                <span class="stat__label">stations tracked</span>
+            </div>
+        </div>
+    </div>
+{% endblock %}

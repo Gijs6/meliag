@@ -1,0 +1,41 @@
+{% extends "base.jinja" %}
+
+{% from "_macros.jinja" import icon %}
+
+{% block title %}Stations{% endblock %}
+
+{% block content %}
+    <div class="page-head">
+        <h1>Find a station</h1>
+    </div>
+
+    <form method="get"
+          action="{{ url_for('stations.station_search') }}"
+          role="search"
+          class="station-search">
+        <label for="station-search-input">Name or code</label>
+        <div class="station-search__field">
+            {{ icon('search', 'station-search__icon') }}
+            <input type="search"
+                   id="station-search-input"
+                   name="q"
+                   placeholder="Amsterdam, Utrecht, Maastricht"
+                   autocomplete="off"
+                   value="{{ query }}"
+                   aria-controls="station-search-results"
+                   hx-get="{{ url_for('stations.station_search') }}"
+                   hx-trigger="input changed delay:300ms, search"
+                   hx-target="#station-search-results"
+                   hx-indicator="#station-search-status"
+                   hx-push-url="true" />
+        </div>
+        <span id="station-search-status"
+              class="station-search__status htmx-indicator"
+              aria-hidden="true">Searching…</span>
+    </form>
+
+    <div id="station-search-results" aria-live="polite">
+        {% include "search_results.jinja" %}
+
+    </div>
+{% endblock %}

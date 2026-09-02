@@ -1,0 +1,98 @@
+{% extends "base.jinja" %}
+
+{% from "_macros.jinja" import icon, time_readout, platform %}
+
+{% block title %}Train {{ train_number }}{% endblock %}
+
+{% block content %}
+    <div class="page-head">
+        <h1>Train {{ train_number }}</h1>
+    </div>
+
+    {% if notes %}
+        <ul class="stack stack--tight trip-notes" role="list">
+            {% for note in notes %}
+                <li class="notice notice--warning">
+                    {{ icon('triangle-alert', 'notice__icon') }}
+                    <div class="notice__body">{{ note.message or note.text or note }}</div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% set stock = (stops[0].actualStock or stops[0].plannedStock) if stops else none %}
+    {% if stock and stock.trainParts %}
+        <section class="trip-stock" aria-label="Train composition">
+            <h2>Composition</h2>
+            <div class="reel stock-reel">
+                {% for part in stock.trainParts %}
+    {% set facilities = {'WIFI': ('wifi', 'Wi-Fi'), 'TOILET': ('toilet', 'Toilet'), 'STILTE': ('ear-off', 'Quiet zone'), 'STROOM': ('plug', 'Power'), 'FIETS': ('bike', 'Bikes'), 'TOEGANKELIJK': ('accessibility', 'Step-free')} %}
+                    <figure class="stock-car">
+                        <img class="stock-car__image" src="{{ part.image.uri }}" alt="" lang="nl" />
+                        <figcaption class="stock-car__info">
+                            <span class="stock-car__type">{{ stock.trainType }}</span>
+                            <span class="stock-car__number id">{{ part.stockIdentifier }}</span>
+                            {% if part.facilities %}
+                                <span class="stock-car__facilities">
+                                    {% for facility in part.facilities %}
+                                        {% set details = facilities.get(facility) %}
+                                        {% if details %}
+                                            <span class="stock-car__facility" title="{{ details[1] }}">
+                                                <span class="visually-hidden">{{ details[1] }}</span>
+                                                {{ icon(details[0]) }}
+                                            </span>
+                                        {% endif %}
+                                    {% endfor %}
+                                </span>
+                            {% endif %}
+                        </figcaption>
+                    </figure>
+                {% endfor %}
+            </div>
+        </section>
+    {% endif %}
+
+    {% if error %}
+        <div class="notice notice--danger notice--loud">
+            {{ icon('triangle-alert', 'notice__icon') }}
+            <div class="notice__body">{{ error }}</div>
+        </div>
+    {% else %}
+        <section class="trip-schedule" aria-label="Journey schedule">
+            <h2>Schedule</h2>
+            <ol class="route" role="list">
+                {% for stop in stops %}
+                    {% set arrival = stop.arrivals[0] if stop.arrivals else {} %}
+                    {% set departure = stop.departures[0] if stop.departures else {} %}
+                    {% set is_passing = (stop.status | lower) == "passing" %}
+                    {% set is_cancelled = arrival.cancelled or departure.cancelled %}
+                    {% set track = departure.actualTrack or arrival.actualTrack %}
+                    {% set planned_track = departure.plannedTrack or arrival.plannedTrack %}
+                    <li class="route__stop{% if is_passing %} route__stop--passing{% endif %}{% if is_cancelled %} route__stop--cancelled{% endif %}">
+                        <span class="route__rail" aria-hidden="true"><span class="route__dot"></span></span>
+                        <div class="route__body">
+                            <p class="route__name" lang="nl">
+                                {% if stop.stop.uicCode %}
+                                    <a href="{{ url_for('stations.station_page', station_code=stop.stop.uicCode) }}">{{ stop.stop.name }}</a>
+                                {% else %}
+                                    {{ stop.stop.name }}
+                                {% endif %}
+                            </p>
+                            {% if arrival or departure %}
+                                <div class="route__times">
+                                    {% if arrival %}
+                                        {{ time_readout("Arr", planned_iso=arrival.plannedTime | isoformat, planned_display=arrival.plannedTime | format_datetime("%H:%M") , actual_iso=arrival.actualTime | isoformat, actual_display=arrival.actualTime | format_datetime("%H:%M"), delay_minutes=(arrival.delayInSeconds / 60) | round | int if arrival.delayInSeconds else none) }}
+                                    {% endif %}
+                                    {% if departure %}
+                                        {{ time_readout("Dep", planned_iso=departure.plannedTime | isoformat, planned_display=departure.plannedTime | format_datetime("%H:%M") , actual_iso=departure.actualTime | isoformat, actual_display=departure.actualTime | format_datetime("%H:%M"), delay_minutes=(departure.delayInSeconds / 60) | round | int if departure.delayInSeconds else none) }}
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        {% if track and planned_track %}<div class="route__track">{{ platform(track, planned_track) }}</div>{% endif %}
+                    </li>
+                {% endfor %}
+            </ol>
+        </section>
+    {% endif %}
+{% endblock %}

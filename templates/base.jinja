@@ -1,0 +1,32 @@
+{% extends "skeleton.jinja" %}
+
+{% from "_macros.jinja" import icon %}
+
+{% block body_class %}page page--topnav{% endblock %}
+
+{% macro nav_link(endpoint, label) %}
+    <a href="{{ url_for(endpoint) }}"
+       {% if request.endpoint == endpoint %}aria-current="page"{% endif %}>{{ label }}</a>
+{% endmacro %}
+
+{% block body_content %}
+    <header class="app-bar">
+        <a href="{{ url_for('main.index') }}" class="wordmark">
+            <span class="wordmark__mark">{{ icon("train-front") }}</span>
+            <span class="wordmark__text">Meliag</span>
+        </a>
+
+        <nav class="app-bar__nav" aria-label="Main navigation">
+            {{ nav_link('main.index', 'Home') }}
+            {{ nav_link('stations.station_search', 'Stations') }}
+        </nav>
+    </header>
+
+    <main class="page__main">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="page__footer">
+        <p>Times can be off or incomplete.</p>
+    </footer>
+{% endblock %}

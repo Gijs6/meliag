@@ -1,0 +1,37 @@
+{% macro icon(name, cls="") -%}
+    <svg class="icon{% if cls %} {{ cls }}{% endif %}"
+         viewBox="0 0 24 24"
+         fill="none"
+         stroke="currentColor"
+         stroke-width="2"
+         stroke-linecap="round"
+         stroke-linejoin="round"
+         aria-hidden="true">
+        {% include "icons/" ~ name ~ ".svg" %}
+
+    </svg>
+{%- endmacro %}
+
+{% macro time_readout(label, planned_iso=none, planned_display=none, actual_iso=none, actual_display=none, delay_minutes=none) -%}
+    <span class="time{% if delay_minutes %} time--delayed{% endif %}">
+        <span class="time__label">{{ label }}</span>
+        {% if not planned_iso -%}
+            <span class="time__none" aria-label="No {{ label | lower }}">n/a</span>
+        {%- elif delay_minutes -%}
+            <s class="time__planned"><time datetime="{{ planned_iso }}">{{ planned_display }}</time></s>
+            <span class="time__actual"><time datetime="{{ actual_iso }}">{{ actual_display }}</time></span>
+            <span class="time__delay"
+                  aria-label="{{ delay_minutes }} minute{{ 's' if delay_minutes != 1 }} late">+{{ delay_minutes }}</span>
+        {%- else -%}
+            <span class="time__actual"><time datetime="{{ planned_iso }}">{{ planned_display }}</time></span>
+        {%- endif %}
+    </span>
+{%- endmacro %}
+
+{% macro platform(actual, planned) -%}
+    {% if actual == planned -%}
+        <span class="platform">{{ actual }}</span>
+    {%- else -%}
+        <span class="platform platform--changed"><s>{{ planned }}</s> {{ actual }}</span>
+    {%- endif %}
+{%- endmacro %}

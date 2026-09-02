@@ -1,0 +1,22 @@
+#!/bin/bash
+FORMAT_HTML=1
+
+setup() {
+  i:venv
+  i:npm_install
+  i:vendor htmx.org/dist/htmx.min.js
+}
+
+serve() {
+  i:serve_flask
+}
+
+build() {
+  i:build_css
+  i:vendor htmx.org/dist/htmx.min.js
+}
+
+deploy() {
+  build
+  g:deploy
+}

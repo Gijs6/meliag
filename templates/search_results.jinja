@@ -1,0 +1,21 @@
+{% from "_macros.jinja" import icon %}
+{% if stations %}
+    <ul class="station-list" role="list">
+        {% for station in stations %}
+            <li>
+                <a class="station-list__row"
+                   href="{{ url_for('stations.station_page', station_code=station.id.uicCode) }}">
+                    <span class="station-list__name" lang="nl">{{ station.names.long }}</span>
+                    <span class="station-list__meta">{{ station.country }}</span>
+                    <span class="station-list__meta id">{{ station.id.uicCode }}</span>
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <div class="empty empty--framed">
+        {{ icon('search', 'empty__icon') }}
+        <p class="empty__title">Nothing found</p>
+        {% if query %}<p class="empty__text">No match for "{{ query }}". Try another name or code.</p>{% endif %}
+    </div>
+{% endif %}

@@ -1,0 +1,56 @@
+{% from "_macros.jinja" import icon %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        <title>{%- block title -%}{%- endblock %} - Meliag</title>
+
+        <link rel="icon"
+              href="{{ url_for('static', filename='favicon.svg') }}"
+              type="image/svg+xml" />
+        <link rel="alternate icon"
+              href="{{ url_for('static', filename='favicon.ico') }}" />
+
+        <link rel="stylesheet" href="https://cdn.gijs6.nl/theme/v1/all.css" />
+        <link rel="stylesheet" href="https://cdn.gijs6.nl/theme/v1/accent/red.css" />
+        {% if config.DEBUG %}
+            <link rel="stylesheet"
+                  href="{{ url_for('static', filename='styles/app.css') }}" />
+        {% else %}
+            <link rel="stylesheet"
+                  href="{{ url_for('static', filename='styles/app.min.css') }}" />
+        {% endif %}
+
+        <script src="{{ url_for('static', filename='vendor/htmx.min.js') }}" defer></script>
+        <script src="https://cdn.gijs6.nl/theme/v1/js/toast.js" defer></script>
+
+        {% block extra_headers %}{% endblock %}
+    </head>
+
+    <body class="{% block body_class %}{% endblock %}">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="toaster" aria-live="polite">
+                    {% for category, message in messages %}
+                        {% set kind = "success" if category == "success" else "danger" if category == "error" else "info" %}
+                        <div class="toast toast--{{ kind }}"
+                             role="status"
+                             data-auto-dismiss="6000">
+                            {% if kind == "success" %}
+                                {{ icon('circle-check', 'toast__icon') }}
+                            {%- elif kind == "danger" %}{{ icon('triangle-alert', 'toast__icon') }}
+                            {%- else %}{{ icon('info', 'toast__icon') }}
+                            {% endif %}
+                            <div class="toast__body">{{ message }}</div>
+                            <button type="button" class="toast__dismiss" aria-label="Dismiss">{{ icon("x") }}</button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% block body_content %}{% endblock %}
+    </body>
+</html>

@@ -1,0 +1,30 @@
+{% from "_macros.jinja" import icon %}
+{% if error %}
+    <p class="stock-note stock-note--error">{{ icon("triangle-alert") }} {{ error }}</p>
+{% elif stock and stock.materieeldelen %}
+    {% set facilities = {'WIFI': ('wifi', 'Wi-Fi'), 'TOILET': ('toilet', 'Toilet'), 'STILTE': ('ear-off', 'Quiet zone'), 'STROOM': ('plug', 'Power'), 'FIETS': ('bike', 'Bikes'), 'TOEGANKELIJK': ('accessibility', 'Step-free')} %}
+    <div class="reel stock-reel">
+        {% for car in stock.materieeldelen %}
+            <figure class="stock-car">
+                <img class="stock-car__image" src="{{ car.afbeelding }}" alt="" lang="nl" />
+                <figcaption class="stock-car__info">
+                    <span class="stock-car__type">{{ car.type }}</span>
+                    <span class="stock-car__number id">{{ car.materieelnummer }}</span>
+                    {% if car.faciliteiten %}
+                        <span class="stock-car__facilities">
+                            {% for facility in car.faciliteiten %}
+                                {% set details = facilities.get(facility) %}
+                                {% if details %}
+                                    <span class="stock-car__facility" title="{{ details[1] }}">
+                                        <span class="visually-hidden">{{ details[1] }}</span>
+                                        {{ icon(details[0]) }}
+                                    </span>
+                                {% endif %}
+                            {% endfor %}
+                        </span>
+                    {% endif %}
+                </figcaption>
+            </figure>
+        {% endfor %}
+    </div>
+{% endif %}

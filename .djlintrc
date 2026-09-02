@@ -1,0 +1,14 @@
+{
+    "indent": 4,
+    "format_css": true,
+    "format_js": true,
+    "max_line_length": 500,
+    "preserve_blank_lines": true,
+    "preserve_leading_space": false,
+    "profile": "jinja",
+    "extension": "jinja",
+    "ignore": "T003,H006,H013,H021,H030,H031,J018,H029",
+    "max_blank_lines": 1,
+    "blank_line_after_tag": "load,extends,include",
+    "custom_blocks": ""
+}

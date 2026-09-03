@@ -26,7 +26,16 @@
         {% block content %}{% endblock %}
     </main>
 
-    <footer class="page__footer">
-        <p>Times can be off or incomplete.</p>
+    <footer class="site-footer">
+        <ul class="site-footer__credits">
+            <li>Train times from the <a href="https://www.ns.nl/" rel="noopener">NS</a> API; they can be off or incomplete</li>
+        </ul>
+        <p class="site-footer__meta">
+            <span class="site-footer__id">
+                <span class="site-footer__mark">{{ icon("train-front") }}</span>
+                <b class="site-footer__name">Meliag</b> by <a class="site-footer__by" href="https://gijs6.nl">Gijs6</a>
+            </span>
+            <a href="https://unlicense.org" rel="license">Unlicensed</a>
+        </p>
     </footer>
 {% endblock %}

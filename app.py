@@ -2,7 +2,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-from flask import Flask
+from flask import Flask, render_template
 
 from routes.main import bp as main_bp
 from routes.stations import bp as stations_bp
@@ -19,6 +19,26 @@ init_db()
 app.register_blueprint(main_bp)
 app.register_blueprint(stations_bp)
 app.register_blueprint(trips_bp)
+
+
+@app.errorhandler(404)
+def not_found(_e):
+    return render_template(
+        "error.jinja",
+        code=404,
+        title="Not found",
+        description="The page you're looking for doesn't exist.",
+    ), 404
+
+
+@app.errorhandler(500)
+def server_error(_e):
+    return render_template(
+        "error.jinja",
+        code=500,
+        title="Server error",
+        description="Something went wrong on our end, try again later.",
+    ), 500
 
 
 if __name__ == "__main__":

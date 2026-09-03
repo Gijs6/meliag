@@ -48,4 +48,4 @@ if __name__ == "__main__":
     get_all_stations()
 
     print("Server starting...")
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=4000, debug=True)

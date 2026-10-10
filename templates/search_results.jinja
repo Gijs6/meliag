@@ -30,8 +30,8 @@
 {% else %}
     <div class="panel">
         <div class="empty">
-            <p class="empty__title">Nothing found</p>
-            {% if query %}<p class="empty__text">No match for "{{ query }}". Try another name or code.</p>{% endif %}
+            <p class="empty__title">No results</p>
+            {% if query %}<p>No station matches "{{ query }}". Try another name or code.</p>{% endif %}
         </div>
     </div>
 {% endif %}

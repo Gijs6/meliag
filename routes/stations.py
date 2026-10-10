@@ -47,7 +47,9 @@ def train_stock_api(train_number):
     except requests.exceptions.RequestException as e:
         print(f"Train {train_number}: fetch failed - {e}")
         return render_template(
-            "train_stock.jinja", stock=None, error="Couldn't load the composition. Reload the page to try again."
+            "train_stock.jinja",
+            stock=None,
+            error="Couldn't load the composition. Reload the page to try again.",
         )
 
     if not stock_data or not stock_data.get("materieeldelen"):

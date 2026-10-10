@@ -151,9 +151,7 @@
                                     {% endif %}
 
                                     {% for message in train.messages %}
-                                        <p class="departure__message{% if message.style == 'WARNING' %} departure__message--warn{% endif %}">
-                                            {{ message.message }}
-                                        </p>
+                                        <p class="departure__message{% if message.style == 'WARNING' %} departure__message--warn{% endif %}">{{ message.message }}</p>
                                     {% endfor %}
 
                                     <p class="departure__stock"
@@ -190,7 +188,6 @@
         {% else %}
             <div class="empty">
                 <p class="empty__title">Nothing scheduled</p>
-                <p>No trains to show right now.</p>
             </div>
         {% endif %}
     </div>

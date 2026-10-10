@@ -1,20 +1,5 @@
-{% macro icon(name, cls="") -%}
-    <svg class="icon{% if cls %} {{ cls }}{% endif %}"
-         viewBox="0 0 24 24"
-         fill="none"
-         stroke="currentColor"
-         stroke-width="2"
-         stroke-linecap="round"
-         stroke-linejoin="round"
-         aria-hidden="true">
-        {% include "icons/" ~ name ~ ".svg" %}
-
-    </svg>
-{%- endmacro %}
-
 {% macro time_readout(label, planned_iso=none, planned_display=none, actual_iso=none, actual_display=none, delay_minutes=none) -%}
     <span class="time{% if delay_minutes %} time--delayed{% endif %}">
-        <span class="time__label">{{ label }}</span>
         {% if not planned_iso -%}
             <span class="time__none" aria-label="No {{ label | lower }}">n/a</span>
         {%- elif delay_minutes -%}
@@ -34,4 +19,13 @@
     {%- else -%}
         <span class="platform platform--changed"><s>{{ planned }}</s> {{ actual }}</span>
     {%- endif %}
+{%- endmacro %}
+
+{% macro facility_list(codes) -%}
+    {%- set names = {'WIFI': 'Wi-Fi', 'TOILET': 'Toilet', 'STILTE': 'Quiet zone', 'STROOM': 'Power', 'FIETS': 'Bikes', 'TOEGANKELIJK': 'Step-free'} -%}
+    {%- set ns = namespace(out=[]) -%}
+    {%- for code in codes or [] if code in names -%}
+        {%- set ns.out = ns.out + [names[code]] -%}
+    {%- endfor -%}
+    {{- ns.out | join(", ") -}}
 {%- endmacro %}

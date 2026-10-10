@@ -74,7 +74,6 @@
 
 .departure__message {
     font-size: 12px;
-    color: var(--alert-info-fg);
 }
 .departure__message--warn {
     font-weight: 700;

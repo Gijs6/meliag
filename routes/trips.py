@@ -28,7 +28,7 @@ def trip_detail(train_number):
                 train_number=train_number,
                 stops=None,
                 notes=None,
-                error="Couldn't load this journey.",
+                error="Couldn't load this journey. Reload the page to try again.",
             ),
             502,
         )
@@ -39,7 +39,7 @@ def trip_detail(train_number):
                 train_number=train_number,
                 stops=None,
                 notes=None,
-                error="Couldn't load this journey.",
+                error="Couldn't load this journey. Reload the page to try again.",
             ),
             502,
         )

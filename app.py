@@ -37,7 +37,7 @@ def server_error(_e):
         "error.jinja",
         code=500,
         title="Server error",
-        description="Something went wrong on our end, try again later.",
+        description="Something went wrong on our end. Try again later.",
     ), 500
 
 

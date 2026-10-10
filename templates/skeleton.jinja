@@ -1,4 +1,3 @@
-{% from "_macros.jinja" import icon %}
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -13,8 +12,9 @@
         <link rel="alternate icon"
               href="{{ url_for('static', filename='favicon.ico') }}" />
 
-        <link rel="stylesheet" href="https://cdn.gijs6.nl/theme/v1/all.css" />
-        <link rel="stylesheet" href="https://cdn.gijs6.nl/theme/v1/accent/red.css" />
+        {% set theme = "http://localhost:8000/theme/v1" if config.DEBUG else "https://cdn.gijs6.nl/theme/v1" %}
+        <link rel="stylesheet" href="{{ theme }}/all.css" />
+        <link rel="stylesheet" href="{{ theme }}/accent/red.css" />
         {% if config.DEBUG %}
             <link rel="stylesheet"
                   href="{{ url_for('static', filename='styles/app.css') }}" />
@@ -24,12 +24,12 @@
         {% endif %}
 
         <script src="{{ url_for('static', filename='vendor/htmx.min.js') }}" defer></script>
-        <script src="https://cdn.gijs6.nl/theme/v1/js/toast.js" defer></script>
+        <script src="{{ theme }}/js/toast.js" defer></script>
 
         {% block extra_headers %}{% endblock %}
     </head>
 
-    <body class="{% block body_class %}{% endblock %}">
+    <body class="app {% block body_class %}{% endblock %}">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 <div class="toaster" aria-live="polite">
@@ -38,13 +38,8 @@
                         <div class="toast toast--{{ kind }}"
                              role="status"
                              data-auto-dismiss="6000">
-                            {% if kind == "success" %}
-                                {{ icon('circle-check', 'toast__icon') }}
-                            {%- elif kind == "danger" %}{{ icon('triangle-alert', 'toast__icon') }}
-                            {%- else %}{{ icon('info', 'toast__icon') }}
-                            {% endif %}
                             <div class="toast__body">{{ message }}</div>
-                            <button type="button" class="toast__dismiss" aria-label="Dismiss">{{ icon("x") }}</button>
+                            <button type="button" class="toast__dismiss" aria-label="Dismiss">&times;</button>
                         </div>
                     {% endfor %}
                 </div>

@@ -71,8 +71,8 @@
                 <table class="table board">
                     <thead>
                         <tr>
-                            <th>Arr</th>
-                            <th>Dep</th>
+                            <th><abbr title="Arrival">Arr</abbr></th>
+                            <th><abbr title="Departure">Dep</abbr></th>
                             <th>Train</th>
                             <th>Route</th>
                             <th class="table__num">Platform</th>
@@ -159,8 +159,8 @@
                                         {% if train.arrival.actualTrack == train.departure.actualTrack and train.arrival.plannedTrack == train.departure.plannedTrack %}
                                             {{ platform(train.arrival.actualTrack, train.arrival.plannedTrack) }}
                                         {% else %}
-                                            <span class="departure__platform-pair">Arr {{ platform(train.arrival.actualTrack, train.arrival.plannedTrack) }}</span>
-                                            <span class="departure__platform-pair">Dep {{ platform(train.departure.actualTrack, train.departure.plannedTrack) }}</span>
+                                            <span class="departure__platform-pair"><abbr title="Arrival">Arr</abbr> {{ platform(train.arrival.actualTrack, train.arrival.plannedTrack) }}</span>
+                                            <span class="departure__platform-pair"><abbr title="Departure">Dep</abbr> {{ platform(train.departure.actualTrack, train.departure.plannedTrack) }}</span>
                                         {% endif %}
                                     {% elif has_arrival_track %}
                                         {{ platform(train.arrival.actualTrack, train.arrival.plannedTrack) }}

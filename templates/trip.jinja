@@ -14,6 +14,44 @@
     {% endfor %}
 
     {% set stock = (stops[0].actualStock or stops[0].plannedStock) if stops else none %}
+    {% set first_departure = stops[0].departures[0] if stops and stops[0].departures else none %}
+    {% if first_departure %}
+        {% set product = first_departure.product or {} %}
+        <section class="panel">
+            <h2 class="panel__heading">Train details</h2>
+            <div class="table-wrap">
+                <table class="table table--kv">
+                    <tbody>
+                        {% if product.longCategoryName %}
+                            <tr>
+                                <th scope="row">Service</th>
+                                <td>{{ product.longCategoryName }}</td>
+                            </tr>
+                        {% endif %}
+                        {% if product.operatorName %}
+                            <tr>
+                                <th scope="row">Operator</th>
+                                <td>{{ product.operatorName }}</td>
+                            </tr>
+                        {% endif %}
+                        {% if first_departure.origin and first_departure.destination %}
+                            <tr>
+                                <th scope="row">Route</th>
+                                <td lang="nl">{{ first_departure.origin.name }} → {{ first_departure.destination.name }}</td>
+                            </tr>
+                        {% endif %}
+                        {% if stock and stock.numberOfSeats %}
+                            <tr>
+                                <th scope="row">Seats</th>
+                                <td>{{ stock.numberOfSeats }}</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    {% endif %}
+
     {% if stock and stock.trainParts %}
         <section class="panel">
             <h2 class="panel__heading">Composition</h2>

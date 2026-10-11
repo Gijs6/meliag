@@ -145,3 +145,7 @@
 .departure__via a {
     color: var(--muted);
 }
+
+.station-search {
+    margin-block-end: var(--space-2xl);
+}

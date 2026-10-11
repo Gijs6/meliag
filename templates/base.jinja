@@ -9,7 +9,7 @@
     <header class="navbar">
         <div class="navbar__inner">
             <a href="{{ url_for('main.index') }}" class="navbar__brand">{% include "mark.svg" %}Meliag</a>
-            <nav class="navbar__links" aria-label="Main navigation">
+            <nav class="navbar__links" aria-label="Main">
                 {{ nav_link('main.index', 'Home') }}
                 {{ nav_link('stations.station_search', 'Stations', ('stations', 'trips')) }}
             </nav>

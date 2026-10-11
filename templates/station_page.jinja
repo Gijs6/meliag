@@ -23,26 +23,28 @@
                         {% endif %}
                         <tr>
                             <th scope="row">Accessibility</th>
-                            <td class="station-info__access">
-                                {% if station_data.availableForAccessibleTravel %}
-                                    <span class="status status--ok">Accessible</span>
-                                {% else %}
-                                    <span class="status status--bad">Not accessible</span>
-                                {% endif %}
-                                {% if station_data.hasTravelAssistance is defined %}
-                                    {% if station_data.hasTravelAssistance %}
-                                        <span class="status status--ok">Travel assistance</span>
+                            <td>
+                                <div class="station-info__access">
+                                    {% if station_data.availableForAccessibleTravel %}
+                                        <span class="status status--ok">Accessible</span>
                                     {% else %}
-                                        <span class="status status--bad">No travel assistance</span>
+                                        <span class="status status--bad">Not accessible</span>
                                     {% endif %}
-                                {% endif %}
-                                {% if station_data.areTracksIndependentlyAccessible is defined %}
-                                    {% if station_data.areTracksIndependentlyAccessible %}
-                                        <span class="status status--ok">Tracks accessible</span>
-                                    {% else %}
-                                        <span class="status status--bad">Tracks not accessible</span>
+                                    {% if station_data.hasTravelAssistance is defined %}
+                                        {% if station_data.hasTravelAssistance %}
+                                            <span class="status status--ok">Travel assistance</span>
+                                        {% else %}
+                                            <span class="status status--bad">No travel assistance</span>
+                                        {% endif %}
                                     {% endif %}
-                                {% endif %}
+                                    {% if station_data.areTracksIndependentlyAccessible is defined %}
+                                        {% if station_data.areTracksIndependentlyAccessible %}
+                                            <span class="status status--ok">Tracks accessible</span>
+                                        {% else %}
+                                            <span class="status status--bad">Tracks not accessible</span>
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
                             </td>
                         </tr>
                         <tr>

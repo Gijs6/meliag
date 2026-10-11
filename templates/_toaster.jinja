@@ -1,0 +1,14 @@
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div class="toaster" aria-live="polite">
+            {% for category, message in messages %}
+                <div class="toast toast--{{ toast_type(category) }}"
+                     role="status"
+                     data-auto-dismiss="6000">
+                    <div class="toast__body">{{ message }}</div>
+                    <button type="button" class="toast__dismiss" aria-label="Dismiss">&times;</button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endwith %}

@@ -19,7 +19,10 @@
         <link rel="alternate icon"
               href="{{ url_for('static', filename='favicon.ico') }}" />
 
-        {% set theme = "http://localhost:8000/theme/v2" if config.DEBUG else "https://cdn.gijs6.nl/theme/v2" %}
+        <meta name="htmx-config"
+              content='{"historyCacheSize": 0, "responseHandling": [{"code": "204", "swap": false}, {"code": "[234]..", "swap": true}, {"code": "5..", "swap": false, "error": true}]}' />
+
+        {% set theme = "https://cdn.gijs6.nl/theme/v2" %}
         <link rel="stylesheet" href="{{ theme }}/all.css" />
         <link rel="stylesheet" href="{{ theme }}/accent/red.css" />
         {% if config.DEBUG %}
@@ -32,27 +35,16 @@
 
         <script src="{{ url_for('static', filename='vendor/htmx.min.js') }}" defer></script>
         <script src="{{ theme }}/js/toast.js" defer></script>
+        <script src="{{ theme }}/js/confirm.js" defer></script>
 
         {% block extra_headers %}{% endblock %}
     </head>
 
     <body class="app {% block body_class %}{% endblock %}">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <div class="toaster" aria-live="polite">
-                    {% for category, message in messages %}
-                        {% set kind = "success" if category == "success" else "danger" if category == "error" else "info" %}
-                        <div class="toast toast--{{ kind }}"
-                             role="status"
-                             data-auto-dismiss="6000">
-                            <div class="toast__body">{{ message }}</div>
-                            <button type="button" class="toast__dismiss" aria-label="Dismiss">&times;</button>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        {% endwith %}
+        {% include "_toaster.jinja" %}
 
         {% block body_content %}{% endblock %}
+
+        {% include "_footer.jinja" %}
     </body>
 </html>

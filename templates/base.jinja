@@ -19,15 +19,4 @@
     <main class="page">
         {% block content %}{% endblock %}
     </main>
-
-    <footer class="footer">
-        <div class="footer__inner">
-            <p>
-                <a href="{{ url_for('main.index') }}" class="footer__app">{% include "mark.svg" %}Meliag</a> by <a href="https://gijs6.nl">Gijs6</a>
-            </p>
-            <p>
-                <a href="https://unlicense.org" rel="license">Unlicensed</a>
-            </p>
-        </div>
-    </footer>
 {% endblock %}

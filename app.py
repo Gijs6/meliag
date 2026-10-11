@@ -10,10 +10,14 @@ from routes.trips import bp as trips_bp
 from utils.cache import init_db
 from utils.filters import register_filters
 from utils.ns_api import get_all_stations
+from utils.toasts import register_toasts
+from utils.version import register_version
 
 app = Flask(__name__)
 
 register_filters(app)
+register_toasts(app)
+register_version(app, "train")
 init_db()
 
 app.register_blueprint(main_bp)

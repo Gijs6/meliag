@@ -10,7 +10,7 @@
     </div>
 
     {% if station_data %}
-        <div class="panel">
+        <section class="panel">
             <h2 class="panel__heading">Station details</h2>
             <div class="table-wrap">
                 <table class="table table--kv station-info">
@@ -60,11 +60,11 @@
                     </tbody>
                 </table>
             </div>
-        </div>
+        </section>
     {% endif %}
 
-    <div class="panel">
-        <h2 class="panel__heading">Departures &amp; arrivals</h2>
+    <section class="panel">
+        <h2 class="panel__heading">Arrivals and departures</h2>
 
         {% if trains %}
             <div class="table-wrap">
@@ -180,5 +180,5 @@
                 <p class="empty__title">Nothing scheduled</p>
             </div>
         {% endif %}
-    </div>
+    </section>
 {% endblock %}

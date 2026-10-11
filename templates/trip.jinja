@@ -17,7 +17,7 @@
 
     {% set stock = (stops[0].actualStock or stops[0].plannedStock) if stops else none %}
     {% if stock and stock.trainParts %}
-        <div class="panel">
+        <section class="panel">
             <h2 class="panel__heading">Composition</h2>
             <div class="table-wrap">
                 <table class="table">
@@ -41,7 +41,7 @@
                     </tbody>
                 </table>
             </div>
-        </div>
+        </section>
     {% endif %}
 
     {% if error %}
@@ -95,6 +95,6 @@
                     </tbody>
                 </table>
             </div>
-        </div>
+        </section>
     {% endif %}
 {% endblock %}

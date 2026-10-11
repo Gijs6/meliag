@@ -79,12 +79,12 @@
                                 </td>
                                 <td>
                                     {% if arrival %}
-                                        {{ time_readout("Arr", planned_iso=arrival.plannedTime | isoformat, planned_display=arrival.plannedTime | format_datetime("%H:%M") , actual_iso=arrival.actualTime | isoformat, actual_display=arrival.actualTime | format_datetime("%H:%M"), delay_minutes=(arrival.delayInSeconds / 60) | round | int if arrival.delayInSeconds else none) }}
+                                        {{ time_readout("arrival", arrival.plannedTime, arrival.actualTime, (arrival.delayInSeconds / 60) | round | int if arrival.delayInSeconds else 0) }}
                                     {% endif %}
                                 </td>
                                 <td>
                                     {% if departure %}
-                                        {{ time_readout("Dep", planned_iso=departure.plannedTime | isoformat, planned_display=departure.plannedTime | format_datetime("%H:%M") , actual_iso=departure.actualTime | isoformat, actual_display=departure.actualTime | format_datetime("%H:%M"), delay_minutes=(departure.delayInSeconds / 60) | round | int if departure.delayInSeconds else none) }}
+                                        {{ time_readout("departure", departure.plannedTime, departure.actualTime, (departure.delayInSeconds / 60) | round | int if departure.delayInSeconds else 0) }}
                                     {% endif %}
                                 </td>
                                 <td class="table__num">

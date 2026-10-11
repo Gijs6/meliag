@@ -83,20 +83,10 @@
                             {% set is_cancelled = train.arrival.cancelled or train.departure.cancelled %}
                             <tr class="departure{% if is_cancelled %} departure--cancelled{% endif %}">
                                 <td>
-                                    {{ time_readout("Arr",
-                                                                        planned_iso=train.arrival.plannedDateTime | isoformat if train.arrival.plannedDateTime else none,
-                                                                        planned_display=train.arrival.plannedDateTime | format_datetime("%H:%M") if train.arrival.plannedDateTime else none,
-                                    actual_iso=train.arrival.actualDateTime | isoformat if train.arrival.actualDateTime else none,
-                                    actual_display=train.arrival.actualDateTime | format_datetime("%H:%M") if train.arrival.actualDateTime else none,
-                                    delay_minutes=train.arrival.actualDateTime | calculate_delay_minutes(train.arrival.plannedDateTime) if (train.arrival.plannedDateTime and train.arrival.plannedDateTime != train.arrival.actualDateTime) else none) }}
+                                    {{ time_readout("arrival", train.arrival.plannedDateTime, train.arrival.actualDateTime) }}
                                 </td>
                                 <td>
-                                    {{ time_readout("Dep",
-                                                                        planned_iso=train.departure.plannedDateTime | isoformat if train.departure.plannedDateTime else none,
-                                                                        planned_display=train.departure.plannedDateTime | format_datetime("%H:%M") if train.departure.plannedDateTime else none,
-                                    actual_iso=train.departure.actualDateTime | isoformat if train.departure.actualDateTime else none,
-                                    actual_display=train.departure.actualDateTime | format_datetime("%H:%M") if train.departure.actualDateTime else none,
-                                    delay_minutes=train.departure.actualDateTime | calculate_delay_minutes(train.departure.plannedDateTime) if (train.departure.plannedDateTime and train.departure.plannedDateTime != train.departure.actualDateTime) else none) }}
+                                    {{ time_readout("departure", train.departure.plannedDateTime, train.departure.actualDateTime) }}
                                 </td>
                                 <td class="departure__train">
                                     <span class="departure__type">

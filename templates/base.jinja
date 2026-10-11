@@ -1,8 +1,8 @@
 {% extends "skeleton.jinja" %}
 
-{% macro nav_link(endpoint, label) %}
+{% macro nav_link(endpoint, label, blueprints=()) %}
     <a href="{{ url_for(endpoint) }}"
-       {% if request.endpoint == endpoint %}aria-current="page"{% endif %}>{{ label }}</a>
+       {% if request.endpoint == endpoint or request.blueprint in blueprints %}aria-current="page"{% endif %}>{{ label }}</a>
 {% endmacro %}
 
 {% block body_content %}
@@ -11,7 +11,7 @@
             <a href="{{ url_for('main.index') }}" class="navbar__brand">{% include "mark.svg" %}Meliag</a>
             <nav class="navbar__links" aria-label="Main navigation">
                 {{ nav_link('main.index', 'Home') }}
-                {{ nav_link('stations.station_search', 'Stations') }}
+                {{ nav_link('stations.station_search', 'Stations', ('stations', 'trips')) }}
             </nav>
         </div>
     </header>

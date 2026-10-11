@@ -147,8 +147,7 @@
                                     <p class="departure__stock"
                                        hx-get="{{ url_for('stations.train_stock_api', train_number=train_number) }}"
                                        hx-trigger="load"
-                                       hx-swap="innerHTML"
-                                       aria-label="Train composition">
+                                       hx-swap="innerHTML">
                                         <span class="stock-note">Loading...</span>
                                     </p>
                                 </td>
@@ -167,7 +166,7 @@
                                     {% elif has_departure_track %}
                                         {{ platform(train.departure.actualTrack, train.departure.plannedTrack) }}
                                     {% else %}
-                                        <span class="platform platform--none" aria-label="No platform information">-</span>
+                                        <span class="platform platform--none"><span aria-hidden="true">-</span><span class="visually-hidden">No platform</span></span>
                                     {% endif %}
                                 </td>
                             </tr>

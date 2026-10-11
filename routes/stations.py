@@ -49,7 +49,7 @@ def train_stock_api(train_number):
         return render_template(
             "train_stock.jinja",
             stock=None,
-            error="Couldn't load the composition. Reload the page to try again.",
+            error="Couldn't load the composition.",
         )
 
     if not stock_data or not stock_data.get("materieeldelen"):

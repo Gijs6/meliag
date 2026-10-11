@@ -1,5 +1,5 @@
 {% if stations %}
-    <div class="panel">
+    <section class="panel">
         <h2 class="panel__heading">Stations ({{ "{:,}".format(stations | length) }})</h2>
         <div class="table-wrap">
             <table class="table">
@@ -26,12 +26,10 @@
                 </tbody>
             </table>
         </div>
-    </div>
+    </section>
 {% else %}
-    <div class="panel">
-        <div class="empty">
-            <p class="empty__title">No results</p>
-            {% if query %}<p>No station matches "{{ query }}".</p>{% endif %}
-        </div>
+    <div class="empty">
+        <p class="empty__title">No results</p>
+        {% if query %}<p>No station matches "{{ query }}".</p>{% endif %}
     </div>
 {% endif %}

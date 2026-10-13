@@ -98,10 +98,6 @@
 .route__stop--passing {
     color: var(--muted);
 
-    .route__name a {
-        color: var(--muted);
-    }
-
     .route__name {
         font-weight: 400;
     }
@@ -110,15 +106,6 @@
 .route__stop--cancelled .route__name {
     text-decoration: line-through;
     text-decoration-color: var(--bad);
-}
-
-.departure__route a,
-.route__name a {
-    color: var(--fg);
-}
-
-.departure__via a {
-    color: var(--muted);
 }
 
 .station-search {

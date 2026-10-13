@@ -1,8 +1,14 @@
 import json
 
-from flask import request, session
+from flask import Response, redirect, request, session
 
 TOAST_TYPES = {"success": "success", "warning": "warning", "error": "danger"}
+
+
+def htmx_redirect(location):
+    if request.headers.get("HX-Request") and not request.headers.get("HX-Boosted"):
+        return Response(status=204, headers={"HX-Redirect": location})
+    return redirect(location)
 
 
 def toast_type(category):

@@ -80,7 +80,14 @@
         </section>
     {% endif %}
 
-    {% if error %}
+    {% if error and can_retry %}
+        <div class="alert alert--danger">
+            <p>{{ error }}</p>
+            <p>
+                <a href="{{ request.url }}" class="btn btn--sm">Reload page</a>
+            </p>
+        </div>
+    {% elif error %}
         <p class="alert alert--danger">{{ error }}</p>
     {% else %}
         <section class="panel">

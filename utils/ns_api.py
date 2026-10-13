@@ -13,7 +13,7 @@ def fetch_ns_data(endpoint):
         "Cache-Control": "no-cache",
         "Ocp-Apim-Subscription-Key": os.getenv("NS_API_KEY"),
     }
-    response = requests.get(url, headers=headers)
+    response = requests.get(url, headers=headers, timeout=10)
     response.raise_for_status()
     return response.json()
 

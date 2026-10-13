@@ -10,4 +10,6 @@
             {%- if not loop.last %}, {% endif %}
         {%- endfor %}
     </span>
+{% else %}
+    <span class="stock-note">No composition</span>
 {% endif %}

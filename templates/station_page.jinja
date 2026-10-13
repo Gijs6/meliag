@@ -2,69 +2,67 @@
 
 {% from "_macros.jinja" import time_readout, platform %}
 
-{% block title %}{{ station_data.names.short if station_data else "Station" }}{% endblock %}
+{% block title %}{{ station_data.names.short }}{% endblock %}
 
 {% block content %}
     <div class="page-head">
-        <h1 lang="nl">{{ station_data.names.long if station_data else station_name }}</h1>
+        <h1 lang="nl">{{ station_data.names.long }}</h1>
     </div>
 
-    {% if station_data %}
-        <section class="panel">
-            <h2 class="panel__heading">Station details</h2>
-            <div class="table-wrap">
-                <table class="table table--kv station-info">
-                    <tbody>
-                        {% if station_data.names.synonyms %}
-                            <tr>
-                                <th scope="row">Also called</th>
-                                <td lang="nl">{{ station_data.names.synonyms | join(", ") }}</td>
-                            </tr>
-                        {% endif %}
-                        <tr>
-                            <th scope="row">Accessibility</th>
-                            <td>
-                                <div class="station-info__access">
-                                    {% if station_data.availableForAccessibleTravel %}
-                                        <span class="status status--ok">Accessible</span>
-                                    {% else %}
-                                        <span class="status status--bad">Not accessible</span>
-                                    {% endif %}
-                                    {% if station_data.hasTravelAssistance is defined %}
-                                        {% if station_data.hasTravelAssistance %}
-                                            <span class="status status--ok">Travel assistance</span>
-                                        {% else %}
-                                            <span class="status status--bad">No travel assistance</span>
-                                        {% endif %}
-                                    {% endif %}
-                                    {% if station_data.areTracksIndependentlyAccessible is defined %}
-                                        {% if station_data.areTracksIndependentlyAccessible %}
-                                            <span class="status status--ok">Tracks accessible</span>
-                                        {% else %}
-                                            <span class="status status--bad">Tracks not accessible</span>
-                                        {% endif %}
-                                    {% endif %}
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">NS</th>
-                            <td>
-                                <code>{{ station_data.id.code }}</code>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">UIC</th>
-                            <td>
-                                <code>{{ station_data.id.uicCode }}</code>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-    {% endif %}
+    <div class="table-wrap">
+        <table class="table table--kv table--fit">
+            <caption class="visually-hidden">Details</caption>
+            <tbody>
+                <tr>
+                    {% if station_data.names.synonyms %}
+                        <th scope="row">Also called</th>
+                        <td lang="nl">{{ station_data.names.synonyms | join(", ") }}</td>
+                    {% endif %}
+                    <th scope="row">Accessibility</th>
+                    <td>
+                        <div class="station-info__access">
+                            {% if station_data.availableForAccessibleTravel %}
+                                <span class="status status--ok">Accessible</span>
+                            {% else %}
+                                <span class="status status--bad">Not accessible</span>
+                            {% endif %}
+                            {% if station_data.hasTravelAssistance is defined %}
+                                {% if station_data.hasTravelAssistance %}
+                                    <span class="status status--ok">Travel assistance</span>
+                                {% else %}
+                                    <span class="status status--bad">No travel assistance</span>
+                                {% endif %}
+                            {% endif %}
+                            {% if station_data.areTracksIndependentlyAccessible is defined %}
+                                {% if station_data.areTracksIndependentlyAccessible %}
+                                    <span class="status status--ok">Tracks accessible</span>
+                                {% else %}
+                                    <span class="status status--bad">Tracks not accessible</span>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </td>
+                    <th scope="row">NS</th>
+                    <td>
+                        <code>{{ station_data.id.code }}</code>
+                    </td>
+                    <th scope="row">UIC</th>
+                    <td>
+                        <code>{{ station_data.id.uicCode }}</code>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
+    {% if error %}
+        <div class="alert alert--danger">
+            <p>{{ error }}</p>
+            <p>
+                <a href="{{ request.url }}" class="btn btn--sm">Reload page</a>
+            </p>
+        </div>
+    {% else %}
     <section class="panel">
         <h2 class="panel__heading">Arrivals and departures</h2>
 
@@ -178,4 +176,5 @@
             </div>
         {% endif %}
     </section>
+    {% endif %}
 {% endblock %}

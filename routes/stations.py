@@ -1,5 +1,5 @@
 import requests
-from flask import Blueprint, render_template, request
+from flask import Blueprint, abort, render_template, request
 
 from utils.filters import normalize_name
 from utils.ns_api import fetch_arrivals, fetch_departures, fetch_train_stock
@@ -53,9 +53,7 @@ def train_stock_api(train_number):
         )
 
     if not stock_data or not stock_data.get("materieeldelen"):
-        return render_template(
-            "train_stock.jinja", stock=None, error="No composition available."
-        )
+        return render_template("train_stock.jinja", stock=None, error=None)
 
     return render_template("train_stock.jinja", stock=stock_data, error=None)
 
@@ -65,19 +63,23 @@ def station_page(station_code):
     debug = request.args.get("debug") == "true"
 
     station_data = load_station_data_mapping().get(station_code)
-    station_name = (
-        station_data.get("names", {}).get("long", station_code)
-        if station_data
-        else station_code
-    )
+    if station_data is None:
+        abort(404)
+    station_name = station_data.get("names", {}).get("long", station_code)
 
+    error = None
     if debug:
         trains = load_json("testdata.json") or {}
         print(f"Debug mode: {station_name}")
     else:
-        trains = merge_arrivals_departures(
-            fetch_arrivals(station_code), fetch_departures(station_code)
-        )
+        try:
+            trains = merge_arrivals_departures(
+                fetch_arrivals(station_code), fetch_departures(station_code)
+            )
+        except (requests.exceptions.RequestException, ValueError) as e:
+            print(f"Station {station_code}: fetch failed - {e}")
+            trains = {}
+            error = "Couldn't load the arrivals and departures."
 
     for train in trains.values():
         train["messages"] = merged_messages(train)
@@ -88,4 +90,5 @@ def station_page(station_code):
         station_name=station_name,
         station_name_to_uic=load_uic_mapping(),
         station_data=station_data,
+        error=error,
     )

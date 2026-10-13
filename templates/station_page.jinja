@@ -91,17 +91,15 @@
                                     {{ time_readout("departure", train.departure.plannedDateTime, train.departure.actualDateTime) }}
                                 </td>
                                 <td class="departure__train">
-                                    <span class="departure__type">
+                                    <a class="departure__number"
+                                       href="{{ url_for('trips.trip_detail', train_number=train_number) }}">{{ train_number }}</a>
+                                    <span class="table__sub">
                                         {%- if train.arrival.product -%}
                                             {{ train.arrival.product.shortCategoryName }}
                                         {%- elif train.departure.product -%}
                                             {{ train.departure.product.shortCategoryName }}
-                                        {%- else -%}
-                                            ?
                                         {%- endif -%}
                                     </span>
-                                    <a class="departure__number"
-                                       href="{{ url_for('trips.trip_detail', train_number=train_number) }}">{{ train_number }}</a>
                                 </td>
                                 <td class="departure__body">
                                     <p class="departure__route">
@@ -116,7 +114,7 @@
                                         {% else %}
                                             <span class="departure__here">Here</span>
                                         {% endif %}
-                                        to
+                                        →
                                         {% set direction_uic = station_name_to_uic.get(train.departure.direction | normalize_name | lower) if train.departure.direction else None %}
                                         {% if train.departure.direction %}
                                             {% if direction_uic %}
@@ -167,8 +165,6 @@
                                         {{ platform(train.arrival.actualTrack, train.arrival.plannedTrack) }}
                                     {% elif has_departure_track %}
                                         {{ platform(train.departure.actualTrack, train.departure.plannedTrack) }}
-                                    {% else %}
-                                        <span class="platform platform--none"><span aria-hidden="true">-</span><span class="visually-hidden">No platform</span></span>
                                     {% endif %}
                                 </td>
                             </tr>

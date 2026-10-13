@@ -1,6 +1,8 @@
 {% if stations %}
     <section class="panel">
-        <h2 class="panel__heading">Stations ({{ "{:,}".format(stations | length) }})</h2>
+        <h2 class="panel__heading">
+            <span>Stations <span class="count">{{ "{:,}".format(stations | length) }}</span></span>
+        </h2>
         <div class="table-wrap">
             <table class="table">
                 <thead>

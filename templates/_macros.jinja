@@ -3,7 +3,6 @@
     {%- set delay = delay_minutes if delay_minutes is not none else actual | calculate_delay_minutes(planned) -%}
     <span class="time{% if delay %} time--delayed{% endif %}">
         {% if not planned -%}
-            <span class="time__none"><span aria-hidden="true">-</span><span class="visually-hidden">No {{ label }}</span></span>
         {%- elif delay -%}
             <s class="time__planned"><time datetime="{{ planned | isoformat }}">{{ planned | format_datetime("%H:%M") }}</time></s>
             <span class="time__actual"><time datetime="{{ actual | isoformat }}">{{ actual | format_datetime("%H:%M") }}</time></span>

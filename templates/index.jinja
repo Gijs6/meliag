@@ -7,9 +7,17 @@
         <h1>Dutch trains</h1>
     </div>
 
-    <p class="home__stats">
-        <b>{{ "{:,}".format(stats.total_stations) }}</b> stations tracked
-    </p>
+    <div class="table-wrap">
+        <table class="table table--kv table--fit">
+            <caption class="visually-hidden">Summary</caption>
+            <tbody>
+                <tr>
+                    <th scope="row">Stations</th>
+                    <td>{{ "{:,}".format(stats.total_stations) }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
     <p>
         <a class="btn" href="{{ url_for('stations.station_search') }}">Find a station</a>
     </p>

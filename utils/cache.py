@@ -1,7 +1,7 @@
 import json
 import os
 import sqlite3
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from utils.paths import DATA_DIR
 
@@ -22,8 +22,10 @@ def init_db():
 
 
 def is_cache_valid(cached_at):
-    now = datetime.now()
-    if cached_at.date() != now.date():
+    if cached_at.tzinfo is None:
+        return False
+    now = datetime.now(timezone.utc)
+    if cached_at.astimezone().date() != now.astimezone().date():
         return False
     return now - cached_at < timedelta(hours=3)
 
@@ -55,5 +57,5 @@ def set_train_stock(train_number, data):
                 data = excluded.data,
                 cached_at = excluded.cached_at
             """,
-            (train_number, json.dumps(data), datetime.now().isoformat()),
+            (train_number, json.dumps(data), datetime.now(timezone.utc).isoformat()),
         )
